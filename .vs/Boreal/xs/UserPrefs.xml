@@ -1,0 +1,41 @@
+﻿<Properties StartupConfiguration="{F1BA7C26-E499-0158-CBF1-8F23B762EABB}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Editor/TerrainGeneratorEditor (copy).cs">
+    <Files>
+      <File FileName="Assets/Scripts/Controllers/Pathfinding/PathfindingController.cs" Line="51" Column="74" />
+      <File FileName="Assets/Scripts/Controllers/Pathfinding/Grid.cs" Line="47" Column="1" />
+      <File FileName="Assets/Scripts/Editor/TerrainGeneratorEditor.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Controllers/WorldController/TerrainGenerator.cs" Line="70" Column="35" />
+      <File FileName="Assets/Scripts/Editor/TerrainGeneratorEditor (copy).cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Boreal" expanded="True">
+            <Node name="Assets" expanded="True">
+              <Node name="Scripts" expanded="True">
+                <Node name="Controllers" expanded="True">
+                  <Node name="NavigationController" expanded="True" />
+                  <Node name="Pathfinding" expanded="True" />
+                  <Node name="TileController" expanded="True" />
+                  <Node name="WorldController" expanded="True" />
+                </Node>
+                <Node name="Editor" expanded="True">
+                  <Node name="TerrainGeneratorEditor (copy).cs" selected="True" />
+                </Node>
+                <Node name="Messages" expanded="True" />
+                <Node name="Models" expanded="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="183ecb6c-f357-491f-ac56-d9064a5c7296" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
