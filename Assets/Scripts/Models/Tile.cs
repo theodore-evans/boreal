@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Tile
@@ -44,7 +42,7 @@ public class Tile
             float oldAltitude = _altitude;
             _altitude = value;
 
-            // call callback, notify of change
+            //call callback, notify of change
             if (cbTileChanged != null && oldAltitude != _altitude)
                 cbTileChanged(this);
         }

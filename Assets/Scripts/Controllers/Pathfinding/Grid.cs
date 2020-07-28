@@ -1,32 +1,37 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using System;
 
-public class Grid
+public class Grid : MonoBehaviour
 {
-    LayerMask unwalkableMask;
-    float nodeRadius;
+    public LayerMask unwalkableMask;
+    public float nodeRadius;
+
     public Node[,] Nodes { get; protected set; }
 
     float nodeDiameter;
     int gridSizeX, gridSizeY;
     int width, height;
-    Vector3 worldOrigin;
+    Vector3 origin;
 
-    public int nearestNeighborRange;
+    public bool autoUpdate = true;
+    public List<Node> path;
 
-    public Grid(Vector3 worldOrigin, int width, int height, float nodeRadius, LayerMask unwalkableMask)
+    public void Initialise(Vector3 origin, int width, int height)
     {
-        this.worldOrigin = worldOrigin;
+        this.origin = origin;
         this.width = width;
         this.height = height;
-        this.unwalkableMask = unwalkableMask;
-        this.nodeRadius = nodeRadius;
-      
-        GenerateGrid(nodeRadius, unwalkableMask);
+
+        CreateGrid();
     }
 
-    public void GenerateGrid(float nodeRadius, LayerMask unwalkableMask)
+    public int MaxSize
+    {
+        get { return gridSizeX * gridSizeY; }
+    }
+
+    public void CreateGrid()
     {
         nodeDiameter = Mathf.Max(nodeRadius * 2, 0.1f);
 
@@ -37,9 +42,11 @@ public class Grid
 
         for (int x = 0; x < gridSizeX; x++) {
             for (int y = 0; y < gridSizeY; y++) {
-                Vector3 worldPoint = worldOrigin + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.up * (y * nodeDiameter + nodeRadius);
+
+                Vector3 worldPoint = origin + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.up * (y * nodeDiameter + nodeRadius);
                 bool walkable = IsWalkable(worldPoint);
-                Nodes[x, y] = new Node(walkable, worldPoint);
+
+                Nodes[x, y] = new Node(walkable, worldPoint, x, y);
             }
         }
     }
@@ -47,24 +54,38 @@ public class Grid
     bool IsWalkable(Vector3 worldPoint)
     {
         //return !Physics.CheckBox(worldPoint, Vector3.one * (nodeRadius - 0.1f), Quaternion.identity, unwalkableMask);
-        return !Physics.CheckSphere(worldPoint, nodeRadius - 0.01f, unwalkableMask);
-
+        return !Physics.CheckSphere(worldPoint, nodeRadius - 0.1f, unwalkableMask);
     }
 
-    public void UpdateNodesAtGameObject(GameObject go)
+    public List<Node> GetNeighbours(Node node)
     {
-        Collider collider = go.GetComponent<Collider>();
-        Vector3 colliderPosition = collider.transform.position;
-        Vector3 colliderExtents = collider.bounds.extents;
+        List<Node> neighbours = new List<Node>();
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
 
-        Vector3 colliderBottomLeft = colliderPosition - colliderExtents;
-        Vector3 colliderTopRight = colliderPosition + colliderExtents;
+                if (x == 0 && y == 0) continue;
+                int checkX = node.gridX + x;
+                int checkY = node.gridY + y;
 
-        int[] bottomLeftNodeIndices = WorldPointToGridPos(colliderBottomLeft);
-        int[] topRightNodeIndices = WorldPointToGridPos(colliderTopRight);
+                if (checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY) {
+                    neighbours.Add(Nodes[checkX, checkY]);
+                }
 
-        for (int x = bottomLeftNodeIndices[0]; x <= topRightNodeIndices[0]; x++) {
-            for (int y = bottomLeftNodeIndices[1]; y <= topRightNodeIndices[1]; y++) {
+            }
+        }
+        return neighbours;
+    }
+
+    public void UpdateNodesOnGameObject(GameObject go)
+    {
+        Vector3 bottomLeftCorner = go.transform.position;
+        Vector3 size = go.GetComponent<Collider>().bounds.size;
+
+        int[] bottomLeftNodeIndices = GetGridIndicesAtWorldPoint(bottomLeftCorner);
+        int[] topRightNodeIndices = GetGridIndicesAtWorldPoint(bottomLeftCorner + size);
+
+        for (int x = bottomLeftNodeIndices[0]; x < topRightNodeIndices[0]; x++) {
+            for (int y = bottomLeftNodeIndices[1]; y < topRightNodeIndices[1]; y++) {
 
                 Node n = Nodes[x, y];
                 n.Update(IsWalkable(n.worldPoint));
@@ -72,18 +93,20 @@ public class Grid
         }
     }
 
-    public Node NodeAtWorldPoint(Vector3 worldPoint)
+    public Node GetNodeAtWorldPoint(Vector3 worldPoint)
     {
-        int[] gridPos = WorldPointToGridPos(worldPoint);
+        int[] gridPos = GetGridIndicesAtWorldPoint(worldPoint);
         int x = gridPos[0];
         int y = gridPos[1];
         if (x >= 0 && x < Nodes.GetLength(0) && x >= 0 && y < Nodes.GetLength(1)) {
-            return Nodes[gridPos[0], gridPos[1]];
+            Node node = Nodes[gridPos[0], gridPos[1]];
+            if (node != null) return node;
+            else return null;
         }
         else return null;
     }
 
-    int[] WorldPointToGridPos(Vector3 worldPoint)
+    int[] GetGridIndicesAtWorldPoint(Vector3 worldPoint)
     {
         float percentX = worldPoint.x / width;
         float percentY = worldPoint.y / height;
@@ -94,5 +117,10 @@ public class Grid
         int y = (int)Mathf.Floor(gridSizeY * percentY);
 
         return new int[] { x, y };
+    }
+
+    private void OnValidate()
+    {
+        if (nodeRadius < 0.2f) { nodeRadius = 0.2f; }
     }
 }

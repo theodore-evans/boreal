@@ -1,67 +1,84 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class PathfindingController : MonoBehaviour
 {
-    private WorldController worldController;
-    private TileController tileController;
+    public bool onlyDisplayPathGizmos;
+
+    int gridWidth, gridHeight;
+    Vector3 gridOrigin;
+
+    private TileGameObjectController tileGameObjectController;
     private Grid grid;
 
-    public float nodeRadius;
-    public LayerMask unwalkableMask;
+    float nodeRadius;
 
-    public bool autoUpdate;
+    //
+    // FIXME this class is a bit redundant
+    //
 
-    // Use this for initialization
-    void Start()
+    public void Initialise(WorldController worldController, TileGameObjectController tileGameObjectController)
     {
-        GameObject worldController_go = GameObject.Find("WorldController");
-        worldController = worldController_go.GetComponent<WorldController>();
-        tileController = worldController_go.GetComponentInChildren<TileController>();
+        this.tileGameObjectController = tileGameObjectController;
 
-        Vector3 worldOrigin = worldController_go.transform.position;
-        int worldWidth = worldController.World.Width;
-        int worldHeight = worldController.World.Height;
+        gridOrigin = tileGameObjectController.transform.position;
+        gridWidth = worldController.Width;
+        gridHeight = worldController.Height;
 
-        grid = new Grid(worldOrigin, worldWidth, worldHeight, nodeRadius, unwalkableMask);
+        grid = GetComponent<Grid>();
+        grid.Initialise(gridOrigin, gridWidth, gridHeight);
 
-        tileController.RegisterGameObjectChangedCallback(grid.UpdateNodesAtGameObject);
+        nodeRadius = grid.nodeRadius;
+        tileGameObjectController.RegisterGameObjectChangedCallback(grid.UpdateNodesOnGameObject);
     }
 
     public void UpdateGridNodesAtGameObject(GameObject go)
     {
-        grid.UpdateNodesAtGameObject(go);
+        grid.UpdateNodesOnGameObject(go);
     }
 
     public void RegenerateGrid()
     {
-        if (grid != null) grid.GenerateGrid(nodeRadius, unwalkableMask);
+        if (grid != null) grid.CreateGrid();
     }
 
-    void OnDrawGizmos()
+    void OnDrawGizmosSelected()
     {
         if (grid != null) {
-            Node[,] nodes = grid.Nodes;
-     
-            //Node playernode = NodeAtWorldPoint(player.transform.position);
-            Node cursornode = grid.NodeAtWorldPoint(NavigationController.GetWorldPointUnderMouse());
-
-            foreach (Node n in nodes) {
-                Color color = (n.walkable) ? Color.white : Color.red;
-                color.a = 0.25f;
-                Gizmos.color = color;
-
-                if (n == cursornode) {
-                    Gizmos.color = Color.cyan;
+            if (onlyDisplayPathGizmos) {
+                if (grid.path != null) {
+                    foreach (Node n in grid.path) {
+                        Gizmos.color = Color.black;
+                        Gizmos.DrawCube(n.worldPoint, Vector3.one * (nodeRadius));
+                    }
                 }
+            }
 
-                Gizmos.DrawCube(n.worldPoint, Vector3.one * (nodeRadius));
+            else {
+
+                Node[,] nodes = grid.Nodes;
+
+                //Node playernode = NodeAtWorldPoint(player.transform.position);
+                Node cursornode = grid.GetNodeAtWorldPoint(NavigationController.GetWorldPointUnderMouse());
+
+                foreach (Node n in nodes) {
+                    Color color = (n.walkable) ? Color.white : Color.red;
+                    color.a = 0.25f;
+                    Gizmos.color = color;
+
+                    if (grid.path != null) {
+                        if (grid.path.Contains(n)) {
+                            Gizmos.color = Color.black;
+                        }
+                    }
+
+                    if (n == cursornode) {
+                        Color color2 = (n.walkable) ? Color.cyan : Color.red;
+                        Gizmos.color = color2;
+                    }
+
+                    Gizmos.DrawCube(n.worldPoint, Vector3.one * (nodeRadius));
+                }
             }
         }
-    }
-
-    private void OnValidate()
-    {
-        if (nodeRadius < 0.01) { nodeRadius = 0.01f; }
     }
 }
