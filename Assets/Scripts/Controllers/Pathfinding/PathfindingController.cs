@@ -2,7 +2,7 @@
 
 public class PathfindingController : MonoBehaviour
 {
-    public bool onlyDisplayPathGizmos;
+    public bool drawGridGizmos;
 
     int gridWidth, gridHeight;
     Vector3 gridOrigin;
@@ -43,42 +43,25 @@ public class PathfindingController : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        if (grid != null) {
-            if (onlyDisplayPathGizmos) {
-                if (grid.path != null) {
-                    foreach (Node n in grid.path) {
-                        Gizmos.color = Color.black;
-                        Gizmos.DrawCube(n.worldPoint, Vector3.one * (nodeRadius));
-                    }
-                }
-            }
+        if (grid != null && drawGridGizmos) {
+            Node[,] nodes = grid.Nodes;
 
-            else {
+            //Node playernode = NodeAtWorldPoint(player.transform.position);
+            //Node cursornode = grid.GetNodeAtWorldPoint(NavigationController.GetWorldPointUnderMouse());
 
-                Node[,] nodes = grid.Nodes;
+            foreach (Node n in nodes) {
+                Color color = (n.walkable) ? Color.white : Color.red;
+                color.a = 0.25f;
+                Gizmos.color = color;
 
-                //Node playernode = NodeAtWorldPoint(player.transform.position);
-                Node cursornode = grid.GetNodeAtWorldPoint(NavigationController.GetWorldPointUnderMouse());
+                //if (n == cursornode) {
+                //    Color color2 = (n.walkable) ? Color.cyan : Color.red;
+                //    Gizmos.color = color2;
+                //}
 
-                foreach (Node n in nodes) {
-                    Color color = (n.walkable) ? Color.white : Color.red;
-                    color.a = 0.25f;
-                    Gizmos.color = color;
-
-                    if (grid.path != null) {
-                        if (grid.path.Contains(n)) {
-                            Gizmos.color = Color.black;
-                        }
-                    }
-
-                    if (n == cursornode) {
-                        Color color2 = (n.walkable) ? Color.cyan : Color.red;
-                        Gizmos.color = color2;
-                    }
-
-                    Gizmos.DrawCube(n.worldPoint, Vector3.one * (nodeRadius));
-                }
+                Gizmos.DrawCube(n.worldPoint, Vector3.one * (nodeRadius));
             }
         }
+
     }
 }
