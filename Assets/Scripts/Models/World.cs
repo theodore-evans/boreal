@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class World
@@ -9,11 +7,8 @@ public class World
     public int Height { get; private set; }
 
     Tile[,] tiles;
-    Dictionary<string, FurnitureObject> FurniturePrototypes;
-    //TODO: extract furniture management to a new class
 
     Action<Tile> cbTileChanged;
-    Action<FurnitureObject> cbFurnitureChanged;
 
     public World(int width, int height)
     {
@@ -22,11 +17,9 @@ public class World
 
         tiles = new Tile[width, height];
 
-        CreateFurniturePrototypes();
-
         for (int x = 0; x < Width; x++) {
             for (int y = 0; y < Height; y++) {
-                tiles[x, y] = new Tile(this, x, y);
+                tiles[x, y] = new Tile(x, y);
                 tiles[x, y].RegisterTileChangedCallback(OnTileChanged);
             }
         }
@@ -39,48 +32,23 @@ public class World
         if (x > Width || x < 0 || y > Height || y < 0) {
             return null;
         }
+
+        Tile currTile = tiles[x,y];
+
+        if (currTile == null) {
+            Debug.LogError($"{this}: No tile at {x}, {y})");
+            return null;
+        }
+
         return tiles[x, y];
     }
 
-    void CreateFurniturePrototypes()
+    public Tile GetTileAt(Vector3 worldPoint)
     {
-        FurniturePrototypes = new Dictionary<string, FurnitureObject>();
+        int x = Mathf.FloorToInt(worldPoint.x);
+        int y = Mathf.FloorToInt(worldPoint.y);
 
-        FurniturePrototypes.Add("Tree",
-          FurnitureObject.CreatePrototype(
-            "Tree",
-            0,
-            1,
-            1
-          )
-        );
-    }
-
-    public void PlaceFurnitureOnTile(string furnitureType, Tile t)
-    {
-        if (FurniturePrototypes.ContainsKey(furnitureType) == false) {
-            Debug.LogError($"World.FurniturePrototypes does not contain element with key {furnitureType}");
-            return;
-        }
-
-        FurnitureObject furn = FurnitureObject.CreateInstance(FurniturePrototypes[furnitureType], t);
-
-        cbFurnitureChanged?.Invoke(furn);
-    }
-
-    public void RemoveFurnituresFromTile(Tile t)
-    {
-        FurnitureObject furn = t.Furniture;
-
-        if (furn != null) {
-            t.RemoveFurniture();
-        }
-        else {
-            Debug.Log($"World.RemoveFurnituresFromTile: Tile [{t.X}, {t.Y}] has no Furniture");
-        }
-
-        cbFurnitureChanged?.Invoke(furn);
-
+        return GetTileAt(x, y);
     }
 
     void OnTileChanged(Tile t)
@@ -98,13 +66,4 @@ public class World
         cbTileChanged -= callback;
     }
     
-    public void RegisterFurnitureChangedCallback(Action<FurnitureObject> callback)
-    {
-        cbFurnitureChanged += callback;
-    }
-
-    public void UnregisterFurnitureChangedCallback(Action<FurnitureObject> callback)
-    {
-        cbFurnitureChanged -= callback;
-    }
 }
