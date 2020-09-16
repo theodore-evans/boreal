@@ -12,13 +12,13 @@ public class PathfindingGridEditor : Editor
 		{
 			if (grid.autoUpdate)
 			{
-				grid.CreateGrid();
+				grid.UpdateGrid();
 			}
 		}
 
 		if (GUILayout.Button("Regenerate Grid"))
 		{
-			grid.CreateGrid();
+			grid.UpdateGrid();
 		}
 	}
 }

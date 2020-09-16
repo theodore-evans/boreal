@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+// TODO: eventually decouple from UnityEngine
 
 public class World
 {
@@ -7,6 +8,7 @@ public class World
     public int Height { get; private set; }
 
     Tile[,] tiles;
+    NormalCalculator normalGenerator;
 
     Action<Tile> cbTileChanged;
 
@@ -16,6 +18,7 @@ public class World
         Height = height;
 
         tiles = new Tile[width, height];
+        normalGenerator = new NormalCalculator(this);
 
         for (int x = 0; x < Width; x++) {
             for (int y = 0; y < Height; y++) {
@@ -29,18 +32,10 @@ public class World
 
     public Tile GetTileAt(int x, int y)
     {
-        if (x > Width || x < 0 || y > Height || y < 0) {
-            return null;
+        if (x >= 0 && x < Width && y >= 0 && y < Height) {
+            return tiles[x, y]; 
         }
-
-        Tile currTile = tiles[x,y];
-
-        if (currTile == null) {
-            Debug.LogError($"{this}: No tile at {x}, {y})");
-            return null;
-        }
-
-        return tiles[x, y];
+        else return null;
     }
 
     public Tile GetTileAt(Vector3 worldPoint)

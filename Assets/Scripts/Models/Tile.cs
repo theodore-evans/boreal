@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public class Tile
 {
@@ -8,15 +9,14 @@ public class Tile
     public int Y { get; }
 
     private string _type = "Blank";
+    private float _altitude = 0.5f;
+    private Vector3 _normal = Vector3.zero;
 
     public string Type
     {
-        get
-        {
-            return _type;
-        }
-        set
-        {
+        get => _type;
+
+        set {
             string oldType = _type;
             _type = value;
 
@@ -25,21 +25,25 @@ public class Tile
         }
     }
 
-    private float _altitude = 0.5f;
-
     public float Altitude
     {
-        get
-        {
-            return _altitude;
-        }
-        set
-        {
+        get => _altitude;
+        
+        set {
             float oldAltitude = _altitude;
             _altitude = value;
 
             if (cbTileChanged != null && oldAltitude != _altitude)
                 cbTileChanged(this);
+        }
+    }
+
+    public Vector3 Normal
+    {
+        get => _normal;
+
+        set {
+            _normal = value;
         }
     }
 

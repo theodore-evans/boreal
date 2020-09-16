@@ -35,7 +35,6 @@ public class Noise
                 float frequency = 1;
                 float noiseHeight = 0;
 
-
                 for (int i = 0; i < octaves; i++)
                 {
                     // calculate sample indices based on the coordinates and the scale
