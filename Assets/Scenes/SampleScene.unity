@@ -301,6 +301,93 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5642bbab0e98943df990798b3f99f028, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &186076950
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 186076951}
+  - component: {fileID: 186076955}
+  - component: {fileID: 186076954}
+  - component: {fileID: 186076953}
+  - component: {fileID: 186076952}
+  m_Layer: 0
+  m_Name: TileUIController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &186076951
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 186076950}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.4850387, y: 0.5285724, z: -260.7097}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 968541466}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &186076952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 186076950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dca9b5cce32545619298524a5e78a43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currCamera: {fileID: 519420031}
+--- !u!114 &186076953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 186076950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43b5b6155dab5495598962dd3c004164, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileCursor_prefab: {fileID: 3566383840645222526, guid: 5e68cf06dce5846cdb4f90de31afaf69,
+    type: 3}
+--- !u!114 &186076954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 186076950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87403236bf65c4dc4944c3eb05044749, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileInfo_go: {fileID: 1500784320}
+--- !u!114 &186076955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 186076950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0eb68ea486e854d0a818469fcfbd0669, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldController_go: {fileID: 954845866}
 --- !u!1 &329359157
 GameObject:
   m_ObjectHideFlags: 0
@@ -311,8 +398,8 @@ GameObject:
   m_Component:
   - component: {fileID: 329359159}
   - component: {fileID: 329359158}
-  - component: {fileID: 329359160}
   - component: {fileID: 329359161}
+  - component: {fileID: 329359160}
   m_Layer: 0
   m_Name: PathfindingController
   m_TagString: GameController
@@ -332,10 +419,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64ae1c2ecb03b4bf594286cd020ae548, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawGridGizmos: 0
-  worldController_go: {fileID: 0}
-  tileGOController_go: {fileID: 0}
-  nodeRadius: 0
+  autoUpdate: 1
+  drawGridGizmos: 1
+  worldController_go: {fileID: 954845866}
+  tileGOController_go: {fileID: 1975108013}
+  nodeRadius: 0.5
 --- !u!4 &329359159
 Transform:
   m_ObjectHideFlags: 0
@@ -359,11 +447,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 329359157}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b28cbe1ec69d410ea1ecf8362f97b1c, type: 3}
+  m_Script: {fileID: 11500000, guid: 530fc0288f00642e4863bcf23b5a6330, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nodeRadius: 0.25
-  autoUpdate: 1
 --- !u!114 &329359161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -373,9 +459,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 329359157}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 530fc0288f00642e4863bcf23b5a6330, type: 3}
+  m_Script: {fileID: 11500000, guid: 2c4578c723906451da56d6d06966b4cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unwalkableMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &434552291
 GameObject:
   m_ObjectHideFlags: 0
@@ -862,6 +951,7 @@ GameObject:
   - component: {fileID: 954845868}
   - component: {fileID: 954845867}
   - component: {fileID: 954845869}
+  - component: {fileID: 954845871}
   m_Layer: 0
   m_Name: WorldController
   m_TagString: GameController
@@ -925,6 +1015,18 @@ MonoBehaviour:
     height: 0.6
   - name: Grass
     height: 1
+--- !u!114 &954845871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 954845866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 389704e085b744aba9a4a7caf381c0dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &968541465
 GameObject:
   m_ObjectHideFlags: 0
@@ -956,6 +1058,7 @@ Transform:
   - {fileID: 106829201}
   - {fileID: 329359159}
   - {fileID: 1975108014}
+  - {fileID: 186076951}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1234,8 +1337,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldController_go: {fileID: 954845866}
-  tileCursor_go: {fileID: 771880239}
-  tileInfo_go: {fileID: 1500784320}
 --- !u!114 &1459018673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1262,7 +1363,7 @@ GameObject:
   - component: {fileID: 1500784322}
   m_Layer: 5
   m_Name: TileInfo
-  m_TagString: Untagged
+  m_TagString: TileUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1608,8 +1709,8 @@ GameObject:
   - component: {fileID: 1975108014}
   - component: {fileID: 1975108017}
   - component: {fileID: 1975108015}
-  - component: {fileID: 1975108018}
   - component: {fileID: 1975108016}
+  - component: {fileID: 1975108018}
   m_Layer: 0
   m_Name: TileGameObjectController
   m_TagString: GameController

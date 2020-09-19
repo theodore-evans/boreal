@@ -1,12 +1,9 @@
 using System;
 using UnityEngine;
 
-public class Tile
+public class Tile : AbstractNode
 {
     Action<Tile> cbTileChanged;
-
-    public int X { get; }
-    public int Y { get; }
 
     private string _type = "Blank";
     private float _altitude = 0.5f;
@@ -47,11 +44,10 @@ public class Tile
         }
     }
 
-    public Tile(int x, int y)
+    public Tile(int x, int y) : base(x, y)
     {
-        X = x;
-        Y = y;
     }
+ 
 
     public void RegisterTileChangedCallback(Action<Tile> callback)
     {

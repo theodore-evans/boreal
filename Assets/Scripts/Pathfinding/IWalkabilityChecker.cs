@@ -2,5 +2,5 @@
 
 public interface IWalkabilityChecker
 {
-    bool IsWalkable(Vector3 worldPoint, float nodeRadius);
+    bool IsWalkable(Vector3 worldPoint, float radius);
 }
