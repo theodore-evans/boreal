@@ -32,16 +32,17 @@ public class SpaceGrid<T> where T : AbstractNode
 
     public List<T> GetNeighbours(int x, int y)
     {
-        return GetNeighbours(x, y, (maskX, maskY) => !(maskX == 0 && maskY == 0));
+        // 8-neighbourhood excluding center node
+        return GetNeighbours(x, y, (maskX, maskY) => (maskX == 0 && maskY == 0));
     }
 
-    public List<T> GetNeighbours(int x, int y, Func<int, int, bool> NodeMask)
+    public List<T> GetNeighbours(int x, int y, Func<int, int, bool> NeighboursToExclude)
     {
         List<T> neighbours = new List<T>();
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
 
-                if (NodeMask(dx, dy)) {
+                if (NeighboursToExclude(dx, dy) == false) {
                     int checkX = x + dx;
                     int checkY = y + dy;
 
