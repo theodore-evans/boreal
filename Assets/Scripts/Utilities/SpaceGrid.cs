@@ -13,7 +13,7 @@ public class SpaceGrid<T> where T : AbstractNode
     public int GridSizeY { get; }
     public int MaxSize { get => GridSizeX * GridSizeY; }
 
-    public T[,] Nodes { get; protected set; }
+    public T[] Nodes { get; protected set; }
 
     bool IsInBounds(int x, int y) => (x >= 0 && x < GridSizeX && y >= 0 && y < GridSizeY);
 
@@ -27,7 +27,7 @@ public class SpaceGrid<T> where T : AbstractNode
         GridSizeX = Mathf.FloorToInt(width / nodeSpacing);
         GridSizeY = Mathf.FloorToInt(height / nodeSpacing);
 
-        Nodes = new T[GridSizeX, GridSizeY];
+        Nodes = new T[GridSizeX * GridSizeY];
     }
 
     public List<T> GetNeighbours(int x, int y)
@@ -69,9 +69,14 @@ public class SpaceGrid<T> where T : AbstractNode
     public T GetNodeAt(int x, int y)
     {
         if (IsInBounds(x, y)) {
-            return Nodes[x, y];
+            return Nodes[y * GridSizeX + x]; //TODO check that this works correctly
         }
         else return default;
+    }
+
+    public void SetNodeAt(int x, int y, T newNode)
+    {
+        Nodes[y * GridSizeX + x] = newNode;
     }
 
     public Vector3 GetNodePosition(int x, int y)
@@ -95,7 +100,7 @@ public class SpaceGrid<T> where T : AbstractNode
 
         for (int x = bottomLeftNode.X; x < topRightNode.X; x++) {
             for (int y = bottomLeftNode.Y; y < topRightNode.Y; y++) {
-                nodesInsideRect.Add(Nodes[x, y]);
+                nodesInsideRect.Add(GetNodeAt(x,y));
             }
         }
 
