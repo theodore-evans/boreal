@@ -10,7 +10,6 @@ public class WorldController : MonoBehaviour
     [SerializeField] private int width = 1;
     [SerializeField] private int height = 1;
     [SerializeField] GameObject tileGOController_go = null;
-    //[SerializeField] GameObject weatherController_go = null;
 
     private ITerrainGenerator terrainGen;
     private INormalCalculator normalCalculator;
@@ -53,7 +52,7 @@ public class WorldController : MonoBehaviour
 
     void OnTileChanged(Tile t) // TODO implement update-based callback caching
     {
-        //cbWorldChanged?.Invoke(t);
+        cbWorldChanged?.Invoke(t);
     }
 
     public void RegisterWorldChangedCallback(Action<Tile> callback)

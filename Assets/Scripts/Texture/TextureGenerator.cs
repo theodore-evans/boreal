@@ -5,14 +5,14 @@ using System.Collections.Generic;
 public static class TextureGenerator
 {
 
-	public static Texture2D TextureFromColourMap(Color[] colourMap, int width, int height)
+	public static Texture2D TextureFromColourMap(Color32[] colourMap, int width, int height)
 	{
         Texture2D texture = new Texture2D(width, height) {
-            filterMode = FilterMode.Point,
-            wrapMode = TextureWrapMode.Clamp
+            filterMode = FilterMode.Bilinear,
+            wrapMode = TextureWrapMode.Mirror
 
         };
-        texture.SetPixels(colourMap);
+        texture.SetPixels32(colourMap);
 		texture.Apply();
 		return texture;
 	}
@@ -22,22 +22,22 @@ public static class TextureGenerator
 		int width = heightMap.GetLength(0);
 		int height = heightMap.GetLength(1);
 
-		Color[] colourMap = new Color[width * height];
+		Color32[] colourMap = new Color32[width * height];
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				colourMap[y * width + x] = Color.Lerp(Color.black, Color.white, heightMap[x, y]);
+				colourMap[y * width + x] = Color32.Lerp(Color.black, Color.white, heightMap[x, y]);
 			}
 		}
 
 		return TextureFromColourMap(colourMap, width, height);
 	}
 
-	public static Texture2D TextureFromWorldData(SpaceGrid<Tile> world, Color[] tileColours)
+	public static Texture2D TextureFromWorldData(SpaceGrid<Tile> world, Color32[] tileColours)
 	{
 		int width = world.GridSizeX;
 		int height = world.GridSizeY;
 
-		Color[] colourMap = new Color[width * height];
+		Color32[] colourMap = new Color32[width * height];
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				Color tileColour = tileColours[(int)world.GetNodeAt(x, y).TypeId];

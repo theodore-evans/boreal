@@ -6,13 +6,13 @@ public class PerlinTerrainGen : MonoBehaviour, ITerrainGenerator
     private SpaceGrid<Tile> _world;
 
     //hack
-    private Color[] tileColours = new Color[] {
+    private Color32[] tileColours = new Color32[] {
         Color.white,  //Blank
         Color.blue,   //Water
         Color.red,   //Soil
         Color.green   //Grass
     };
-
+    // full of hacks!
     public bool autoUpdate;
     //TODO pack up in NoiseData scriptable object - https://www.youtube.com/watch?v=2IZ-99ueB4A
     [SerializeField] int seed = 0;
@@ -35,7 +35,7 @@ public class PerlinTerrainGen : MonoBehaviour, ITerrainGenerator
     public void Initialise(WorldController wc)
     {
         _world = wc.world;
-        terrainMesh = MeshGenerator.GenerateTerrainMesh(_world.GridSizeX + 1, _world.GridSizeY + 1);
+        terrainMesh = MeshGenerator.GenerateTerrainMesh(_world.GridSizeX, _world.GridSizeY);
     }
 
     public void Generate()

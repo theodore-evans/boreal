@@ -36,7 +36,7 @@ public class Tile : AbstractNode, ISurface
             string oldType = _type;
             _type = value;
 
-            //if (oldType != _type) cbTileChanged?.Invoke(this);
+            if (oldType != _type) cbTileChanged?.Invoke(this);
         }
     }
 
@@ -49,7 +49,7 @@ public class Tile : AbstractNode, ISurface
             if (_waterDepth > 0.01) _type = "Water"; //TODO hack implement more sophisticated water logic
             else _type = "Soil";
 
-            //if (!Fast.Approximately(oldDepth,_waterDepth, 0.0001f)) cbTileChanged?.Invoke(this);
+            if (!Fast.Approximately(oldDepth, _waterDepth, 0.0001f)) cbTileChanged?.Invoke(this);
         }
     }
 
@@ -66,7 +66,7 @@ public class Tile : AbstractNode, ISurface
             float oldAltitude = _altitude;
             _altitude = value;
 
-            //if (!Fast.Approximately(oldAltitude, _altitude, 0.025f)) cbTileChanged?.Invoke(this);
+            if (!Fast.Approximately(oldAltitude, _altitude, 0.025f)) cbTileChanged?.Invoke(this);
         }
     }
 

@@ -71,7 +71,7 @@ public class SimulateDroplets : MonoBehaviour
                 if (currTile != null) {
                     Tile lastTile = (Tile)droplet.lastSurface;
                     droplet.UpdateMovement(currTile, Time.fixedDeltaTime, friction, gravity);
-                    ErodeSurface(droplet, currTile, lastTile);
+                    AccumulateErosion(droplet, currTile, lastTile);
 
                     if (currTile.Type == "Water") DropWater(droplet);
                 }
@@ -93,7 +93,7 @@ public class SimulateDroplets : MonoBehaviour
         }
     }
 
-    void ErodeSurface(RollingDroplet droplet, Tile currTile, Tile lastTile)
+    void AccumulateErosion(RollingDroplet droplet, Tile currTile, Tile lastTile)
     {
         float currErosion = droplet.currErosion;
         droplet.currErosion = currErosion + erosionStrength * droplet.velocity.magnitude;
