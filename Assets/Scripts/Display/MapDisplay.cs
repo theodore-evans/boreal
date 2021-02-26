@@ -17,6 +17,7 @@ public class MapDisplay : MonoBehaviour
 
     [SerializeField] WorldController wc = null;
     SpaceGrid<Tile> _world;
+    float verticalScale;
 
     MeshGenerator meshGenerator;
     TextureGenerator textureGenerator;
@@ -37,6 +38,18 @@ public class MapDisplay : MonoBehaviour
         }
     }
 
+    private struct MapTexture
+    {
+        public Texture controlTexture;
+        public Texture normalTexture;
+
+        public MapTexture(Texture controlTexture, Texture normalTexture)
+        {
+            this.controlTexture = controlTexture;
+            this.normalTexture = normalTexture;
+        }
+    }
+
     private void Awake()
     {
         wc.RegisterWorldCreatedCallback(Initialize);
@@ -53,9 +66,10 @@ public class MapDisplay : MonoBehaviour
 
         width = wc.WorldWidth;
         height = wc.WorldHeight;
-        
+        verticalScale = wc.WorldVerticalScale;
         mapMesh = CreateMapMesh(0, 0, width, height);
         meshFilter.sharedMesh = mapMesh.mesh;
+        //meshRenderer.material.EnableKeyword("_NORMALMAP");
     }
 
     bool TileIsWithinMeshBounds(Tile tile, MapMesh mesh)
@@ -67,15 +81,18 @@ public class MapDisplay : MonoBehaviour
     {
         foreach (Tile changedTile in changedTiles) {
             if (TileIsWithinMeshBounds(changedTile, mapMesh)) {
-                UpdateMeshTexture(CreateMapTexture());
+                UpdateMeshTexture();
                 break;
             }
         }   
     }
 
-    public void UpdateMeshTexture(Texture2D texture)
+    public void UpdateMeshTexture()
 	{
-		meshRenderer.material.SetTexture("_Control", texture); //TODO mesh rendering for individual meshes
+        MapTexture mapTexture = CreateMapTexture();
+
+        meshRenderer.material.SetTexture("_Control", mapTexture.controlTexture); //TODO mesh rendering for individual meshes
+        meshRenderer.material.SetTexture("_BumpMap", mapTexture.normalTexture);
 	}
 
     private MapMesh CreateMapMesh(int bottomLeftX, int bottomLeftY, int width, int height)
@@ -89,16 +106,26 @@ public class MapDisplay : MonoBehaviour
         return new MapMesh(mesh, bounds);
     }
 
-    public Texture2D CreateMapTexture()
+    private MapTexture CreateMapTexture()
     {
         Color32[] colourMap = new Color32[width * height];
+        Color32[] normalMap = new Color32[width * height];
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                Color tileColour = tileColours[(int)_world.GetNodeAt(x, y).TypeId];
+                Tile t = _world.GetNodeAt(x, y);
+                Color tileColour = tileColours[(int)t.TypeId];
+                tileColour.a = t.Altitude;
                 colourMap[y * width + x] = tileColour;
+
+                Vector3 tangentNormal = Quaternion.Euler(0, 0, 0) * t.Normal;
+                Color tileNormal = new Color(tangentNormal.x, tangentNormal.y, tangentNormal.z);
+                normalMap[y * width + x] = tileNormal;
             }
         }
 
-        return textureGenerator.CreateTextureFromColourMap(colourMap, width, height);
+        Texture controlTexture = textureGenerator.CreateTextureFromColourMap(colourMap, width, height);
+        Texture normalTexture = textureGenerator.CreateTextureFromColourMap(normalMap, width, height);
+
+        return new MapTexture(controlTexture, normalTexture);
     }
 }

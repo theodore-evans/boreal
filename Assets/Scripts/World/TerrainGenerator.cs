@@ -11,6 +11,8 @@ public class TerrainGenerator : MonoBehaviour
 
     IHeightMapGenerator heightmapGenerator;
 
+    public float VerticalScale { get; private set; }
+
     private void Awake()
     {
         heightmapGenerator = GetComponent<IHeightMapGenerator>();
@@ -35,6 +37,7 @@ public class TerrainGenerator : MonoBehaviour
             int height = _world.GridSizeY;
 
             float[,] reliefMap = heightmapGenerator.GenerateHeightMap(seed, width, height);
+            VerticalScale = heightmapGenerator.VerticalScale;
 
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
@@ -42,9 +45,17 @@ public class TerrainGenerator : MonoBehaviour
                     Tile t = _world.GetNodeAt(x, y);
                     t.Altitude = reliefMap[x, y];
 
-                    for (int i = 0; i < regions.Length; i++) {
+                    //hack for water level
 
-                        if (t.Altitude <= regions[i].height * heightmapGenerator.VerticalScale) {
+                    float waterLevel = regions[0].height;
+                    if (t.Altitude <= waterLevel) {
+                        t.Type = "Water";
+                        t.WaterDepth = waterLevel - t.Altitude;
+                    }
+
+                    for (int i = 1; i < regions.Length; i++) {
+
+                        if (t.Altitude <= regions[i].height * VerticalScale) {
                             t.Type = regions[i].name;
                             break;
                         }

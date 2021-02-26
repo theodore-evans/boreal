@@ -2,8 +2,9 @@
 
 public class PerlinHeightMapGenerator : MonoBehaviour, IHeightMapGenerator
 {
-    public float VerticalScale { get; protected set; } = 1;
+    public float VerticalScale { get { return verticalScale; } }
 
+    [SerializeField] [Range(0, 50)] float verticalScale = 1;
     [SerializeField] float scale = 19;
     [SerializeField] int octaves = 4;
     [SerializeField] [Range(0, 1)] float persistence = 0.5f;

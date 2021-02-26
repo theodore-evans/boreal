@@ -12,9 +12,8 @@
  
 Shader "Custom/SplatLayers" {
    Properties {
-     // Splat Map Control Texture
-     _Control ("Control (RGBA)", 2D) = "red" {}
-     // Textures
+     [NoScaleOffset] _Control ("Control texture", 2D) = "white" {}
+     [NoScaleOffset] _BumpMap ("Normal texture", 2D) = "bump" {}
      _Splat3 ("Layer 3 (A)", 2D) = "white" {}
      _Splat2 ("Layer 2 (B)", 2D) = "white" {}
      _Splat1 ("Layer 1 (G)", 2D) = "white" {}
@@ -42,9 +41,12 @@ Shader "Custom/SplatLayers" {
        float2 uv_Splat1 : TEXCOORD2;
        float2 uv_Splat2 : TEXCOORD3;
        float2 uv_Splat3 : TEXCOORD4;
+       float2 uv_BumpMap;
+       float3 worldNormal;
+       INTERNAL_DATA
      };
  
-     sampler2D _Control;
+     sampler2D _Control, _BumpMap;
      sampler2D _Splat0,_Splat1,_Splat2,_Splat3;
  
      void surf (Input IN, inout SurfaceOutput o) {
@@ -53,8 +55,8 @@ Shader "Custom/SplatLayers" {
         col  = splat_control.r * tex2D (_Splat0, IN.uv_Splat0).rgb;
         col += splat_control.g * tex2D (_Splat1, IN.uv_Splat1).rgb;
         col += splat_control.b * tex2D (_Splat2, IN.uv_Splat2).rgb;
-        //col += splat_control.a * tex2D (_Splat3, IN.uv_Splat3).rgb;
         o.Albedo = col;
+        o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap)*2 -1);
      }
      ENDCG
    }

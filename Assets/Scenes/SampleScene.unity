@@ -150,13 +150,13 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
-  m_Range: 10
+  m_Intensity: 2.5
+  m_Range: 200
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -189,7 +189,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 2
+  m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -207,7 +207,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 40690878}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 500, y: 500, z: -250}
+  m_LocalPosition: {x: 40, y: 40, z: 40}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -332,7 +332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98e9d1a50be48459bac044cc15e865f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flowRate: 0.21
+  flowRate: 0.347
   minHead: -0.005
 --- !u!4 &149497009
 Transform:
@@ -375,11 +375,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravity: 50
   friction: 0.03
-  numberOfParticles: 500
-  erosionStrength: 0.26
-  maxErosion: 0.53
+  numberOfParticles: 46
+  erosionStrength: 0.199
+  maxErosion: 0.19
   depositionLimit: 0.13
-  waterPerDroplet: 0.23
+  waterPerDroplet: 0.526
   tracePaths: 1
 --- !u!1 &186076950
 GameObject:
@@ -1101,6 +1101,7 @@ GameObject:
   - component: {fileID: 954845869}
   - component: {fileID: 954845871}
   - component: {fileID: 954845870}
+  - component: {fileID: 954845872}
   m_Layer: 0
   m_Name: WorldController
   m_TagString: GameController
@@ -1120,8 +1121,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 436fe6c9511f4471aa15ed3535b35f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 200
-  height: 200
+  width: 64
+  height: 64
+  maxCallbacksPerFrame: 100
 --- !u!4 &954845868
 Transform:
   m_ObjectHideFlags: 0
@@ -1148,11 +1150,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e5543d2b4c6445ee9d0c5e430aac072, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoUpdate: 0
+  autoUpdate: 1
   seed: 0
   regions:
   - name: Water
-    height: 0.42
+    height: 0
   - name: Soil
     height: 0.59
   - name: Grass
@@ -1181,11 +1183,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c10c1c95cca7443a2bf93ef90b7c4930, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  verticalScale: 3.15
   scale: 19
   octaves: 4
   persistence: 0.5
   lacunarity: 2.5
   offset: {x: 0, y: 0}
+--- !u!114 &954845872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 954845866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea78b9fe0ca3d4ea286dd68786bee5c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &968541465
 GameObject:
   m_ObjectHideFlags: 0

@@ -23,17 +23,16 @@ public class NormalCalculatorMoore : MonoBehaviour, INormalCalculator
     public void UpdateNormals(HashSet<Tile> changedTiles)
     {
         foreach (Tile tile in changedTiles) {
-            CalculateNormal(tile);
+            tile.Normal = CalculateNormal(tile);
             foreach (Tile neighbour in _world.GetNeighbours(tile.X, tile.Y)) {
                 if (!changedTiles.Contains(neighbour)) {
-                    CalculateNormal(neighbour);
+                    neighbour.Normal = CalculateNormal(neighbour);
                 }
             }
         }
-        
     }
 
-    private void CalculateNormal(Tile tile)
+    private Vector3 CalculateNormal(Tile tile)
     {
         int x = tile.X;
         int y = tile.Y;
@@ -50,8 +49,8 @@ public class NormalCalculatorMoore : MonoBehaviour, INormalCalculator
 
         float WeightedAvg(float a, float b, float c) => (a + 1.4f * b + c) / 3.4f;
 
-        Vector3 normal = new Vector3(WeightedAvg(NW, W, SW) - WeightedAvg(NE, E, SE), WeightedAvg(SW, S, SE) - WeightedAvg(NW, N, NE), -2);
-        tile.Normal = Vector3.Normalize(normal);
+        Vector3 normal = new Vector3(WeightedAvg(NW, W, SW) - WeightedAvg(NE, E, SE), WeightedAvg(SW, S, SE) - WeightedAvg(NW, N, NE), 2);
+        return Vector3.Normalize(normal);
     }
 
     private float GetTileAltitudeAt(int x, int y)
