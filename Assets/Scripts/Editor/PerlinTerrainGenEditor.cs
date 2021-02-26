@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(PerlinTerrainGen))]
-public class PerlinTerrainGenEditor : Editor
+[CustomEditor(typeof(PerlinHeightMapGenerator))]
+public class PerlinHeightMapGeneratorEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        PerlinTerrainGen terrainGen = (PerlinTerrainGen)target;
+        PerlinHeightMapGenerator heightMapGenerator = (PerlinHeightMapGenerator)target;
+        TerrainGenerator terrainGen = heightMapGenerator.terrainGenerator;
 
         if (DrawDefaultInspector()) {
             if (terrainGen.autoUpdate) {

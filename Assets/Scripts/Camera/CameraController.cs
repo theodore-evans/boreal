@@ -23,7 +23,7 @@ public class CameraController : MonoBehaviour
 
         Vector2 margin = new Vector2(1, 1);
         Vector2 cameraMinExtent = margin;
-        Vector2 cameraMaxExtent = new Vector2(wc.Width, wc.Height) - margin;
+        Vector2 cameraMaxExtent = new Vector2(wc.WorldWidth, wc.WorldHeight) - margin;
 
         constrainedCamera = new ConstrainedCamera(currCamera, cameraMinExtent, cameraMaxExtent, minScale, maxScale) {
             Position = new Vector3(cameraOrigin_go.transform.position.x,

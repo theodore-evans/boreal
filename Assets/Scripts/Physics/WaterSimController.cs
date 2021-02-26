@@ -5,21 +5,28 @@ public class WaterSimController : MonoBehaviour
 {
     [SerializeField] WorldController wc = null;
 
-    internal SpaceGrid<Tile> world;
+    internal SpaceGrid<Tile> _world;
     SimulateDroplets simulateDroplets;
     SimulateWaterFlow simulateWaterFlow;
 
-    void Start()
+    private void Awake()
     {
-        world = wc.world;
         simulateDroplets = GetComponent<SimulateDroplets>();
         simulateWaterFlow = GetComponent<SimulateWaterFlow>();
+
+        wc.RegisterWorldCreatedCallback(Initialize);
+    }
+
+    public void Initialize(SpaceGrid<Tile> world)
+    {
+        _world = world;
+        
     }
 
     public void StartSimulation()
     {
-        simulateDroplets.StartSimulation();
-        simulateWaterFlow.StartSimulation();
+        simulateDroplets.StartSimulation(_world);
+        simulateWaterFlow.StartSimulation(_world);
     }
 
     public void StopSimulation()
@@ -35,9 +42,9 @@ public class WaterSimController : MonoBehaviour
 
     public void ResetWater()
     {
-        for (int x = 0; x < world.GridSizeX; x++) {
-            for (int y = 0; y < world.GridSizeY; y++) {
-                world.GetNodeAt(x, y).WaterDepth = 0;
+        for (int x = 0; x < _world.GridSizeX; x++) {
+            for (int y = 0; y < _world.GridSizeY; y++) {
+                _world.GetNodeAt(x, y).WaterDepth = 0;
             }
 
         }

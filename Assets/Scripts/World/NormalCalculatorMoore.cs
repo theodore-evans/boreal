@@ -4,19 +4,33 @@ using UnityEngine;
 
 public class NormalCalculatorMoore : MonoBehaviour, INormalCalculator
 {
-    private SpaceGrid<Tile> world;
 
-    public void Initialise(WorldController wc)
+    WorldController wc;
+    private SpaceGrid<Tile> _world;
+
+    private void Awake()
     {
-        wc.RegisterWorldChangedCallback(UpdateNormals);
-        world = wc.world;
+        wc = GetComponent<WorldController>();
+        wc.RegisterWorldCreatedCallback(Initialise);
     }
 
-    public void UpdateNormals(Tile tile)
+    public void Initialise(SpaceGrid<Tile> world)
     {
-        foreach (Tile neighbour in world.GetNeighbours(tile.X, tile.Y)) {
-            CalculateNormal(neighbour);
+        wc.RegisterWorldChangedCallback(UpdateNormals);
+        _world = world;
+    }
+
+    public void UpdateNormals(HashSet<Tile> changedTiles)
+    {
+        foreach (Tile tile in changedTiles) {
+            CalculateNormal(tile);
+            foreach (Tile neighbour in _world.GetNeighbours(tile.X, tile.Y)) {
+                if (!changedTiles.Contains(neighbour)) {
+                    CalculateNormal(neighbour);
+                }
+            }
         }
+        
     }
 
     private void CalculateNormal(Tile tile)
@@ -40,34 +54,17 @@ public class NormalCalculatorMoore : MonoBehaviour, INormalCalculator
         tile.Normal = Vector3.Normalize(normal);
     }
 
-    //private void CalculateNormal(Tile tile)
-    //{
-    //    int x = tile.X;
-    //    int y = tile.Y;
-
-    //    float E = GetTileAltitudeAt(x + 1, y);
-    //    float W = GetTileAltitudeAt(x - 1, y);
-    //    float N = GetTileAltitudeAt(x, y + 1);
-    //    float S = GetTileAltitudeAt(x, y - 1);
-
-    //    Vector3 normal = new Vector3(W - E, S - N, -2);
-    //    tile.Normal = Vector3.Normalize(normal);
-    //}
-
     private float GetTileAltitudeAt(int x, int y)
     {
-        Tile t = world.GetNodeAt(x, y);
+        Tile t = _world.GetNodeAt(x, y);
 
         if (t != null) {
             return t.Altitude;
         }
 
-        // for tiles 'off the edge' of the map, the average height of on-map 8-neighbours is used
-        // still leads to plateauing at the edges, mitigating this and other edge effects by adding a 1-tile margin to the world
-
         else {
             float sum = 0f;
-            List<Tile> neighbours = world.GetNeighbours(x, y);
+            List<Tile> neighbours = _world.GetNeighbours(x, y);
 
             foreach (Tile neighbour in neighbours) {
                 sum += neighbour.Altitude;

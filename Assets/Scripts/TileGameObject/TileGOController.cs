@@ -51,15 +51,17 @@ public class TileGOController : MonoBehaviour
         return null;
     }
 
-    public void OnTileChanged(Tile tile_data) 
+    public void OnTileChanged(HashSet<Tile> changedTiles) 
     {
-        GameObject tile_go = GetTileGameObject(tile_data);
+        foreach (Tile tile in changedTiles) {
+            GameObject tile_go = GetTileGameObject(tile);
 
-        foreach (ITileGOUpdateBehaviour tileUpdater in tileUpdateBehaviours) {
-            tileUpdater.UpdateTile(tile_go, tile_data);
+            foreach (ITileGOUpdateBehaviour tileUpdater in tileUpdateBehaviours) {
+                tileUpdater.UpdateTile(tile_go, tile);
+            }
+
+            cbTileGameObjectChanged?.Invoke(tile_go);
         }
-
-        cbTileGameObjectChanged?.Invoke(tile_go);
     }
 
     public void RegisterTileGameObjectChangedCallback(Action<GameObject> callback)

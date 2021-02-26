@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SimulateDroplets : MonoBehaviour
 {
-    SpaceGrid<Tile> world;
+    SpaceGrid<Tile> _world;
 
     [SerializeField] [Range(0, 1000)] float gravity = 10f;
     [SerializeField] [Range(0.001f, 0.2f)] float friction = 0.02f;
@@ -21,15 +21,15 @@ public class SimulateDroplets : MonoBehaviour
     internal List<RollingDroplet> droplets;
     SimulateWaterFlow simulateFlow;
 
-    public void StartSimulation()
+    public void StartSimulation(SpaceGrid<Tile> world)
     {
-        world = GetComponent<WaterSimController>().world;
+        _world = world;
         simulateFlow = GetComponent<SimulateWaterFlow>();
 
         droplets = new List<RollingDroplet>();
 
         for (int i = 0; i < numberOfParticles; i++) {
-            Vector3 randomPosition = new Vector3(Random.Range(0, world.GridSizeX), Random.Range(0, world.GridSizeY), -0.1f);
+            Vector3 randomPosition = new Vector3(Random.Range(0, _world.GridSizeX), Random.Range(0, _world.GridSizeY), -0.1f);
             droplets.Add(new RollingDroplet(randomPosition, Vector3.zero));
         }
 
@@ -66,7 +66,7 @@ public class SimulateDroplets : MonoBehaviour
         if (simulate) {
             foreach (RollingDroplet droplet in droplets.ToList()) {
 
-                Tile currTile = world.GetNodeAt(droplet.position);
+                Tile currTile = _world.GetNodeAt(droplet.position);
 
                 if (currTile != null) {
                     Tile lastTile = (Tile)droplet.lastSurface;
@@ -84,7 +84,7 @@ public class SimulateDroplets : MonoBehaviour
 
     void DropWater(RollingDroplet droplet)
     {
-        Tile endTile = world.GetNodeAt(droplet.position);
+        Tile endTile = _world.GetNodeAt(droplet.position);
 
         if (endTile != null) {
             endTile.WaterDepth += waterPerDroplet;

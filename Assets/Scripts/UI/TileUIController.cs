@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class TileUIController : MonoBehaviour
 {
-    [SerializeField] GameObject worldController_go = null;
+    [SerializeField] WorldController wc = null;
     
     GameObject[] UI_gos;
 
@@ -14,23 +14,26 @@ public class TileUIController : MonoBehaviour
 
     Tile oldTileUnderCursor = null;
 
-    SpaceGrid<Tile> world;
+    SpaceGrid<Tile> _world;
 
-    private void Start()
+    private void Awake()
     {
+        wc.RegisterWorldCreatedCallback(Initialize);
+
         cursor = GetComponent<ICursorProvider>();
         updateBehaviours = GetComponents<ITileUIUpdateBehaviour>();
-
-        world = worldController_go.GetComponent<WorldController>().world;
-
         UI_gos = GameObject.FindGameObjectsWithTag("TileUI");
+    }
+
+    public void Initialize(SpaceGrid<Tile> world)
+    {
+        _world = world;
     }
 
     void Update()
     {
-        //FIXME this check is not working, cursor is always being considered to be in frame
         if (!cursor.IsPointerOutOfFrame) {
-            Tile t = world.GetNodeAt(cursor.GetPosition());
+            Tile t = _world.GetNodeAt(cursor.GetPosition());
 
             if (t != null && t != oldTileUnderCursor) {
                 foreach (ITileUIUpdateBehaviour updateBehaviour in updateBehaviours) {

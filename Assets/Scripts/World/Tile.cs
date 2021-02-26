@@ -91,10 +91,7 @@ public class Tile : AbstractNode, ISurface
         get; protected set;
     }
 
-    public Tile(int x, int y) : base(x, y)
-    {
-    }
- 
+    public Tile(int x, int y) : base(x, y) { }
 
     public void RegisterTileChangedCallback(Action<Tile> callback)
     {

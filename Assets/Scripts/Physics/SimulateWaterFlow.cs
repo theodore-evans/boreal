@@ -5,7 +5,7 @@ using System.Linq;
 
 public class SimulateWaterFlow : MonoBehaviour
 {
-    SpaceGrid<Tile> world;
+    SpaceGrid<Tile> _world;
     internal List<Tile> openSet;
 
     bool simulate = false;
@@ -19,9 +19,9 @@ public class SimulateWaterFlow : MonoBehaviour
         openSet = new List<Tile>();
     }
 
-    public void StartSimulation()
+    public void StartSimulation(SpaceGrid<Tile> world)
     {
-        world = GetComponent<WaterSimController>().world;
+        _world = world;
         simulate = true;
     }
 
@@ -50,7 +50,7 @@ public class SimulateWaterFlow : MonoBehaviour
 
         if (tile.WaterDepth > 0) {
 
-            List<Tile> neighbours = world.GetNeighbours(tile.X, tile.Y).OrderBy(o => o.WaterLevel).ToList();
+            List<Tile> neighbours = _world.GetNeighbours(tile.X, tile.Y).OrderBy(o => o.WaterLevel).ToList();
 
             foreach (Tile neighbour in neighbours) {
 

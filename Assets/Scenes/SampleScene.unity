@@ -467,7 +467,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eb68ea486e854d0a818469fcfbd0669, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldController_go: {fileID: 954845866}
+  wc: {fileID: 954845867}
 --- !u!1 &329359157
 GameObject:
   m_ObjectHideFlags: 0
@@ -913,7 +913,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meshFilter: {fileID: 1974246565}
   meshRenderer: {fileID: 1974246564}
-  meshShader: {fileID: 4800000, guid: 7cf8856b4de774b209021c8728c48284, type: 3}
+  tileColours:
+  - serializedVersion: 2
+    rgba: 4294967295
+  - serializedVersion: 2
+    rgba: 4294901760
+  - serializedVersion: 2
+    rgba: 4278190335
+  - serializedVersion: 2
+    rgba: 4278255360
+  wc: {fileID: 954845867}
 --- !u!4 &766066292
 Transform:
   m_ObjectHideFlags: 0
@@ -921,11 +930,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 766066290}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 48.50318, y: 54.524807, z: -9.057616}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 968541466}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &771880239
@@ -1090,6 +1099,7 @@ GameObject:
   - component: {fileID: 954845868}
   - component: {fileID: 954845867}
   - component: {fileID: 954845869}
+  - component: {fileID: 954845871}
   - component: {fileID: 954845870}
   m_Layer: 0
   m_Name: WorldController
@@ -1112,7 +1122,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 200
   height: 200
-  tileGOController_go: {fileID: 1975108013}
 --- !u!4 &954845868
 Transform:
   m_ObjectHideFlags: 0
@@ -1136,25 +1145,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 954845866}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8372de2b7d114d0183e92154ddf7c09, type: 3}
+  m_Script: {fileID: 11500000, guid: 8e5543d2b4c6445ee9d0c5e430aac072, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoUpdate: 1
+  autoUpdate: 0
   seed: 0
-  verticalScale: 6
-  scale: 39.81
-  octaves: 4
-  persistence: 0.58
-  lacunarity: 1.9
-  offset: {x: 0, y: 0}
   regions:
   - name: Water
-    height: 0.38
+    height: 0.42
   - name: Soil
-    height: 0.57
+    height: 0.59
   - name: Grass
     height: 1
-  display: {fileID: 766066291}
 --- !u!114 &954845870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1167,6 +1169,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ceaa81d69993147c3b1353fa070843b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &954845871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 954845866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c10c1c95cca7443a2bf93ef90b7c4930, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scale: 19
+  octaves: 4
+  persistence: 0.5
+  lacunarity: 2.5
+  offset: {x: 0, y: 0}
 --- !u!1 &968541465
 GameObject:
   m_ObjectHideFlags: 0
@@ -1201,6 +1220,7 @@ Transform:
   - {fileID: 186076951}
   - {fileID: 2012098395}
   - {fileID: 149497009}
+  - {fileID: 766066292}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1478,7 +1498,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eb68ea486e854d0a818469fcfbd0669, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldController_go: {fileID: 954845866}
+  wc: {fileID: 0}
 --- !u!114 &1459018673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1823,7 +1843,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1975108013
 GameObject:

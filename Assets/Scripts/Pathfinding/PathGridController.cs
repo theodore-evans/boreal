@@ -33,8 +33,8 @@ public class PathGridController : MonoBehaviour
     {
         float margin = 0.5f - nodeRadius;
         Vector3 origin = tileGOController.transform.position + new Vector3(0.5f, 0.5f, 0);
-        float width = worldController.Width - margin;
-        float height = worldController.Height - margin;
+        float width = worldController.WorldWidth - margin;
+        float height = worldController.WorldHeight - margin;
 
         pathGrid = new SpaceGrid<PathNode>(origin, width, height, nodeRadius * 2);
 

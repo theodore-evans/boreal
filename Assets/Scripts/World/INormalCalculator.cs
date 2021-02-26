@@ -1,4 +1,4 @@
 ﻿public interface INormalCalculator
 {
-    void Initialise(WorldController wc);
+    void Initialise(SpaceGrid<Tile> world);
 }

@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public static class MeshGenerator
+public class MeshGenerator
 {
-	public static Mesh GenerateTerrainMesh(int width, int height)
+	public Mesh CreateMesh(int bottomLeftX, int bottomLeftY, int width, int height)
 	{
 		MeshData meshData = new MeshData(width, height);
 		int vertexIndex = 0;
 
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
+		for (int y = bottomLeftY; y < bottomLeftY + height; y++) {
+			for (int x = bottomLeftX; x < bottomLeftX + width; x++) {
 
 				meshData.vertices[vertexIndex] = new Vector3(x, y, 0);
 				meshData.uvs[vertexIndex] = new Vector2(x / (float)width, y / (float)height);
