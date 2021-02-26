@@ -11,7 +11,7 @@
     public int heapIndex { get; set; }
     
 
-    public PathNode(int x, int y, float radius) : base(x, y)
+    public PathNode(int x, int y, float radius) : base(x, y, radius)
     {
         Radius = radius;
         Walkable = false;

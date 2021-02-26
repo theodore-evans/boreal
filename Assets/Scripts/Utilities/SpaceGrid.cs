@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpaceGrid<T> where T : AbstractNode
+public class SpaceGrid<T> : HashSet<T> where T : AbstractNode
 {
-    // TODO: reimplement as hashset
-
     private readonly Vector3 origin;
     private readonly float nodeSpacing;
     private readonly float width;

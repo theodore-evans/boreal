@@ -5,6 +5,8 @@ public abstract class AbstractNode
 {
     public int X { get; }
     public int Y { get; }
+    public float Scale { get; }
+
     private int _hashCode;
 
     public override int GetHashCode()
@@ -22,10 +24,11 @@ public abstract class AbstractNode
         return Math.Abs(X - node.X) + Math.Abs(Y - node.Y);
     }
 
-    protected AbstractNode(int x, int y)
+    protected AbstractNode(int x, int y, float scale)
     {
         X = x;
         Y = y;
+        Scale = scale;
         _hashCode = GenerateHashCode(x, y);
     }
 

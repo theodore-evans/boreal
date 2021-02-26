@@ -14,14 +14,5 @@ public class PerlinHeightMapGeneratorEditor : Editor
                 terrainGen.Generate();
             }
         }
-
-        if (GUILayout.Button("Generate")) {
-            terrainGen.Generate();
-        }
-
-        if (GUILayout.Button("Randomize")) {
-            terrainGen.RandomizeSeed();
-            terrainGen.Generate();
-        }
     }
 }

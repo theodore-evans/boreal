@@ -33,7 +33,7 @@ public class RollingDroplet // TODO? droplet as subclass? or compositi
         lastSurface = surface;
         downhill = surface.Downhill;
         normal = surface.Normal;
-        gravity = Vector3.forward * g;
+        gravity = -Vector3.forward * g;
 
         Vector3 acc3d = Vector3.Dot(downhill, gravity) * downhill - friction * Vector3.Dot(-normal, gravity) * velocity; //
         acceleration = new Vector3(acc3d.x, acc3d.y);

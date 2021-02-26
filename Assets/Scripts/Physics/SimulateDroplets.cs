@@ -29,7 +29,7 @@ public class SimulateDroplets : MonoBehaviour
         droplets = new List<RollingDroplet>();
 
         for (int i = 0; i < numberOfParticles; i++) {
-            Vector3 randomPosition = new Vector3(Random.Range(0, _world.GridSizeX), Random.Range(0, _world.GridSizeY), -0.1f);
+            Vector3 randomPosition = new Vector3(Random.Range(0, _world.GridSizeX), Random.Range(0, _world.GridSizeY), -10f);
             droplets.Add(new RollingDroplet(randomPosition, Vector3.zero));
         }
 
@@ -40,6 +40,7 @@ public class SimulateDroplets : MonoBehaviour
     public void StopSimulation()
     {
         simulate = false;
+        droplets.Clear();
     }
 
     public void DropAllWater()
@@ -47,6 +48,7 @@ public class SimulateDroplets : MonoBehaviour
         foreach (RollingDroplet droplet in droplets.ToList()) {
             DropWater(droplet);
         }
+        droplets.Clear();
     }
 
     IEnumerator TracePath()
@@ -76,7 +78,7 @@ public class SimulateDroplets : MonoBehaviour
                     if (currTile.Type == "Water") DropWater(droplet);
                 }
                 else {
-                    DropWater(droplet);
+                    droplets.Remove(droplet);
                 }
             }
         }
@@ -128,10 +130,11 @@ public class SimulateDroplets : MonoBehaviour
 
     public void OnDrawGizmos()
     {
+        Gizmos.color = Color.white;
         if (droplets != null) {
             foreach (RollingDroplet droplet in droplets) {
 
-                Gizmos.DrawSphere(droplet.position, 0.25f);
+                Gizmos.DrawSphere(droplet.position, 0.5f);
                 if (tracePaths) {
                     for (int i = 1; i < droplet.path.Count; i++) {
                         Gizmos.DrawLine(droplet.path[i - 1], droplet.path[i]);
