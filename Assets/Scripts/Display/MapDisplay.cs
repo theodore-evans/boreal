@@ -24,108 +24,77 @@ public class MapDisplay : MonoBehaviour
 
     private int width;
     private int height;
-    private MapMesh mapMesh;
+    private Mesh mapMesh;
+    private MapTexture mapTexture;
+    private bool redrawMap;
 
-    private struct MapMesh
+    bool TileIsWithinMeshBounds(Tile tile, Mesh mesh)
     {
-        public Mesh mesh;
-        public Bounds bounds;
-
-        public MapMesh(Mesh mesh, Bounds bounds)
-        {
-            this.mesh = mesh;
-            this.bounds = bounds;
-        }
+        return true;
     }
 
     private struct MapTexture
     {
-        public Texture controlTexture;
-        public Texture normalTexture;
+        public Texture2D control;
+        public Texture2D normal;
 
-        public MapTexture(Texture controlTexture, Texture normalTexture)
+        public MapTexture(Texture2D controlTexture, Texture2D normalTexture)
         {
-            this.controlTexture = controlTexture;
-            this.normalTexture = normalTexture;
+            this.control = controlTexture;
+            this.normal = normalTexture;
         }
     }
 
     private void Awake()
     {
         wc.RegisterWorldCreatedCallback(Initialize);
+
+        meshGenerator = GetComponent<MeshGenerator>();
+        textureGenerator = GetComponent<TextureGenerator>();
     }
 
     private void Initialize(SpaceGrid<Tile> world)
     {
         _world = world;
 
-        meshGenerator = new MeshGenerator();
-        textureGenerator = new TextureGenerator(filterMode: FilterMode.Bilinear);
-
-        wc.RegisterWorldChangedCallback(UpdateMesh);
+        wc.RegisterWorldChangedCallback(UpdateMap);
 
         width = wc.WorldWidth;
         height = wc.WorldHeight;
         verticalScale = wc.WorldVerticalScale;
-        mapMesh = CreateMapMesh(0, 0, width, height);
-        meshFilter.sharedMesh = mapMesh.mesh;
-        //meshRenderer.material.EnableKeyword("_NORMALMAP");
+
+        Vector2 bottomLeftCorner = wc.Origin;
+
+        mapMesh = meshGenerator.CreateMesh(bottomLeftCorner, width, height);
+        meshFilter.sharedMesh = mapMesh;
+        mapTexture = CreateMapTexture(width, height);
+
+        meshRenderer.material.SetTexture("_Control", mapTexture.control);
+        meshRenderer.material.SetTexture("_BumpMap", mapTexture.normal);
+
     }
 
-    bool TileIsWithinMeshBounds(Tile tile, MapMesh mesh)
+    private void UpdateMap(HashSet<Tile> changedTiles)
     {
-        return true;
-    }
+        foreach (Tile t in changedTiles) {
+            Color tileControl = tileColours[(int)t.TypeId];
+            tileControl.a = t.WaterDepth / verticalScale;
+            mapTexture.control.SetPixel(t.X, t.Y, tileControl);
 
-    private void UpdateMesh(HashSet<Tile> changedTiles)
-    {
-        foreach (Tile changedTile in changedTiles) {
-            if (TileIsWithinMeshBounds(changedTile, mapMesh)) {
-                UpdateMeshTexture();
-                break;
-            }
-        }   
-    }
-
-    public void UpdateMeshTexture()
-	{
-        MapTexture mapTexture = CreateMapTexture();
-
-        meshRenderer.material.SetTexture("_Control", mapTexture.controlTexture); //TODO mesh rendering for individual meshes
-        meshRenderer.material.SetTexture("_BumpMap", mapTexture.normalTexture);
-	}
-
-    private MapMesh CreateMapMesh(int bottomLeftX, int bottomLeftY, int width, int height)
-    {
-
-        Mesh mesh = meshGenerator.CreateMesh(bottomLeftX, bottomLeftY, width, height);
-        Vector3 center = new Vector3((bottomLeftX + width) / 2, (bottomLeftY + height) / 2, 0);
-        Vector3 size = new Vector3(width, height, 0);
-        Bounds bounds = new Bounds(center, size);
-
-        return new MapMesh(mesh, bounds);
-    }
-
-    private MapTexture CreateMapTexture()
-    {
-        Color32[] colourMap = new Color32[width * height];
-        Color32[] normalMap = new Color32[width * height];
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                Tile t = _world.GetNodeAt(x, y);
-                Color tileColour = tileColours[(int)t.TypeId];
-                tileColour.a = t.Altitude;
-                colourMap[y * width + x] = tileColour;
-
-                Vector3 tangentNormal = Quaternion.Euler(0, 0, 0) * t.Normal;
-                Color tileNormal = new Color(tangentNormal.x, tangentNormal.y, tangentNormal.z);
-                normalMap[y * width + x] = tileNormal;
-            }
+            Color tileNormal = new Color(t.Normal.x, t.Normal.y, t.Normal.z);
+            mapTexture.normal.SetPixel(t.X, t.Y, tileNormal);
         }
 
-        Texture controlTexture = textureGenerator.CreateTextureFromColourMap(colourMap, width, height);
-        Texture normalTexture = textureGenerator.CreateTextureFromColourMap(normalMap, width, height);
+        mapTexture.normal.Apply();
+        mapTexture.control.Apply();
+    }
+
+    private MapTexture CreateMapTexture(int width, int height)
+    {
+        Texture2D controlTexture = textureGenerator.CreateTextureFromColourMap(width, height);
+        Texture2D normalTexture = textureGenerator.CreateTextureFromColourMap(width, height);
 
         return new MapTexture(controlTexture, normalTexture);
     }
+
 }

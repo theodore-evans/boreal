@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NormalCalculator : MonoBehaviour, INormalCalculator
+public class NormalCalculatorMoore : MonoBehaviour, INormalCalculator
 {
 
     WorldController wc;
@@ -25,8 +25,9 @@ public class NormalCalculator : MonoBehaviour, INormalCalculator
         foreach (Tile tile in changedTiles) {
             tile.Normal = CalculateNormal(tile);
             foreach (Tile neighbour in _world.GetNeighbours(tile.X, tile.Y)) {
+                neighbour.Normal = CalculateNormal(neighbour);
                 if (!changedTiles.Contains(neighbour)) {
-                    neighbour.Normal = CalculateNormal(neighbour);
+                    
                 }
             }
         }
@@ -42,8 +43,15 @@ public class NormalCalculator : MonoBehaviour, INormalCalculator
         float N = GetTileAltitudeAt(x, y + 1);
         float S = GetTileAltitudeAt(x, y - 1);
 
-        Vector3 normal = new Vector3(W - E, S - N, -2);
-        return Vector3.Normalize(-normal);
+        float NE = GetTileAltitudeAt(x + 1, y + 1);
+        float NW = GetTileAltitudeAt(x - 1, y + 1);
+        float SE = GetTileAltitudeAt(x + 1, y - 1);
+        float SW = GetTileAltitudeAt(x - 1, y - 1);
+
+        float WeightedAvg(float a, float b, float c) => (a + 1.4f * b + c) / 3.4f;
+
+        Vector3 normal = new Vector3(WeightedAvg(NW, W, SW) - WeightedAvg(NE, E, SE), WeightedAvg(SW, S, SE) - WeightedAvg(NW, N, NE), 2);
+        return Vector3.Normalize(normal);
     }
 
     private float GetTileAltitudeAt(int x, int y)

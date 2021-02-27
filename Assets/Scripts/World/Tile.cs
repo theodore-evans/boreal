@@ -21,12 +21,14 @@ public class Tile : AbstractNode, ISurface
     public typeId TypeId
     {
         get {
-            if (_type == "Water") return typeId.Water;
-            if (_type == "Soil") return typeId.Soil;
-            if (_type == "Grass") return typeId.Grass;
+            if (_waterDepth > 0.1) return typeId.Water;
+            else if (_type == "Soil") return typeId.Soil;
+            else if (_type == "Grass") return typeId.Grass;
             else return typeId.Blank;
         }
     }
+
+
 
     public string Type
     {
@@ -46,10 +48,8 @@ public class Tile : AbstractNode, ISurface
         set {
             float oldDepth = _waterDepth;
             _waterDepth = value;
-            if (_waterDepth > 0.01) _type = "Water"; //TODO hack implement more sophisticated water logic
-            else _type = "Soil";
 
-            if (!Fast.Approximately(oldDepth, _waterDepth, 0.0001f)) cbTileChanged?.Invoke(this);
+            if (oldDepth !=_waterDepth) cbTileChanged?.Invoke(this);
         }
     }
 
@@ -66,7 +66,7 @@ public class Tile : AbstractNode, ISurface
             float oldAltitude = _altitude;
             _altitude = value;
 
-            if (!Fast.Approximately(oldAltitude, _altitude, 0.025f)) cbTileChanged?.Invoke(this);
+            if (oldAltitude != _altitude) cbTileChanged?.Invoke(this);
         }
     }
 

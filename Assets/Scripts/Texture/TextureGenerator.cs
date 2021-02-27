@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class TextureGenerator
+public class TextureGenerator: MonoBehaviour
 {
-    FilterMode _filterMode;
-    TextureWrapMode _wrapMode;
+    [SerializeField] FilterMode _filterMode;
+    [SerializeField] TextureWrapMode _wrapMode;
 
     public TextureGenerator(FilterMode filterMode = FilterMode.Bilinear,
                             TextureWrapMode wrapMode = TextureWrapMode.Mirror)
@@ -14,17 +14,21 @@ public class TextureGenerator
         _wrapMode = wrapMode;
     }
 
-    public Texture2D CreateTextureFromColourMap(Color32[] colourMap, int width, int height)
+    public Texture2D CreateTextureFromColourMap(int width, int height)
 	{
-        Texture2D texture = new Texture2D(width, height) {
+        Texture2D texture = new Texture2D(width, height, TextureFormat.RGBA32, true, true) {
             filterMode = _filterMode,
-            wrapMode = _wrapMode
+            wrapMode = _wrapMode,
 
         };
-        texture.SetPixels32(colourMap);
-		texture.Apply();
-		return texture;
+        return texture;
 	}
+
+    public void UpdateTexture(Texture2D texture, Color32[] colourMap)
+    {
+        texture.SetPixels32(colourMap);
+        texture.Apply();
+    }
 }
 
 

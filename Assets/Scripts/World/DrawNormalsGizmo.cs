@@ -18,7 +18,7 @@ public class DrawNormalsGizmo : MonoBehaviour
     void OnDrawGizmos()
     {
         if (_world != null) {
-            foreach (Tile tile in _world) {
+            foreach (Tile tile in _world.Nodes) {
 
                 Vector3 tileCenter = new Vector3(tile.X + 0.5f * tile.Scale, tile.Y + 0.5f * tile.Scale, 10f);
                 float gradient = tile.Gradient;

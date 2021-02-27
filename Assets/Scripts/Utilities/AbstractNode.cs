@@ -6,6 +6,7 @@ public abstract class AbstractNode
     public int X { get; }
     public int Y { get; }
     public float Scale { get; }
+    System.Random prng;
 
     private int _hashCode;
 
@@ -36,4 +37,6 @@ public abstract class AbstractNode
     {
         return 1572869 * x + 786433 * y;
     }
+
 }
+

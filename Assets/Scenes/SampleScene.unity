@@ -147,10 +147,10 @@ Light:
   m_GameObject: {fileID: 40690878}
   m_Enabled: 1
   serializedVersion: 10
-  m_Type: 2
+  m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2.5
+  m_Intensity: 1
   m_Range: 200
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -206,13 +206,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 40690878}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.5, z: 0, w: 0.8660254}
   m_LocalPosition: {x: 40, y: 40, z: 40}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 60, z: 0}
 --- !u!1 &106829199
 GameObject:
   m_ObjectHideFlags: 0
@@ -892,6 +892,8 @@ GameObject:
   m_Component:
   - component: {fileID: 766066292}
   - component: {fileID: 766066291}
+  - component: {fileID: 766066294}
+  - component: {fileID: 766066293}
   m_Layer: 0
   m_Name: MapDisplay
   m_TagString: Untagged
@@ -937,6 +939,32 @@ Transform:
   m_Father: {fileID: 968541466}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &766066293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 766066290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdffe423145424a9ca593c78efff9746, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _filterMode: 1
+  _wrapMode: 0
+--- !u!114 &766066294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 766066290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5e4f2a335f654f9c803a23f0f0183f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &771880239
 GameObject:
   m_ObjectHideFlags: 0
@@ -1121,9 +1149,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 436fe6c9511f4471aa15ed3535b35f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 64
-  height: 64
-  maxCallbacksPerFrame: 100
+  width: 256
+  height: 256
+  maxChangedTilesPerFrame: 1000
+  camera: {fileID: 519420031}
+  margin: 256
 --- !u!4 &954845868
 Transform:
   m_ObjectHideFlags: 0
@@ -1154,9 +1184,9 @@ MonoBehaviour:
   seed: 0
   regions:
   - name: Water
-    height: 0
+    height: 0.561
   - name: Soil
-    height: 0.59
+    height: 0.616
   - name: Grass
     height: 1
 --- !u!114 &954845870
@@ -1183,10 +1213,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c10c1c95cca7443a2bf93ef90b7c4930, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  verticalScale: 3.15
-  scale: 19
+  verticalScale: 22.9
+  scale: 63.2
   octaves: 4
-  persistence: 0.5
+  persistence: 0.231
   lacunarity: 2.5
   offset: {x: 0, y: 0}
 --- !u!114 &954845872

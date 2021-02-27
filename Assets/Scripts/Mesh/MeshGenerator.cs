@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MeshGenerator
+public class MeshGenerator: MonoBehaviour
 {
-	public Mesh CreateMesh(int bottomLeftX, int bottomLeftY, int width, int height)
+	public Mesh CreateMesh(Vector3 bottomLeftCorner, int width, int height)
 	{
 		MeshData meshData = new MeshData(width, height);
 		int vertexIndex = 0;
+
+		int bottomLeftX = Mathf.CeilToInt(bottomLeftCorner.x);
+		int bottomLeftY = Mathf.CeilToInt(bottomLeftCorner.y);
 
 		for (int y = bottomLeftY; y < bottomLeftY + height; y++) {
 			for (int x = bottomLeftX; x < bottomLeftX + width; x++) {

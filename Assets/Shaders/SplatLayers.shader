@@ -54,9 +54,9 @@ Shader "Custom/SplatLayers" {
         fixed3 col;
         col  = splat_control.r * tex2D (_Splat0, IN.uv_Splat0).rgb;
         col += splat_control.g * tex2D (_Splat1, IN.uv_Splat1).rgb;
-        col += splat_control.b * tex2D (_Splat2, IN.uv_Splat2).rgb;
+        col += splat_control.b * tex2D (_Splat2, IN.uv_Splat2).rgb * (1 - splat_control.a);
         o.Albedo = col;
-        o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap)*2 -1);
+        o.Normal = tex2D(_BumpMap, IN.uv_BumpMap)*2 -1;
      }
      ENDCG
    }
