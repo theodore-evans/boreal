@@ -249,7 +249,7 @@ MonoBehaviour:
   cameraOrigin_go: {fileID: 519420028}
   worldController_go: {fileID: 954845866}
   minScale: 3.2
-  maxScale: 40.8
+  maxScale: 30
 --- !u!4 &106829201
 Transform:
   m_ObjectHideFlags: 0
@@ -965,6 +965,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5e4f2a335f654f9c803a23f0f0183f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levelOfDetail: 8
 --- !u!1 &771880239
 GameObject:
   m_ObjectHideFlags: 0
@@ -1151,9 +1152,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 256
   height: 256
-  maxChangedTilesPerFrame: 1000
-  camera: {fileID: 519420031}
-  margin: 256
+  maxTilesToUpdatePerLoop: 8000
+  currentCamera: {fileID: 519420031}
+  baseMargin: 64
 --- !u!4 &954845868
 Transform:
   m_ObjectHideFlags: 0
@@ -1182,12 +1183,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoUpdate: 1
   seed: 0
+  waterLevel: 0.508
   regions:
-  - name: Water
-    height: 0.561
-  - name: Soil
-    height: 0.616
   - name: Grass
+    height: 0.71
+  - name: Soil
     height: 1
 --- !u!114 &954845870
 MonoBehaviour:
@@ -1213,10 +1213,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c10c1c95cca7443a2bf93ef90b7c4930, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  verticalScale: 22.9
+  verticalScale: 20.4
   scale: 63.2
   octaves: 4
-  persistence: 0.231
+  persistence: 0.288
   lacunarity: 2.5
   offset: {x: 0, y: 0}
 --- !u!114 &954845872

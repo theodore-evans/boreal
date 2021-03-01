@@ -26,7 +26,8 @@ public class MapDisplay : MonoBehaviour
     private int height;
     private Mesh mapMesh;
     private MapTexture mapTexture;
-    private bool redrawMap;
+
+    bool redrawMap;
 
     bool TileIsWithinMeshBounds(Tile tile, Mesh mesh)
     {
@@ -57,8 +58,6 @@ public class MapDisplay : MonoBehaviour
     {
         _world = world;
 
-        wc.RegisterWorldChangedCallback(UpdateMap);
-
         width = wc.WorldWidth;
         height = wc.WorldHeight;
         verticalScale = wc.WorldVerticalScale;
@@ -72,6 +71,7 @@ public class MapDisplay : MonoBehaviour
         meshRenderer.material.SetTexture("_Control", mapTexture.control);
         meshRenderer.material.SetTexture("_BumpMap", mapTexture.normal);
 
+        wc.RegisterWorldChangedCallback(UpdateMap);
     }
 
     private void UpdateMap(HashSet<Tile> changedTiles)
@@ -84,7 +84,6 @@ public class MapDisplay : MonoBehaviour
             Color tileNormal = new Color(t.Normal.x, t.Normal.y, t.Normal.z);
             mapTexture.normal.SetPixel(t.X, t.Y, tileNormal);
         }
-
         mapTexture.normal.Apply();
         mapTexture.control.Apply();
     }

@@ -35,7 +35,7 @@ public abstract class AbstractNode
 
     private int GenerateHashCode(int x, int y)
     {
-        return 1572869 * x + 786433 * y;
+        return (int)(0.5 * (x + y) * (x + y + 1) + y);
     }
 
 }

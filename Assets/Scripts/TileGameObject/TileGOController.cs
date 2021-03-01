@@ -26,6 +26,19 @@ public class TileGOController : MonoBehaviour
         wc.RegisterWorldChangedCallback(OnTileChanged);
     }
 
+    public void OnTileChanged(HashSet<Tile> changedTiles)
+    {
+        foreach (Tile tile in changedTiles) {
+            GameObject tile_go = GetTileGameObject(tile);
+
+            foreach (ITileGOUpdateBehaviour tileUpdater in tileUpdateBehaviours) {
+                tileUpdater.UpdateTile(tile_go, tile);
+            }
+
+            cbTileGameObjectChanged?.Invoke(tile_go);
+        }
+    }
+
     public void CreateTileGameObjects()
     {
         TileGameObjectMap = new Dictionary<Tile, GameObject>();
@@ -49,19 +62,6 @@ public class TileGOController : MonoBehaviour
         }
         else Debug.LogError($"GetTileGameObject: No key found in tileGameObjectMap for tile at [{tile_data.X}, {tile_data.Y}] ");
         return null;
-    }
-
-    public void OnTileChanged(HashSet<Tile> changedTiles) 
-    {
-        foreach (Tile tile in changedTiles) {
-            GameObject tile_go = GetTileGameObject(tile);
-
-            foreach (ITileGOUpdateBehaviour tileUpdater in tileUpdateBehaviours) {
-                tileUpdater.UpdateTile(tile_go, tile);
-            }
-
-            cbTileGameObjectChanged?.Invoke(tile_go);
-        }
     }
 
     public void RegisterTileGameObjectChangedCallback(Action<GameObject> callback)

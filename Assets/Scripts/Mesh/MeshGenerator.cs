@@ -3,23 +3,29 @@ using System.Collections;
 
 public class MeshGenerator: MonoBehaviour
 {
+	[SerializeField] int levelOfDetail = 0;
+
 	public Mesh CreateMesh(Vector3 bottomLeftCorner, int width, int height)
 	{
-		MeshData meshData = new MeshData(width, height);
+		int meshSimplificationIncrement = (int)Mathf.Pow(2, levelOfDetail);
+		int verticesPerLine = width / meshSimplificationIncrement + 1;
+
+		MeshData meshData = new MeshData(verticesPerLine, verticesPerLine);
+
 		int vertexIndex = 0;
 
-		int bottomLeftX = Mathf.CeilToInt(bottomLeftCorner.x);
-		int bottomLeftY = Mathf.CeilToInt(bottomLeftCorner.y);
+		float bottomLeftX = bottomLeftCorner.x;
+		float bottomLeftY = bottomLeftCorner.y;
+		float zPos = bottomLeftCorner.z;
 
-		for (int y = bottomLeftY; y < bottomLeftY + height; y++) {
-			for (int x = bottomLeftX; x < bottomLeftX + width; x++) {
-
-				meshData.vertices[vertexIndex] = new Vector3(x, y, 0);
+		for (int y = 0; y <= height; y += meshSimplificationIncrement) {
+			for (int x = 0; x <= width; x += meshSimplificationIncrement) {
+				meshData.vertices[vertexIndex] = new Vector3(bottomLeftX + x, bottomLeftY + y, zPos);
 				meshData.uvs[vertexIndex] = new Vector2(x / (float)width, y / (float)height);
 
 				if (x < width - 1 && y < height - 1) {
-					meshData.AddTriangle(vertexIndex, vertexIndex + width, vertexIndex + width + 1);
-					meshData.AddTriangle(vertexIndex + width + 1, vertexIndex + 1, vertexIndex);
+					meshData.AddTriangle(vertexIndex, vertexIndex + verticesPerLine, vertexIndex + verticesPerLine + 1);
+					meshData.AddTriangle(vertexIndex + verticesPerLine + 1, vertexIndex + 1, vertexIndex);
 				}
 
 				vertexIndex++;

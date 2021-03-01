@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using MoreLinq;
 using UnityEngine;
 
 public class WorldController : MonoBehaviour
@@ -17,38 +18,46 @@ public class WorldController : MonoBehaviour
     private float nodeSpacing = 1f;
 
     HashSet<Tile> tilesToUpdate;
-    HashSet<Tile> tilesToUpdateThisFrame;
-    
-    [SerializeField] int maxChangedTilesPerFrame = 100;
+    HashSet<Tile> tilesToUpdateThisLoop;
+    HashSet<Tile> tilesToUpdateAfterThisLoop;
+
+    [SerializeField] int maxTilesToUpdatePerLoop = 8192;
+    [SerializeField] int batchSize = 1024;
 
     private Action<SpaceGrid<Tile>> cbWorldCreated;
     private Action<HashSet<Tile>> cbWorldChanged;
 
     TerrainGenerator terrainGenerator;
     [SerializeField] Camera currentCamera = null;
-    [SerializeField] float margin = 256;
+    [SerializeField] float baseMargin = 256;
+    float margin;
 
     private System.Random rng = new System.Random();
 
-    public bool TileIsOffScreen(Tile tile)
+    public bool TileIsOnScreen(Tile tile)
     {
         Vector3 tilePositionOnScreen = currentCamera.WorldToScreenPoint(new Vector3(tile.X, tile.Y));
 
-        return tilePositionOnScreen.x < -margin
+        return !(tilePositionOnScreen.x < -margin
                 || tilePositionOnScreen.x > Screen.width + margin
                 || tilePositionOnScreen.y < -margin
-                || tilePositionOnScreen.y > Screen.height + margin;
+                || tilePositionOnScreen.y > Screen.height + margin);
     }
 
     private void Start()
     {
         world = CreateWorldGrid();
         tilesToUpdate = new HashSet<Tile>();
-        tilesToUpdateThisFrame = new HashSet<Tile>();
+        tilesToUpdateThisLoop = new HashSet<Tile>();
+        tilesToUpdateAfterThisLoop = new HashSet<Tile>();
 
         terrainGenerator = GetComponent<TerrainGenerator>();
         terrainGenerator.Generate(world);
         cbWorldCreated?.Invoke(world);
+
+        margin = baseMargin * 10000 / maxTilesToUpdatePerLoop;
+
+        StartCoroutine("TileUpdateCoroutine");
     }
 
     private SpaceGrid<Tile> CreateWorldGrid()
@@ -64,25 +73,27 @@ public class WorldController : MonoBehaviour
         return world;
     }
 
-    private void Update()
+    IEnumerator TileUpdateCoroutine()
     {
-        if (tilesToUpdate.Count > 0) {
+        for (; ;){
+            if (tilesToUpdate.Count > 0) {
+                int tilesUpdated = 0;
 
-            int count = 0;
-            List<Tile> shuffledTilesToUpdate = RandomUtils.Shuffle(tilesToUpdate.ToList(), rng);
+                List<Tile> shuffledTilesToUpdate = RandomUtils.Shuffle(tilesToUpdate.ToList(), rng);
+                foreach (Tile tileToUpdate in shuffledTilesToUpdate) {
+                    if (tilesUpdated > maxTilesToUpdatePerLoop) break;
 
-            foreach (Tile tileToUpdate in shuffledTilesToUpdate) {
-                if (count > maxChangedTilesPerFrame) break;
-
-                if (!TileIsOffScreen(tileToUpdate)) {
-                    tilesToUpdateThisFrame.Add(tileToUpdate);
-                    tilesToUpdate.Remove(tileToUpdate);
-                    count++;
+                    if (TileIsOnScreen(tileToUpdate)) {
+                        tilesToUpdateThisLoop.Add(tileToUpdate);
+                        tilesToUpdate.Remove(tileToUpdate);
+                        tilesUpdated++;
+                    }                    
                 }
-            }
 
-            cbWorldChanged?.Invoke(tilesToUpdateThisFrame);
-            tilesToUpdateThisFrame.Clear();
+                cbWorldChanged?.Invoke(tilesToUpdateThisLoop);
+                tilesToUpdateThisLoop.Clear();
+            }
+            yield return 0;
         }
     }
 
