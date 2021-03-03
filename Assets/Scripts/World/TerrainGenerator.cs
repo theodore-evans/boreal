@@ -48,7 +48,7 @@ public class TerrainGenerator : MonoBehaviour
 
                     for (int i = 0; i < regions.Length; i++) {
                         if (t.Altitude <= regions[i].height * VerticalScale) {
-                            t.Type = regions[i].name;
+                            t.TypeId = regions[i].typeId;
                             break;
                         }
                     }

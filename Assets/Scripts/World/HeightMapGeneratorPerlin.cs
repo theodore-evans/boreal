@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class PerlinHeightMapGenerator : MonoBehaviour, IHeightMapGenerator
+public class HeightMapGeneratorPerlin : MonoBehaviour, IHeightMapGenerator
 {
     public float VerticalScale { get { return verticalScale; } }
 

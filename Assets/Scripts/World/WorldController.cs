@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using MoreLinq;
+using Extensions;
 using UnityEngine;
 
 public class WorldController : MonoBehaviour
@@ -19,38 +19,45 @@ public class WorldController : MonoBehaviour
 
     HashSet<Tile> tilesToUpdate;
 
-    [SerializeField] int tileUpdatesPerSecond = 8192;
-
     private Action<SpaceGrid<Tile>> cbWorldCreated;
     private Action<IEnumerable<Tile>> cbWorldChanged;
 
     TerrainGenerator terrainGenerator;
     [SerializeField] Camera currentCamera = null;
-    [SerializeField] float baseMargin = 256;
-    float margin;
+    [SerializeField] int drawDist = 256;
+    [SerializeField] int maxTilesToUpdatePerLoop = 10000;
+
+    System.Random rng;
 
     public bool TileIsOnScreen(Tile tile)
     {
         Vector3 tilePositionOnScreen = currentCamera.WorldToScreenPoint(new Vector3(tile.X, tile.Y));
 
-        return !(tilePositionOnScreen.x < -margin
-                || tilePositionOnScreen.x > Screen.width + margin
-                || tilePositionOnScreen.y < -margin
-                || tilePositionOnScreen.y > Screen.height + margin);
+        return !(tilePositionOnScreen.x < -drawDist
+                || tilePositionOnScreen.y < -drawDist
+                || tilePositionOnScreen.x > Screen.width + drawDist
+                || tilePositionOnScreen.y > Screen.height + drawDist);
+    }
+
+    private Rect GetAreaToLoad()
+    {
+        Vector2 bottomLeft = currentCamera.ScreenToWorldPoint(new Vector2(-drawDist, -drawDist));
+        Vector2 topRight = currentCamera.ScreenToWorldPoint(new Vector2(Screen.width + drawDist, Screen.height + drawDist));
+
+        return Rect.MinMaxRect(bottomLeft.x, bottomLeft.y, topRight.x, topRight.y);
     }
 
     private void Start()
     {
         world = CreateWorldGrid();
         tilesToUpdate = new HashSet<Tile>();
+        rng = new System.Random();
 
         terrainGenerator = GetComponent<TerrainGenerator>();
         terrainGenerator.Generate(world);
         cbWorldCreated?.Invoke(world);
 
-        margin = baseMargin * 10000 / tileUpdatesPerSecond;
-
-        StartCoroutine("TileUpdateCoroutine");
+        StartCoroutine(nameof(TileUpdateCoroutine));
     }
 
     private SpaceGrid<Tile> CreateWorldGrid()
@@ -68,30 +75,34 @@ public class WorldController : MonoBehaviour
 
     IEnumerator TileUpdateCoroutine()
     {
-        float waitTime = 0.01f;
-        int tileUpdatesPerLoop = Mathf.CeilToInt(tileUpdatesPerSecond * waitTime);
+        List<Tile> tilesToUpdateThisLoop = new List<Tile>();
 
         for (; ;){
             if (tilesToUpdate.Count > 0) {
-                int tilesUpdated = 0;
+                HashSet<Tile> tilesToUpdateCopy = new HashSet<Tile>(tilesToUpdate);
+                Rect areaToLoad = GetAreaToLoad();
 
-                HashSet<Tile> tilesToUpdateThisLoop = new HashSet<Tile>();
-
-                List<Tile> shuffledTilesToUpdate = RandomUtils.Shuffle(tilesToUpdate.ToList());
-
-                foreach (Tile tileToUpdate in shuffledTilesToUpdate) {
-                    if (tilesUpdated > tileUpdatesPerSecond) break;
-
-                    if (TileIsOnScreen(tileToUpdate)) {
+                foreach (Tile tileToUpdate in tilesToUpdateCopy) { 
+                    if (tileToUpdate.IsInRect(areaToLoad)) {
                         tilesToUpdateThisLoop.Add(tileToUpdate);
                         tilesToUpdate.Remove(tileToUpdate);
-                        tilesUpdated++;
-                    }                    
+                    }
                 }
 
-                cbWorldChanged?.Invoke(tilesToUpdateThisLoop);
+                if (tilesToUpdateThisLoop.Count > 0) {
+                    cbWorldChanged?.Invoke(tilesToUpdateThisLoop);
+                    tilesToUpdateThisLoop.Clear();
+                }
+                else {
+                    tilesToUpdateThisLoop = tilesToUpdate.Take(maxTilesToUpdatePerLoop).ToList();
+                    cbWorldChanged?.Invoke(tilesToUpdateThisLoop);
+                    tilesToUpdate.ExceptWith(tilesToUpdateThisLoop);
+
+                }
             }
-            yield return new WaitForSeconds(0.01f);
+
+
+            yield return 0;
         }
     }
 

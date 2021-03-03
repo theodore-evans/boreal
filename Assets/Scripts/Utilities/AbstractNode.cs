@@ -38,5 +38,12 @@ public abstract class AbstractNode
         return (int)(0.5 * (x + y) * (x + y + 1) + y);
     }
 
+    public bool IsInRect(Rect rect)
+    {
+        return !(X < rect.xMin
+                 || Y < rect.yMin
+                 || X > rect.xMax
+                 || Y > rect.yMax);
+    }
 }
 

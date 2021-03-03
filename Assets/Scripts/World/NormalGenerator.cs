@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NormalCalculator : MonoBehaviour, INormalCalculator
+public class NormalGenerator : MonoBehaviour
 {
 
     WorldController wc;
@@ -22,10 +22,14 @@ public class NormalCalculator : MonoBehaviour, INormalCalculator
 
     public void UpdateNormals(IEnumerable<Tile> changedTiles)
     {
-        foreach (Tile tile in changedTiles) {
+        HashSet<Tile> changedTilesHS = new HashSet<Tile>(changedTiles);
+
+        foreach (Tile tile in changedTilesHS) {
             tile.Normal = CalculateNormal(tile);
             foreach (Tile neighbour in _world.GetNeighbours(tile.X, tile.Y)) {
-                neighbour.Normal = CalculateNormal(neighbour);
+                if (!changedTilesHS.Contains(neighbour)) {
+                    neighbour.Normal = CalculateNormal(neighbour);
+                }
             }
         }
     }
@@ -40,8 +44,8 @@ public class NormalCalculator : MonoBehaviour, INormalCalculator
         float N = GetTileAltitudeAt(x, y + 1);
         float S = GetTileAltitudeAt(x, y - 1);
 
-        Vector3 normal = new Vector3(W - E, S - N, -2);
-        return Vector3.Normalize(-normal);
+        Vector3 normal = new Vector3(W - E, S - N, 2);
+        return Vector3.Normalize(normal);
     }
 
     private float GetTileAltitudeAt(int x, int y)
@@ -49,7 +53,7 @@ public class NormalCalculator : MonoBehaviour, INormalCalculator
         Tile t = _world.GetNodeAt(x, y);
 
         if (t != null) {
-            return t.WaterLevel;
+            return GetTileAltiude(t);
         }
 
         else {
@@ -57,10 +61,15 @@ public class NormalCalculator : MonoBehaviour, INormalCalculator
             List<Tile> neighbours = _world.GetNeighbours(x, y);
 
             foreach (Tile neighbour in neighbours) {
-                sum += neighbour.WaterLevel;
+                sum += GetTileAltiude(neighbour);
             }
 
             return sum / neighbours.Count;
         }
+    }
+
+    private float GetTileAltiude(Tile t)
+    {
+        return t.WaterLevel;
     }
 }

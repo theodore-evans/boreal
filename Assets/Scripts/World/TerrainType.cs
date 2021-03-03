@@ -3,7 +3,7 @@
 [System.Serializable]
 public struct TerrainType
 {
-    public string name;
+    public TypeId typeId; 
     [Range(0, 1)] public float height;
 }
 

@@ -38,6 +38,7 @@ public class WaterSimController : MonoBehaviour
     public void DropWater()
     {
         simulateDroplets.DropAllWater();
+        simulateWaterFlow.StartSimulation(_world);
     }
 
     public void ResetWater()

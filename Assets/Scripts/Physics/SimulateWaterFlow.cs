@@ -6,9 +6,8 @@ using System.Linq;
 public class SimulateWaterFlow : MonoBehaviour
 {
     SpaceGrid<Tile> _world;
-    internal List<Tile> openSet;
+    internal HashSet<Tile> openSet;
 
-    bool simulate = false;
     bool globalEquilibrium;
 
     [SerializeField] [Range(0.01f, 1)] float flowRate = 0.5f;
@@ -16,31 +15,33 @@ public class SimulateWaterFlow : MonoBehaviour
 
     public void Start()
     {
-        openSet = new List<Tile>();
+        openSet = new HashSet<Tile>();
     }
 
     public void StartSimulation(SpaceGrid<Tile> world)
     {
         _world = world;
-        simulate = true;
+        StartCoroutine(nameof(SimulateWaterCoroutine));
     }
 
     public void StopSimulation()
     {
-        simulate = false;
+        StopCoroutine(nameof(SimulateWaterCoroutine));
     }
 
-    private void Update()
+    private IEnumerator SimulateWaterCoroutine()
     {
-        if (simulate) {
+        for (; ; ) {
             globalEquilibrium = true;
 
             foreach (Tile tile in openSet.ToList()) Flow(tile);
 
             if (globalEquilibrium) {
-                simulate = false;
-                Debug.Log($"{this}: water equilibrium reached");
+                openSet.Clear();
+                yield break;
             }
+
+            yield return new WaitForFixedUpdate();
         }
     }
 
@@ -61,8 +62,7 @@ public class SimulateWaterFlow : MonoBehaviour
 
                     tile.WaterDepth -= waterFlow;
                     neighbour.WaterDepth += waterFlow;
-
-                    if (!openSet.Contains(neighbour)) openSet.Add(neighbour);
+                    openSet.Add(neighbour);
                 }
             }
         }

@@ -32,7 +32,6 @@ public class SpaceGrid<T> where T : AbstractNode
 
     public List<T> GetNeighbours(int x, int y)
     {
-        // 8-neighbourhood excluding center node
         return GetNeighbours(x, y, (maskX, maskY) => (maskX == 0 && maskY == 0));
     }
 

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public enum typeId
+public enum TypeId
 {
     Blank = 0,
     Water = 1,
@@ -13,32 +13,25 @@ public class Tile : AbstractNode, ISurface
 {
     Action<Tile> cbTileChanged;
 
-    private string _type = "Blank";
+    private TypeId _type = global::TypeId.Blank;
     private float _waterDepth = 0.0f;
     private float _altitude = 0.5f;
     private Vector3 _normal = Vector3.zero;
+    private float _waterThreshold = 0.0f;
 
-    public typeId TypeId
+    public TypeId TypeId
     {
         get {
-            if (_waterDepth > 0.1) return typeId.Water;
-            else if (_type == "Soil") return typeId.Soil;
-            else if (_type == "Grass") return typeId.Grass;
-            else return typeId.Blank;
+
+            if (_waterDepth > _waterThreshold) return TypeId.Water;
+            else return _type;
         }
-    }
-
-
-
-    public string Type
-    {
-        get => _type;
 
         set {
-            string oldType = _type;
+            TypeId oldType = _type;
             _type = value;
 
-            if (oldType != _type) cbTileChanged?.Invoke(this);
+            if (oldType != _type) InvokeTileChangedCallback();
         }
     }
 
@@ -49,7 +42,7 @@ public class Tile : AbstractNode, ISurface
             float oldDepth = _waterDepth;
             _waterDepth = value;
 
-            if (oldDepth !=_waterDepth) cbTileChanged?.Invoke(this);
+            if (oldDepth !=_waterDepth) InvokeTileChangedCallback();
         }
     }
 
@@ -66,7 +59,7 @@ public class Tile : AbstractNode, ISurface
             float oldAltitude = _altitude;
             _altitude = value;
 
-            if (oldAltitude != _altitude) cbTileChanged?.Invoke(this);
+            if (oldAltitude != _altitude) InvokeTileChangedCallback();
         }
     }
 
@@ -103,4 +96,8 @@ public class Tile : AbstractNode, ISurface
         cbTileChanged -= callback;
     }
 
+    public void InvokeTileChangedCallback()
+    {
+        cbTileChanged?.Invoke(this);
+    }
 }

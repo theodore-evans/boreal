@@ -332,8 +332,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98e9d1a50be48459bac044cc15e865f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flowRate: 0.347
-  minHead: -0.005
+  flowRate: 0.632
+  minHead: -0.02
 --- !u!4 &149497009
 Transform:
   m_ObjectHideFlags: 0
@@ -1128,8 +1128,8 @@ GameObject:
   - component: {fileID: 954845868}
   - component: {fileID: 954845867}
   - component: {fileID: 954845869}
-  - component: {fileID: 954845871}
   - component: {fileID: 954845870}
+  - component: {fileID: 954845871}
   - component: {fileID: 954845872}
   m_Layer: 0
   m_Name: WorldController
@@ -1150,11 +1150,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 436fe6c9511f4471aa15ed3535b35f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 256
-  height: 256
-  maxTilesToUpdatePerLoop: 8000
+  width: 512
+  height: 512
+  tileUpdatesPerLoop: 4096
   currentCamera: {fileID: 519420031}
-  baseMargin: 64
+  drawDist: 256
+  maxTileLoadAttempts: 100000
 --- !u!4 &954845868
 Transform:
   m_ObjectHideFlags: 0
@@ -1185,9 +1186,9 @@ MonoBehaviour:
   seed: 0
   waterLevel: 0.508
   regions:
-  - name: Grass
+  - typeId: 3
     height: 0.71
-  - name: Soil
+  - typeId: 2
     height: 1
 --- !u!114 &954845870
 MonoBehaviour:
@@ -1198,9 +1199,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 954845866}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceaa81d69993147c3b1353fa070843b8, type: 3}
+  m_Script: {fileID: 11500000, guid: ab67ba4130e53411d9b464add91d6c9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  verticalScale: 25.1
+  scale: 49
+  octaves: 4
+  persistence: 0.25
+  lacunarity: 2.5
+  offset: {x: 0, y: 0}
 --- !u!114 &954845871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1210,15 +1217,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 954845866}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c10c1c95cca7443a2bf93ef90b7c4930, type: 3}
+  m_Script: {fileID: 11500000, guid: 6c315b96ed4934bbd917523ac403f04b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  verticalScale: 20.4
-  scale: 63.2
-  octaves: 4
-  persistence: 0.288
-  lacunarity: 2.5
-  offset: {x: 0, y: 0}
 --- !u!114 &954845872
 MonoBehaviour:
   m_ObjectHideFlags: 0

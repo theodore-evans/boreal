@@ -75,7 +75,7 @@ public class SimulateDroplets : MonoBehaviour
                     droplet.UpdateMovement(currTile, Time.fixedDeltaTime, friction, gravity);
                     AccumulateErosion(droplet, currTile, lastTile);
 
-                    if (currTile.Type == "Water") DropWater(droplet);
+                    if (currTile.TypeId == TypeId.Water) DropWater(droplet);
                 }
                 else {
                     droplets.Remove(droplet);

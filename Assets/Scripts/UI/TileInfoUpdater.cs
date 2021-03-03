@@ -15,7 +15,7 @@ public class TileInfoUpdater : MonoBehaviour, ITileUIUpdateBehaviour
     public void UpdateTileUI(ICursorProvider cursor, Tile t)
     {
         tileInfo.text = $"[{t.X}, {t.Y}]"
-            + $"\n{t.Type}"
+            + $"\n{t.TypeId}"
             + "\nElevation: " + t.Altitude.ToString("F3")
             + "\nNormal: " + t.Normal.ToString("F2")
             + "\nWater Depth: " + t.WaterDepth.ToString("F3"); // TODO conditional iff type==water
