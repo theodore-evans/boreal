@@ -18,6 +18,7 @@ public class WorldController : MonoBehaviour
     private float nodeSpacing = 1f;
 
     HashSet<Tile> tilesToUpdate;
+    List<Tile> marginTilesToUpdate;
 
     private Action<SpaceGrid<Tile>> cbWorldCreated;
     private Action<IEnumerable<Tile>> cbWorldChanged;
@@ -39,10 +40,10 @@ public class WorldController : MonoBehaviour
                 || tilePositionOnScreen.y > Screen.height + drawDist);
     }
 
-    private Rect GetAreaToLoad()
+    private Rect GetAreaToLoad(int margin = 0)
     {
-        Vector2 bottomLeft = currentCamera.ScreenToWorldPoint(new Vector2(-drawDist, -drawDist));
-        Vector2 topRight = currentCamera.ScreenToWorldPoint(new Vector2(Screen.width + drawDist, Screen.height + drawDist));
+        Vector2 bottomLeft = currentCamera.ScreenToWorldPoint(new Vector2(-margin, -margin));
+        Vector2 topRight = currentCamera.ScreenToWorldPoint(new Vector2(Screen.width + margin, Screen.height + margin));
 
         return Rect.MinMaxRect(bottomLeft.x, bottomLeft.y, topRight.x, topRight.y);
     }
@@ -52,7 +53,7 @@ public class WorldController : MonoBehaviour
         world = CreateWorldGrid();
         tilesToUpdate = new HashSet<Tile>();
         rng = new System.Random();
-
+        marginTilesToUpdate = new List<Tile>();
         terrainGenerator = GetComponent<TerrainGenerator>();
         terrainGenerator.Generate(world);
         cbWorldCreated?.Invoke(world);
@@ -77,35 +78,44 @@ public class WorldController : MonoBehaviour
     {
         List<Tile> tilesToUpdateThisLoop = new List<Tile>();
 
-        for (; ;){
+        for (; ; ) {
             if (tilesToUpdate.Count > 0) {
                 HashSet<Tile> tilesToUpdateCopy = new HashSet<Tile>(tilesToUpdate);
                 Rect areaToLoad = GetAreaToLoad();
 
-                foreach (Tile tileToUpdate in tilesToUpdateCopy) { 
-                    if (tileToUpdate.IsInRect(areaToLoad)) {
-                        tilesToUpdateThisLoop.Add(tileToUpdate);
+                foreach (Tile tileToUpdate in tilesToUpdateCopy) {
+                    if (tileToUpdate.IsInRect(areaToLoad.Expand(drawDist))) {
+                        if (tileToUpdate.IsInRect(areaToLoad)) {
+                            tilesToUpdateThisLoop.Add(tileToUpdate);
+                            
+                        }
+                        else marginTilesToUpdate.Add(tileToUpdate);
                         tilesToUpdate.Remove(tileToUpdate);
                     }
                 }
 
-                if (tilesToUpdateThisLoop.Count > 0) {
-                    cbWorldChanged?.Invoke(tilesToUpdateThisLoop);
-                    tilesToUpdateThisLoop.Clear();
-                }
-                else {
+                if (tilesToUpdateThisLoop.Count == 0) {
                     tilesToUpdateThisLoop = tilesToUpdate.Take(maxTilesToUpdatePerLoop).ToList();
                     cbWorldChanged?.Invoke(tilesToUpdateThisLoop);
                     tilesToUpdate.ExceptWith(tilesToUpdateThisLoop);
-
                 }
             }
 
+            if (tilesToUpdateThisLoop.Count > 0) {
+                tilesToUpdateThisLoop.Shuffle();
+                cbWorldChanged?.Invoke(tilesToUpdateThisLoop.PopLastRange(maxTilesToUpdatePerLoop));
+            }
 
             yield return 0;
         }
     }
-
+    private void Update()
+    {
+        if (marginTilesToUpdate.Count > 0) {
+            cbWorldChanged?.Invoke(marginTilesToUpdate);
+            marginTilesToUpdate.Clear();
+        }
+    }
     void OnTileChanged(Tile t)
     {
         tilesToUpdate.Add(t);

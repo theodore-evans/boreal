@@ -1152,10 +1152,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 512
   height: 512
-  tileUpdatesPerLoop: 4096
   currentCamera: {fileID: 519420031}
   drawDist: 256
-  maxTileLoadAttempts: 100000
+  maxTilesToUpdatePerLoop: 5000
 --- !u!4 &954845868
 Transform:
   m_ObjectHideFlags: 0
