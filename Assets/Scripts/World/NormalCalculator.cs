@@ -20,15 +20,12 @@ public class NormalCalculatorMoore : MonoBehaviour, INormalCalculator
         _world = world;
     }
 
-    public void UpdateNormals(HashSet<Tile> changedTiles)
+    public void UpdateNormals(IEnumerable<Tile> changedTiles)
     {
         foreach (Tile tile in changedTiles) {
             tile.Normal = CalculateNormal(tile);
             foreach (Tile neighbour in _world.GetNeighbours(tile.X, tile.Y)) {
                 neighbour.Normal = CalculateNormal(neighbour);
-                if (!changedTiles.Contains(neighbour)) {
-                    
-                }
             }
         }
     }

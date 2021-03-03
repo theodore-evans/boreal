@@ -18,21 +18,16 @@ public class WorldController : MonoBehaviour
     private float nodeSpacing = 1f;
 
     HashSet<Tile> tilesToUpdate;
-    HashSet<Tile> tilesToUpdateThisLoop;
-    HashSet<Tile> tilesToUpdateAfterThisLoop;
 
-    [SerializeField] int maxTilesToUpdatePerLoop = 8192;
-    [SerializeField] int batchSize = 1024;
+    [SerializeField] int tileUpdatesPerSecond = 8192;
 
     private Action<SpaceGrid<Tile>> cbWorldCreated;
-    private Action<HashSet<Tile>> cbWorldChanged;
+    private Action<IEnumerable<Tile>> cbWorldChanged;
 
     TerrainGenerator terrainGenerator;
     [SerializeField] Camera currentCamera = null;
     [SerializeField] float baseMargin = 256;
     float margin;
-
-    private System.Random rng = new System.Random();
 
     public bool TileIsOnScreen(Tile tile)
     {
@@ -48,14 +43,12 @@ public class WorldController : MonoBehaviour
     {
         world = CreateWorldGrid();
         tilesToUpdate = new HashSet<Tile>();
-        tilesToUpdateThisLoop = new HashSet<Tile>();
-        tilesToUpdateAfterThisLoop = new HashSet<Tile>();
 
         terrainGenerator = GetComponent<TerrainGenerator>();
         terrainGenerator.Generate(world);
         cbWorldCreated?.Invoke(world);
 
-        margin = baseMargin * 10000 / maxTilesToUpdatePerLoop;
+        margin = baseMargin * 10000 / tileUpdatesPerSecond;
 
         StartCoroutine("TileUpdateCoroutine");
     }
@@ -75,13 +68,19 @@ public class WorldController : MonoBehaviour
 
     IEnumerator TileUpdateCoroutine()
     {
+        float waitTime = 0.01f;
+        int tileUpdatesPerLoop = Mathf.CeilToInt(tileUpdatesPerSecond * waitTime);
+
         for (; ;){
             if (tilesToUpdate.Count > 0) {
                 int tilesUpdated = 0;
 
-                List<Tile> shuffledTilesToUpdate = RandomUtils.Shuffle(tilesToUpdate.ToList(), rng);
+                HashSet<Tile> tilesToUpdateThisLoop = new HashSet<Tile>();
+
+                List<Tile> shuffledTilesToUpdate = RandomUtils.Shuffle(tilesToUpdate.ToList());
+
                 foreach (Tile tileToUpdate in shuffledTilesToUpdate) {
-                    if (tilesUpdated > maxTilesToUpdatePerLoop) break;
+                    if (tilesUpdated > tileUpdatesPerSecond) break;
 
                     if (TileIsOnScreen(tileToUpdate)) {
                         tilesToUpdateThisLoop.Add(tileToUpdate);
@@ -91,9 +90,8 @@ public class WorldController : MonoBehaviour
                 }
 
                 cbWorldChanged?.Invoke(tilesToUpdateThisLoop);
-                tilesToUpdateThisLoop.Clear();
             }
-            yield return 0;
+            yield return new WaitForSeconds(0.01f);
         }
     }
 
@@ -107,12 +105,12 @@ public class WorldController : MonoBehaviour
         cbWorldCreated += callback;
     }
 
-    public void RegisterWorldChangedCallback(Action<HashSet<Tile>> callback)
+    public void RegisterWorldChangedCallback(Action<IEnumerable<Tile>> callback)
     {
         cbWorldChanged += callback;
     }
 
-    public void UnregisterWorldChangedCallback(Action<HashSet<Tile>> callback)
+    public void UnregisterWorldChangedCallback(Action<IEnumerable<Tile>> callback)
     {
         cbWorldChanged -= callback;
     }

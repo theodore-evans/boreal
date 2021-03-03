@@ -26,7 +26,7 @@ public class TileGOController : MonoBehaviour
         wc.RegisterWorldChangedCallback(OnTileChanged);
     }
 
-    public void OnTileChanged(HashSet<Tile> changedTiles)
+    public void OnTileChanged(IEnumerable<Tile> changedTiles)
     {
         foreach (Tile tile in changedTiles) {
             GameObject tile_go = GetTileGameObject(tile);

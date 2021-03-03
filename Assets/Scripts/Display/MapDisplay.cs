@@ -74,7 +74,7 @@ public class MapDisplay : MonoBehaviour
         wc.RegisterWorldChangedCallback(UpdateMap);
     }
 
-    private void UpdateMap(HashSet<Tile> changedTiles)
+    private void UpdateMap(IEnumerable<Tile> changedTiles)
     {
         foreach (Tile t in changedTiles) {
             Color tileControl = tileColours[(int)t.TypeId];
