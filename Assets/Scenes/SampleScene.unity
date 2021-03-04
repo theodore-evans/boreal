@@ -1153,8 +1153,9 @@ MonoBehaviour:
   width: 512
   height: 512
   currentCamera: {fileID: 519420031}
-  drawDist: 256
-  maxTilesToUpdatePerLoop: 5000
+  drawDist: 16
+  maxInFrameUpdates: 3000
+  maxOutOfFrameUpdates: 3000
 --- !u!4 &954845868
 Transform:
   m_ObjectHideFlags: 0

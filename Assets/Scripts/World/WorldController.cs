@@ -18,7 +18,7 @@ public class WorldController : MonoBehaviour
     private float nodeSpacing = 1f;
 
     HashSet<Tile> tilesToUpdate;
-    List<Tile> marginTilesToUpdate;
+    List<Tile> tilesToUpdateThisLoop;
 
     private Action<SpaceGrid<Tile>> cbWorldCreated;
     private Action<IEnumerable<Tile>> cbWorldChanged;
@@ -26,7 +26,8 @@ public class WorldController : MonoBehaviour
     TerrainGenerator terrainGenerator;
     [SerializeField] Camera currentCamera = null;
     [SerializeField] int drawDist = 256;
-    [SerializeField] int maxTilesToUpdatePerLoop = 10000;
+    [SerializeField] int maxInFrameUpdates = 2000;
+    [SerializeField] int maxOutOfFrameUpdates = 10000;
 
     System.Random rng;
 
@@ -53,12 +54,13 @@ public class WorldController : MonoBehaviour
         world = CreateWorldGrid();
         tilesToUpdate = new HashSet<Tile>();
         rng = new System.Random();
-        marginTilesToUpdate = new List<Tile>();
+        tilesToUpdateThisLoop = new List<Tile>();
         terrainGenerator = GetComponent<TerrainGenerator>();
         terrainGenerator.Generate(world);
         cbWorldCreated?.Invoke(world);
 
-        StartCoroutine(nameof(TileUpdateCoroutine));
+        StartCoroutine(nameof(InvokeTileUpdatesCoroutine));
+        StartCoroutine(nameof(CacheTileUpdatesCoroutine));
     }
 
     private SpaceGrid<Tile> CreateWorldGrid()
@@ -74,48 +76,47 @@ public class WorldController : MonoBehaviour
         return world;
     }
 
-    IEnumerator TileUpdateCoroutine()
-    {
-        List<Tile> tilesToUpdateThisLoop = new List<Tile>();
 
+    private IEnumerator CacheTileUpdatesCoroutine()
+    {
+       
         for (; ; ) {
+
             if (tilesToUpdate.Count > 0) {
                 HashSet<Tile> tilesToUpdateCopy = new HashSet<Tile>(tilesToUpdate);
-                Rect areaToLoad = GetAreaToLoad();
+                Rect areaToLoad = GetAreaToLoad(drawDist);
 
                 foreach (Tile tileToUpdate in tilesToUpdateCopy) {
-                    if (tileToUpdate.IsInRect(areaToLoad.Expand(drawDist))) {
-                        if (tileToUpdate.IsInRect(areaToLoad)) {
-                            tilesToUpdateThisLoop.Add(tileToUpdate);
-                            
-                        }
-                        else marginTilesToUpdate.Add(tileToUpdate);
+                    if (tileToUpdate.IsInRect(areaToLoad)) { // use better accessor for this > HashSet & Array
+                        tilesToUpdateThisLoop.Add(tileToUpdate);
                         tilesToUpdate.Remove(tileToUpdate);
+
                     }
                 }
-
-                if (tilesToUpdateThisLoop.Count == 0) {
-                    tilesToUpdateThisLoop = tilesToUpdate.Take(maxTilesToUpdatePerLoop).ToList();
-                    cbWorldChanged?.Invoke(tilesToUpdateThisLoop);
-                    tilesToUpdate.ExceptWith(tilesToUpdateThisLoop);
-                }
-            }
-
-            if (tilesToUpdateThisLoop.Count > 0) {
-                tilesToUpdateThisLoop.Shuffle();
-                cbWorldChanged?.Invoke(tilesToUpdateThisLoop.PopLastRange(maxTilesToUpdatePerLoop));
             }
 
             yield return 0;
         }
     }
-    private void Update()
+
+    private IEnumerator InvokeTileUpdatesCoroutine()
     {
-        if (marginTilesToUpdate.Count > 0) {
-            cbWorldChanged?.Invoke(marginTilesToUpdate);
-            marginTilesToUpdate.Clear();
+        for (; ; ) {
+            if (tilesToUpdateThisLoop.Count > 0) {
+                tilesToUpdateThisLoop.Shuffle();
+                cbWorldChanged?.Invoke(tilesToUpdateThisLoop.PopLastRange(maxInFrameUpdates));
+                
+            }
+            else if (tilesToUpdate.Count > 0){
+                tilesToUpdateThisLoop = tilesToUpdate.Take(maxOutOfFrameUpdates).ToList();
+                cbWorldChanged?.Invoke(tilesToUpdateThisLoop);
+                tilesToUpdate.ExceptWith(tilesToUpdateThisLoop);
+                tilesToUpdateThisLoop.Clear();
+            }
+            yield return new WaitForEndOfFrame();
         }
     }
+
     void OnTileChanged(Tile t)
     {
         tilesToUpdate.Add(t);
