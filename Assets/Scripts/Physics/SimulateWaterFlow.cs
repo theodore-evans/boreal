@@ -13,7 +13,7 @@ public class SimulateWaterFlow : MonoBehaviour
     [SerializeField] [Range(0, 1000)] int raindropsPerUpdate = 100;
     [SerializeField] [Range(0.01f, 1f)] float waterPerRaindrop = 0.1f;
     [SerializeField] [Range(0.01f, 1)] float flowRate = 0.5f;
-    [SerializeField] [Range(-0.02f, 0)] float minHead = -0.01f;
+    [SerializeField] [Range(-0.1f, 0)] float minHead = -0.01f;
 
     public void SetWorld(SpaceGrid<Tile> world)
     {
@@ -35,7 +35,7 @@ public class SimulateWaterFlow : MonoBehaviour
         for (; ; ) {
             globalEquilibrium = true;
 
-            foreach (Tile tile in openSet.Pick(openSet.Count)) Flow(tile);
+            foreach (Tile tile in openSet.ToList()) Flow(tile);
 
             if (globalEquilibrium) {
                 openSet.Clear();
@@ -46,7 +46,7 @@ public class SimulateWaterFlow : MonoBehaviour
         }
     }
 
-    void Flow(Tile tile) //TODO implement as cellular automata
+    void Flow(Tile tile)
     {
         bool equilibrated = true;
 
@@ -59,7 +59,7 @@ public class SimulateWaterFlow : MonoBehaviour
                 if (neighbour.WaterLevel - tile.WaterLevel < minHead) {
                     equilibrated = false;
 
-                    float waterFlow = Mathf.Clamp(Mathf.Lerp(0, tile.WaterLevel - neighbour.WaterLevel, flowRate * Time.deltaTime), 0, tile.WaterDepth);
+                    float waterFlow = Mathf.Clamp(Mathf.Lerp(0, tile.WaterLevel - neighbour.WaterLevel, flowRate), 0, tile.WaterDepth);
 
                     tile.WaterDepth -= waterFlow;
                     neighbour.WaterDepth += waterFlow;

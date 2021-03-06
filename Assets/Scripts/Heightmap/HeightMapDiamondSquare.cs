@@ -6,8 +6,9 @@ public class HeightMapDiamondSquare: MonoBehaviour, IHeightMapGenerator
 {
     private int _terrainPoints;
 
-    [SerializeField] float roughness;
-    [SerializeField] float cornerSeed = 0; // an initial seed value for the corners of the data
+    [SerializeField] [Range(-4,4)] float roughness;
+    [SerializeField] [Range(-4,4)] float cornerSeed = 0; // an initial seed value for the corners of the data
+    [SerializeField] [Range(0, 1)] float weight = 1;
 
     private int _seed;
 
@@ -22,11 +23,12 @@ public class HeightMapDiamondSquare: MonoBehaviour, IHeightMapGenerator
     {
         _terrainPoints = mapWidth; // map must be square with side power of two
         _seed = seed;
-        return diamondSquareAlgorithm();
+        float [,] data = DiamondSquareAlgorithm().Crop(mapWidth, mapHeight);
+        return data;
     }
 
     // adapted from https://gist.github.com/awilki01/83b65ad852a0ab30192af07cda3d7c0b
-    private float[,] diamondSquareAlgorithm()
+    private float[,] DiamondSquareAlgorithm()
     {
         //size of grid to generate, note this must be a
         //value 2^n+1
@@ -103,6 +105,6 @@ public class HeightMapDiamondSquare: MonoBehaviour, IHeightMapGenerator
             }
         }
 
-        return data.Normalize(0, 1, minHeight, maxHeight);
+        return data.Normalize(0, weight, minHeight, maxHeight);
     }
 }

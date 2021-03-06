@@ -1,16 +1,16 @@
 ﻿using UnityEngine;
 using UnityEditor;
 // TODO implement scriptable object to catch updates
-[CustomEditor(typeof(HeightMapDiamondSquare))]
-public class HeightMapGeneratorDiamondEditor : Editor
+[CustomEditor(typeof(HeightMapGeneratorPerlin))]
+public class HeightMapGeneratorPerlinEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        HeightMapDiamondSquare heightMapGenerator = (HeightMapDiamondSquare)target;
+        HeightMapGeneratorPerlin heightMapGenerator = (HeightMapGeneratorPerlin)target;
         TerrainGenerator terrainGen = heightMapGenerator.terrainGenerator;
 
         if (DrawDefaultInspector()) {
-            if (terrainGen.autoUpdate) {
+            if (terrainGen != null && terrainGen.autoUpdate) {
                 terrainGen.Generate();
             }
         }

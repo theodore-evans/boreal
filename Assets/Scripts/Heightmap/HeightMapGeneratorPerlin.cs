@@ -3,11 +3,12 @@ using Extensions;
 
 public class HeightMapGeneratorPerlin : MonoBehaviour, IHeightMapGenerator
 {
-    [SerializeField] float scale = 19;
-    [SerializeField] int octaves = 4;
+    [SerializeField] [Range(1, 100)] float scale = 19;
+    [SerializeField] [Range(1,10)] int octaves = 4;
     [SerializeField] [Range(0, 1)] float persistence = 0.5f;
-    [SerializeField] float lacunarity = 2.5f;
+    [SerializeField] [Range(1, 5)] float lacunarity = 2.5f;
     [SerializeField] Vector2 offset = new Vector2(0, 0);
+    [SerializeField] [Range(0,1)] float weight = 1;
 
     public TerrainGenerator terrainGenerator;
 
@@ -59,6 +60,6 @@ public class HeightMapGeneratorPerlin : MonoBehaviour, IHeightMapGenerator
             }
         }
 
-        return noiseMap.Normalize(0, 1, minHeight, maxHeight);
+        return noiseMap.Normalize(0, weight, minHeight, maxHeight);
     }
 }

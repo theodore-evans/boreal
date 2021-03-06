@@ -94,7 +94,7 @@ namespace Extensions
             return data;
         }
 
-        public static float[,] Add(this float[,] a, float[,] b)
+        public static float[,] Elementwise(this float[,] a, float[,] b, Func<float, float, float> operation)
         {
             for (int i = 0; i < 2; i++) {
                 if (a.GetUpperBound(i) != b.GetUpperBound(i)) {
@@ -102,26 +102,46 @@ namespace Extensions
                 }
             }
 
-            float[,] result = new float[a.GetUpperBound(0), a.GetUpperBound(1)];
+            float[,] result = new float[a.GetUpperBound(0)+1, a.GetUpperBound(1)+1];
 
             for (int x = 0; x <= result.GetUpperBound(0); x++) {
                 for (int y = 0; y <= result.GetUpperBound(1); y++) {
-                    result[x, y] = a[x, y] + b[x, y];
+                    result[x, y] = operation(a[x, y], b[x, y]);
                 }
             }
 
             return result;
         }
 
+        public static float[,] Add(this float[,] a, float[,] b)
+        {
+            return Elementwise(a, b, (a, b) => a + b);
+        }
+
         public static float[,] MultiplyByScalar(this float[,] data, float scalar)
         {
+            float[,] result = new float[data.GetUpperBound(0) + 1, data.GetUpperBound(1) + 1];
+
             for (int x = 0; x <= data.GetUpperBound(0); x++) {
                 for (int y = 0; y <= data.GetUpperBound(1); y++) {
-                    data[x, y] *= scalar;
+                    result[x, y] = data[x,y] * scalar;
                 }
             }
 
             return data;
+        }
+
+        public static float[,] Crop(this float[,] data, int newXSize, int newYSize)
+        {
+            float[,] result = new float[newXSize, newYSize];
+
+            for (int x = 0; x < newXSize; x++) {
+                for (int y = 0; y < newYSize; y++) {
+                    result[x,y] = data[x, y];
+                }
+            }
+
+            return result;
         }
 
         public static float[] Flatten(this float[,] data)

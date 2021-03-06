@@ -12,13 +12,13 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] [Range(0, 50)] float verticalScale = 1;
     [SerializeField] int seed = 0;
 
-    IHeightMapGenerator[] heightmapGenerators;
+    IHeightMapGenerator[] heightMapGenerators;
 
     public float VerticalScale { get => verticalScale; }
 
     private void Awake()
     {
-        heightmapGenerators = GetComponents<IHeightMapGenerator>();
+        heightMapGenerators = GetComponents<IHeightMapGenerator>();
     }
 
     public void RandomizeSeed()
@@ -40,11 +40,11 @@ public class TerrainGenerator : MonoBehaviour
 
             float[,] reliefMap = new float[width, height];
 
-            foreach (IHeightMapGenerator heightMapGenerator in heightmapGenerators) {
+            foreach (IHeightMapGenerator heightMapGenerator in heightMapGenerators) {
                 reliefMap = reliefMap.Add(heightMapGenerator.GenerateHeightMap(seed, width, height));
             }
 
-            reliefMap = reliefMap.MultiplyByScalar(1 / (float)heightmapGenerators.Length);
+            reliefMap = reliefMap.Normalize(0,1);
 
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {

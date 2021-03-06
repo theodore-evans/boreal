@@ -17,7 +17,7 @@ public class Tile : AbstractNode, ISurface
     private float _waterDepth = 0.0f;
     private float _altitude = 0.5f;
     private Vector3 _normal = Vector3.zero;
-    private float _waterThreshold = 0.0f;
+    private float _waterThreshold = 0f;
 
     public TypeId TypeId
     {
