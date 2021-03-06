@@ -14,19 +14,19 @@ public class WaterSimController : MonoBehaviour
         simulateDroplets = GetComponent<SimulateDroplets>();
         simulateWaterFlow = GetComponent<SimulateWaterFlow>();
 
-        wc.RegisterWorldCreatedCallback(Initialize);
+        wc.RegisterWorldCreatedCallback(RetrieveWorld);
     }
 
-    public void Initialize(SpaceGrid<Tile> world)
+    public void RetrieveWorld(SpaceGrid<Tile> world)
     {
         _world = world;
-        
     }
 
     public void StartSimulation()
     {
-        simulateDroplets.StartSimulation(_world);
-        simulateWaterFlow.StartSimulation(_world);
+        simulateWaterFlow.SetWorld(_world);
+        simulateDroplets.StartSimulation(_world); //FIXME
+        simulateWaterFlow.StartSimulation();
     }
 
     public void StopSimulation()
@@ -37,11 +37,12 @@ public class WaterSimController : MonoBehaviour
 
     public void DropWater()
     {
+        simulateWaterFlow.SetWorld(_world);
         simulateDroplets.DropAllWater();
-        simulateWaterFlow.StartSimulation(_world);
+        simulateWaterFlow.StartSimulation();
     }
 
-    public void ResetWater()
+    public void RemoveAllWater()
     {
         for (int x = 0; x < _world.GridSizeX; x++) {
             for (int y = 0; y < _world.GridSizeY; y++) {
@@ -49,5 +50,17 @@ public class WaterSimController : MonoBehaviour
             }
 
         }
+    }
+
+    public void StartRain() // extract to new class
+    {
+        simulateWaterFlow.SetWorld(_world);
+        simulateWaterFlow.StartCoroutine("RainCoroutine");
+        simulateWaterFlow.StartCoroutine("SimulateWaterCoroutine");
+    }
+
+    public void StopRain()
+    {
+        simulateWaterFlow.StopCoroutine("RainCoroutine");
     }
 }

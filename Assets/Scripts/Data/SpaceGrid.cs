@@ -19,6 +19,10 @@ public class SpaceGrid<T> where T : AbstractNode
 
     public SpaceGrid(Vector3 origin, float width, float height, float nodeSpacing)
     {
+        if (width < 0 || height < 0 || nodeSpacing < 0) {
+            throw new NotImplementedException();
+        }
+
         this.origin = origin;
         this.nodeSpacing = nodeSpacing;
         this.width = width;

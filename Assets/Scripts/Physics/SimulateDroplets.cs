@@ -7,13 +7,14 @@ public class SimulateDroplets : MonoBehaviour
 {
     SpaceGrid<Tile> _world;
 
-    [SerializeField] [Range(0, 1000)] float gravity = 10f;
-    [SerializeField] [Range(0.001f, 0.2f)] float friction = 0.02f;
-    [SerializeField] [Range(0,1000)] int numberOfParticles = 15;
+    [SerializeField] [Range(0, 10f)] float gravity = 1;
+    [SerializeField] [Range(0.001f, 1f)] float friction = 0.02f;
+    [SerializeField] [Range(0,500)] int numberOfParticles = 15;
     [SerializeField] [Range(0, 1)] float erosionStrength = 1.0f;
     [SerializeField] [Range(0, 1)] float maxErosion = 0.75f;
     [SerializeField] [Range(0, 1f)] float depositionLimit = 0.1f;
     [SerializeField] [Range(0, 1f)] float waterPerDroplet = 0.5f;
+    [SerializeField] [Range(0.1f, 1f)] float dropletMass = 0.001f;
     [SerializeField] bool tracePaths = true;
 
     bool simulate = false;
@@ -30,7 +31,7 @@ public class SimulateDroplets : MonoBehaviour
 
         for (int i = 0; i < numberOfParticles; i++) {
             Vector3 randomPosition = new Vector3(Random.Range(0, _world.GridSizeX), Random.Range(0, _world.GridSizeY), -10f);
-            droplets.Add(new RollingDroplet(randomPosition, Vector3.zero));
+            droplets.Add(new RollingDroplet(randomPosition, Vector3.zero, dropletMass));
         }
 
         StartCoroutine(TracePath());

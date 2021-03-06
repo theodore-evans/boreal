@@ -1,22 +1,24 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Extensions;
 
 public class TerrainGenerator : MonoBehaviour
 {
     private SpaceGrid<Tile> _world;
     public bool autoUpdate = true;
 
-    [SerializeField] int seed = 0;
     [SerializeField] [Range(0,1)] float waterLevel = 0;
     [SerializeField] TerrainType[] regions = null;
+    [SerializeField] [Range(0, 50)] float verticalScale = 1;
+    [SerializeField] int seed = 0;
 
-    IHeightMapGenerator heightmapGenerator;
+    IHeightMapGenerator[] heightmapGenerators;
 
-    public float VerticalScale { get; private set; }
+    public float VerticalScale { get => verticalScale; }
 
     private void Awake()
     {
-        heightmapGenerator = GetComponent<IHeightMapGenerator>();
+        heightmapGenerators = GetComponents<IHeightMapGenerator>();
     }
 
     public void RandomizeSeed()
@@ -36,15 +38,19 @@ public class TerrainGenerator : MonoBehaviour
             int width = _world.GridSizeX;
             int height = _world.GridSizeY;
 
-            float[,] reliefMap = heightmapGenerator.GenerateHeightMap(seed, width, height);
+            float[,] reliefMap = new float[width, height];
 
-            VerticalScale = heightmapGenerator.VerticalScale;
+            foreach (IHeightMapGenerator heightMapGenerator in heightmapGenerators) {
+                reliefMap = reliefMap.Add(heightMapGenerator.GenerateHeightMap(seed, width, height));
+            }
+
+            reliefMap = reliefMap.MultiplyByScalar(1 / (float)heightmapGenerators.Length);
 
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
 
                     Tile t = _world.GetNodeAt(x,y);
-                    t.Altitude = reliefMap[x, y];
+                    t.Altitude = reliefMap[x, y] * VerticalScale;
 
                     for (int i = 0; i < regions.Length; i++) {
                         if (t.Altitude <= regions[i].height * VerticalScale) {

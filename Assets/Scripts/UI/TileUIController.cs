@@ -18,14 +18,14 @@ public class TileUIController : MonoBehaviour
 
     private void Awake()
     {
-        wc.RegisterWorldCreatedCallback(Initialize);
+        wc.RegisterWorldCreatedCallback(RetrieveWorld);
 
         cursor = GetComponent<ICursorProvider>();
         updateBehaviours = GetComponents<ITileUIUpdateBehaviour>();
         UI_gos = GameObject.FindGameObjectsWithTag("TileUI");
     }
 
-    public void Initialize(SpaceGrid<Tile> world)
+    public void RetrieveWorld(SpaceGrid<Tile> world)
     {
         _world = world;
     }

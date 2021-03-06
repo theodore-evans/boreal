@@ -6,21 +6,22 @@ using System.Linq;
 public class SimulateWaterFlow : MonoBehaviour
 {
     SpaceGrid<Tile> _world;
-    internal HashSet<Tile> openSet;
+    internal Cache<Tile> openSet = new Cache<Tile>();
 
     bool globalEquilibrium;
 
+    [SerializeField] [Range(0, 1000)] int raindropsPerUpdate = 100;
+    [SerializeField] [Range(0.01f, 1f)] float waterPerRaindrop = 0.1f;
     [SerializeField] [Range(0.01f, 1)] float flowRate = 0.5f;
     [SerializeField] [Range(-0.02f, 0)] float minHead = -0.01f;
 
-    public void Start()
-    {
-        openSet = new HashSet<Tile>();
-    }
-
-    public void StartSimulation(SpaceGrid<Tile> world)
+    public void SetWorld(SpaceGrid<Tile> world)
     {
         _world = world;
+    }
+
+    public void StartSimulation()
+    {
         StartCoroutine(nameof(SimulateWaterCoroutine));
     }
 
@@ -34,14 +35,14 @@ public class SimulateWaterFlow : MonoBehaviour
         for (; ; ) {
             globalEquilibrium = true;
 
-            foreach (Tile tile in openSet.ToList()) Flow(tile);
+            foreach (Tile tile in openSet.Pick(openSet.Count)) Flow(tile);
 
             if (globalEquilibrium) {
                 openSet.Clear();
                 yield break;
             }
 
-            yield return new WaitForFixedUpdate();
+            yield return new WaitForEndOfFrame();
         }
     }
 
@@ -69,5 +70,20 @@ public class SimulateWaterFlow : MonoBehaviour
         else openSet.Remove(tile);
 
         if (!equilibrated) globalEquilibrium = false;
+    }
+
+    private IEnumerator RainCoroutine()
+    {
+        System.Random rng = new System.Random();
+
+        for (; ; ) {
+            for (int i = 0; i < raindropsPerUpdate; i++) {
+                Tile newWetTile = _world.Nodes[rng.Next(_world.MaxSize)];
+                newWetTile.WaterDepth += waterPerRaindrop;
+                openSet.Add(newWetTile);
+            }
+
+            yield return new WaitForEndOfFrame();
+        }
     }
 }

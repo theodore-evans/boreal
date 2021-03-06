@@ -6,7 +6,6 @@ public abstract class AbstractNode
     public int X { get; }
     public int Y { get; }
     public float Scale { get; }
-    System.Random prng;
 
     private int _hashCode;
 
@@ -17,23 +16,27 @@ public abstract class AbstractNode
 
     public override bool Equals(object obj)
     {
-        return 0 == this.CompareTo((AbstractNode)obj);
-    }
-
-    private int CompareTo(AbstractNode node)
-    {
-        return Math.Abs(X - node.X) + Math.Abs(Y - node.Y);
+        return false;
     }
 
     protected AbstractNode(int x, int y, float scale)
     {
+        if (x < 0 || y < 0) {
+            throw new NotImplementedException();
+        }
         X = x;
         Y = y;
         Scale = scale;
         _hashCode = GenerateHashCode(x, y);
     }
 
-    private int GenerateHashCode(int x, int y)
+    public int GenerateHashCode(AbstractNode node)
+    {
+        return GenerateHashCode(node.X, node.Y);
+    }
+
+    // Cantor pairing function, only for positive x, y
+    public static int GenerateHashCode(int x, int y)
     {
         return (int)(0.5 * (x + y) * (x + y + 1) + y);
     }

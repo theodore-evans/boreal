@@ -332,7 +332,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98e9d1a50be48459bac044cc15e865f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flowRate: 0.632
+  raindropsPerUpdate: 18
+  waterPerRaindrop: 0.1
+  flowRate: 0.544
   minHead: -0.02
 --- !u!4 &149497009
 Transform:
@@ -373,13 +375,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efe7ec945e89841338e8735c4c9b8267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravity: 50
-  friction: 0.03
+  gravity: 10
+  friction: 0.19
   numberOfParticles: 46
   erosionStrength: 0.199
   maxErosion: 0.19
   depositionLimit: 0.13
   waterPerDroplet: 0.526
+  dropletMass: 0.523
   tracePaths: 1
 --- !u!1 &186076950
 GameObject:
@@ -1150,12 +1153,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 436fe6c9511f4471aa15ed3535b35f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 512
-  height: 512
+  width: 256
+  height: 256
   currentCamera: {fileID: 519420031}
-  drawDist: 16
-  maxInFrameUpdates: 3000
-  maxOutOfFrameUpdates: 3000
+  drawDistance: 0.5
+  maxInFrameUpdates: 1000
+  maxOutOfFrameUpdates: 1000
 --- !u!4 &954845868
 Transform:
   m_ObjectHideFlags: 0

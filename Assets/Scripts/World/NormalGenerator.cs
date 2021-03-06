@@ -44,8 +44,8 @@ public class NormalGenerator : MonoBehaviour
         float N = GetTileAltitudeAt(x, y + 1);
         float S = GetTileAltitudeAt(x, y - 1);
 
-        Vector3 normal = new Vector3(W - E, S - N, 2);
-        return Vector3.Normalize(normal);
+        Vector3 normal = new Vector3(E - W, N - S, -2);
+        return Vector3.Normalize(-normal);
     }
 
     private float GetTileAltitudeAt(int x, int y)

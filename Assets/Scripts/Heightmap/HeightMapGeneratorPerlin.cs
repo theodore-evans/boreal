@@ -1,24 +1,22 @@
 ﻿using UnityEngine;
+using Extensions;
 
 public class HeightMapGeneratorPerlin : MonoBehaviour, IHeightMapGenerator
 {
-    public float VerticalScale { get { return verticalScale; } }
-
-    [SerializeField] [Range(0, 50)] float verticalScale = 1;
     [SerializeField] float scale = 19;
     [SerializeField] int octaves = 4;
     [SerializeField] [Range(0, 1)] float persistence = 0.5f;
     [SerializeField] float lacunarity = 2.5f;
     [SerializeField] Vector2 offset = new Vector2(0, 0);
 
-    public TerrainGenerator terrainGenerator { get; protected set; }
+    public TerrainGenerator terrainGenerator;
 
     private void Start()
     {
         terrainGenerator = GetComponent<TerrainGenerator>();
     }
 
-    public float[,] GenerateHeightMap(int seed, int mapWidth, int mapHeight, float eps = (float)1e-4)
+    public float[,] GenerateHeightMap(int seed, int mapWidth, int mapHeight)
     {
         float[,] noiseMap = new float[mapWidth, mapHeight];
 
@@ -31,8 +29,8 @@ public class HeightMapGeneratorPerlin : MonoBehaviour, IHeightMapGenerator
             octaveOffsets[i] = new Vector2(offsetX, offsetY);
         }
 
-        float minNoiseHeight = float.MaxValue;
-        float maxNoiseHeight = float.MinValue;
+        float maxHeight = float.MinValue;
+        float minHeight = float.MaxValue;
 
         float halfWidth = mapWidth / 2f;
         float halfHeight = mapHeight / 2f;
@@ -41,36 +39,26 @@ public class HeightMapGeneratorPerlin : MonoBehaviour, IHeightMapGenerator
             for (int y = 0; y < mapHeight; y++) {
                 float amplitude = 1;
                 float frequency = 1;
-                float noiseHeight = 0;
+                float height = 0;
 
                 for (int i = 0; i < octaves; i++) {
-                    float sampleX = (x - halfWidth) / (scale + eps) * frequency  + (frequency * octaveOffsets[i].x);
-                    float sampleY = (y - halfHeight) / (scale + eps) * frequency + (frequency * octaveOffsets[i].y);
+                    float sampleX = (x - halfWidth) / scale * frequency  + (frequency * octaveOffsets[i].x);
+                    float sampleY = (y - halfHeight) / scale * frequency + (frequency * octaveOffsets[i].y);
 
                     float noiseValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1;
 
-                    noiseHeight += noiseValue * amplitude;
+                    height += noiseValue * amplitude;
                     amplitude *= persistence;
                     frequency *= lacunarity;
                 }
 
-                if (noiseHeight > maxNoiseHeight) {
-                    maxNoiseHeight = noiseHeight;
-                }
-                else if (noiseHeight < minNoiseHeight) {
-                    minNoiseHeight = noiseHeight;
-                }
+                maxHeight = height > maxHeight ? height : maxHeight;
+                minHeight = height < minHeight ? height : minHeight;
 
-                noiseMap[x, y] = noiseHeight;
+                noiseMap[x, y] = height;
             }
         }
 
-        for (int y = 0; y < mapHeight; y++) {
-            for (int x = 0; x < mapWidth; x++) {
-                noiseMap[x, y] = VerticalScale * Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x, y]);
-            }
-        }
-        return noiseMap;
-
+        return noiseMap.Normalize(0, 1, minHeight, maxHeight);
     }
 }

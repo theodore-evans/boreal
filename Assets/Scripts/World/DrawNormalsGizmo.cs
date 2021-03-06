@@ -7,10 +7,10 @@ public class DrawNormalsGizmo : MonoBehaviour
     //FIXME: doesn't work, don't know why
     private void Awake()
     {
-        GetComponent<WorldController>().RegisterWorldCreatedCallback(Initialize);
+        GetComponent<WorldController>().RegisterWorldCreatedCallback(RetrieveWorld);
     }
 
-    private void Initialize(SpaceGrid<Tile> world)
+    private void RetrieveWorld(SpaceGrid<Tile> world)
     {
         _world = world;
     }

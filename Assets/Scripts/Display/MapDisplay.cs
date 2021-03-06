@@ -46,7 +46,7 @@ public class MapDisplay : MonoBehaviour
         }
     }
 
-    private void Awake()
+    private void Awake() // this whole setup smells TODO refactor
     {
         wc.RegisterWorldCreatedCallback(Initialize);
 
@@ -60,7 +60,6 @@ public class MapDisplay : MonoBehaviour
 
         width = wc.WorldWidth;
         height = wc.WorldHeight;
-        verticalScale = wc.WorldVerticalScale;
 
         Vector2 bottomLeftCorner = wc.Origin;
 
@@ -78,7 +77,7 @@ public class MapDisplay : MonoBehaviour
     {
         foreach (Tile t in changedTiles) {
             Color tileControl = tileColours[(int)t.TypeId];
-            tileControl.a = t.WaterDepth / verticalScale;
+            tileControl.a = t.WaterDepth / wc.WorldVerticalScale;
             mapTexture.control.SetPixel(t.X, t.Y, tileControl);
 
             Color tileNormal = new Color(t.Normal.x, t.Normal.y, t.Normal.z);

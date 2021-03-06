@@ -17,34 +17,37 @@ public class WorldController : MonoBehaviour
     [SerializeField] private int height = 1;
     private float nodeSpacing = 1f;
 
-    HashSet<Tile> tilesToUpdate;
-    List<Tile> tilesToUpdateThisLoop;
+    Cache<Tile> tilesToUpdate = new Cache<Tile>();
+    Cache<Tile> tilesToUpdateThisLoop = new Cache<Tile>();
 
     private Action<SpaceGrid<Tile>> cbWorldCreated;
     private Action<IEnumerable<Tile>> cbWorldChanged;
 
     TerrainGenerator terrainGenerator;
     [SerializeField] Camera currentCamera = null;
-    [SerializeField] int drawDist = 256;
+    [SerializeField] [Range(0, 2)] float drawDistance = 1;
     [SerializeField] int maxInFrameUpdates = 2000;
     [SerializeField] int maxOutOfFrameUpdates = 10000;
 
-    System.Random rng;
+    System.Random rng = new System.Random();
 
     public bool TileIsOnScreen(Tile tile)
     {
         Vector3 tilePositionOnScreen = currentCamera.WorldToScreenPoint(new Vector3(tile.X, tile.Y));
 
-        return !(tilePositionOnScreen.x < -drawDist
-                || tilePositionOnScreen.y < -drawDist
-                || tilePositionOnScreen.x > Screen.width + drawDist
-                || tilePositionOnScreen.y > Screen.height + drawDist);
+        return !(tilePositionOnScreen.x < -drawDistance
+                || tilePositionOnScreen.y < -drawDistance
+                || tilePositionOnScreen.x > Screen.width + drawDistance
+                || tilePositionOnScreen.y > Screen.height + drawDistance);
     }
 
-    private Rect GetAreaToLoad(int margin = 0)
+    private Rect GetAreaToLoad(float drawDistance = 1)
     {
-        Vector2 bottomLeft = currentCamera.ScreenToWorldPoint(new Vector2(-margin, -margin));
-        Vector2 topRight = currentCamera.ScreenToWorldPoint(new Vector2(Screen.width + margin, Screen.height + margin));
+        float widthMargin = Screen.width * drawDistance;
+        float heightMargin = Screen.height * drawDistance;
+
+        Vector2 bottomLeft = currentCamera.ScreenToWorldPoint(new Vector2(-widthMargin, -heightMargin));
+        Vector2 topRight = currentCamera.ScreenToWorldPoint(new Vector2(Screen.width + widthMargin, Screen.height + heightMargin));
 
         return Rect.MinMaxRect(bottomLeft.x, bottomLeft.y, topRight.x, topRight.y);
     }
@@ -52,9 +55,7 @@ public class WorldController : MonoBehaviour
     private void Start()
     {
         world = CreateWorldGrid();
-        tilesToUpdate = new HashSet<Tile>();
-        rng = new System.Random();
-        tilesToUpdateThisLoop = new List<Tile>();
+
         terrainGenerator = GetComponent<TerrainGenerator>();
         terrainGenerator.Generate(world);
         cbWorldCreated?.Invoke(world);
@@ -81,18 +82,9 @@ public class WorldController : MonoBehaviour
     {
        
         for (; ; ) {
-
             if (tilesToUpdate.Count > 0) {
-                HashSet<Tile> tilesToUpdateCopy = new HashSet<Tile>(tilesToUpdate);
-                Rect areaToLoad = GetAreaToLoad(drawDist);
-
-                foreach (Tile tileToUpdate in tilesToUpdateCopy) {
-                    if (tileToUpdate.IsInRect(areaToLoad)) { // use better accessor for this > HashSet & Array
-                        tilesToUpdateThisLoop.Add(tileToUpdate);
-                        tilesToUpdate.Remove(tileToUpdate);
-
-                    }
-                }
+                Rect areaToLoad = GetAreaToLoad(drawDistance);
+                tilesToUpdateThisLoop.Union(tilesToUpdate.PopAllWithinArea(areaToLoad));
             }
 
             yield return 0;
@@ -103,17 +95,13 @@ public class WorldController : MonoBehaviour
     {
         for (; ; ) {
             if (tilesToUpdateThisLoop.Count > 0) {
-                tilesToUpdateThisLoop.Shuffle();
-                cbWorldChanged?.Invoke(tilesToUpdateThisLoop.PopLastRange(maxInFrameUpdates));
-                
+                cbWorldChanged?.Invoke(tilesToUpdateThisLoop.DrawRandom(maxInFrameUpdates));
             }
-            else if (tilesToUpdate.Count > 0){
-                tilesToUpdateThisLoop = tilesToUpdate.Take(maxOutOfFrameUpdates).ToList();
-                cbWorldChanged?.Invoke(tilesToUpdateThisLoop);
-                tilesToUpdate.ExceptWith(tilesToUpdateThisLoop);
-                tilesToUpdateThisLoop.Clear();
+            else if (tilesToUpdate.Count > 0) {
+                cbWorldChanged?.Invoke(tilesToUpdate.Draw(maxOutOfFrameUpdates));
+
             }
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForFixedUpdate();
         }
     }
 

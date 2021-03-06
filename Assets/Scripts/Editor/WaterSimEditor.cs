@@ -18,8 +18,16 @@ public class WaterSimEditor : Editor
             waterSim.DropWater();
         }
 
-        if (GUILayout.Button("Reset Water")) {
-            waterSim.ResetWater();
+        if (GUILayout.Button("Remove all water")) {
+            waterSim.RemoveAllWater();
+        }
+
+        if (GUILayout.Button("Start rain")) {
+            waterSim.StartRain();
+        }
+
+        if (GUILayout.Button("Stop rain")) {
+            waterSim.StopRain();
         }
 
         if (GUILayout.Button("Stop")) {
