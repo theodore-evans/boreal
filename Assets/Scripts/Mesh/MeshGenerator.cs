@@ -3,11 +3,11 @@ using System.Collections;
 
 public class MeshGenerator: MonoBehaviour
 {
-	[SerializeField] int levelOfDetail = 0;
+	[SerializeField] int levelOfDetail = 0; //TODO implement for non-square maps
 
 	public Mesh CreateMesh(Vector3 bottomLeftCorner, int width, int height)
 	{
-		int meshSimplificationIncrement = (int)Mathf.Pow(2, levelOfDetail);
+		int meshSimplificationIncrement = Mathf.Max(width, (int)Mathf.Pow(2, levelOfDetail));
 		int verticesPerLine = width / meshSimplificationIncrement + 1;
 
 		MeshData meshData = new MeshData(verticesPerLine, verticesPerLine);

@@ -35,7 +35,10 @@ namespace Extensions
     {
         public static float[] Normalize(this float[] data, float min, float max, float dataMin, float dataMax)
         {
+            if (dataMax == 1 && dataMin == 0) return data;
+
             float range = dataMax - dataMin;
+            if (range == 0) return data;
 
             return data
                 .Select(d => (d - dataMin) / range)
@@ -84,7 +87,11 @@ namespace Extensions
 
         public static float[,] Normalize(this float[,] data, float min, float max, float dataMin, float dataMax) 
         {
+            if (dataMin == 0 && dataMax == 1) return data;
+
             float range = dataMax - dataMin;
+            if (range == 0) return data;
+
             for (int x = 0; x <= data.GetUpperBound(0); x++) {
                 for (int y = 0; y <= data.GetUpperBound(1); y++) {
                     float n = (data[x, y] - dataMin) / range;
@@ -113,9 +120,9 @@ namespace Extensions
             return result;
         }
 
-        public static float[,] Add(this float[,] a, float[,] b)
+        public static float[,] Add(this float[,] array, float[,] other)
         {
-            return Elementwise(a, b, (a, b) => a + b);
+            return Elementwise(array, other, (a, b) => a + b);
         }
 
         public static float[,] MultiplyByScalar(this float[,] data, float scalar)

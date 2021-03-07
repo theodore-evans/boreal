@@ -27,8 +27,6 @@ public class MapDisplay : MonoBehaviour
     private Mesh mapMesh;
     private MapTexture mapTexture;
 
-    bool redrawMap;
-
     bool TileIsWithinMeshBounds(Tile tile, Mesh mesh)
     {
         return true;
@@ -41,8 +39,8 @@ public class MapDisplay : MonoBehaviour
 
         public MapTexture(Texture2D controlTexture, Texture2D normalTexture)
         {
-            this.control = controlTexture;
-            this.normal = normalTexture;
+            control = controlTexture;
+            normal = normalTexture;
         }
     }
 

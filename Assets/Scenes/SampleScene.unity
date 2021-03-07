@@ -249,7 +249,7 @@ MonoBehaviour:
   cameraOrigin_go: {fileID: 519420028}
   worldController_go: {fileID: 954845866}
   minScale: 3.2
-  maxScale: 30
+  maxScale: 100
 --- !u!4 &106829201
 Transform:
   m_ObjectHideFlags: 0
@@ -333,8 +333,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   raindropsPerUpdate: 18
-  waterPerRaindrop: 0.1
-  flowRate: 0.544
+  waterPerRaindrop: 0.359
+  flowRate: 0.098
   minHead: -0.02
 --- !u!4 &149497009
 Transform:
@@ -879,7 +879,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 643942072}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 39.698536, y: 62.696575, z: -46.534374}
+  m_LocalPosition: {x: 39.698536, y: 62.696575, z: 46.53437}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -968,7 +968,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5e4f2a335f654f9c803a23f0f0183f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelOfDetail: 8
+  levelOfDetail: 5
 --- !u!1 &771880239
 GameObject:
   m_ObjectHideFlags: 0
@@ -1131,7 +1131,9 @@ GameObject:
   - component: {fileID: 954845868}
   - component: {fileID: 954845867}
   - component: {fileID: 954845869}
+  - component: {fileID: 954845873}
   - component: {fileID: 954845870}
+  - component: {fileID: 954845874}
   - component: {fileID: 954845871}
   - component: {fileID: 954845872}
   m_Layer: 0
@@ -1153,8 +1155,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 436fe6c9511f4471aa15ed3535b35f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 256
-  height: 256
+  width: 64
+  height: 64
   currentCamera: {fileID: 519420031}
   drawDistance: 0.5
   maxInFrameUpdates: 1000
@@ -1186,13 +1188,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   autoUpdate: 1
-  seed: 0
   waterLevel: 0.508
   regions:
   - typeId: 3
     height: 0.71
   - typeId: 2
     height: 1
+  verticalScale: 15.5
+  seed: 0
 --- !u!114 &954845870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1202,15 +1205,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 954845866}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab67ba4130e53411d9b464add91d6c9c, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e4355f607b464f8c99243ea7a8b5dc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  verticalScale: 25.1
-  scale: 49
+  scale: 59.5
   octaves: 4
-  persistence: 0.25
+  persistence: 0.181
   lacunarity: 2.5
   offset: {x: 0, y: 0}
+  weight: 0
+  terrainGenerator: {fileID: 0}
 --- !u!114 &954845871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1235,6 +1239,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea78b9fe0ca3d4ea286dd68786bee5c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &954845873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 954845866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af9a5b3a99b9e4a48a40abe1b07d1dcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roughness: 1.56
+  cornerSeed: 0.59
+  weight: 0
+  terrainGenerator: {fileID: 0}
+--- !u!114 &954845874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 954845866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff79f42cee7e34e6e8758f381ee16942, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  function: 0
+  xParameter: 1
+  yParameter: 1
+  weight: 0.811
+  terrainGenerator: {fileID: 0}
 --- !u!1 &968541465
 GameObject:
   m_ObjectHideFlags: 0

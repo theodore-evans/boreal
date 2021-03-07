@@ -6,8 +6,8 @@ public class HeightMapDiamondSquare: MonoBehaviour, IHeightMapGenerator
 {
     private int _terrainPoints;
 
-    [SerializeField] [Range(-4,4)] float roughness;
-    [SerializeField] [Range(-4,4)] float cornerSeed = 0; // an initial seed value for the corners of the data
+    [SerializeField] [Range(-4,4)] float roughness = 1;
+    [SerializeField] [Range(-4,4)] float cornerSeed = 1; // an initial seed value for the corners of the data
     [SerializeField] [Range(0, 1)] float weight = 1;
 
     private int _seed;
