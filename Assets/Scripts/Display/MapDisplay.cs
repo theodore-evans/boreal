@@ -78,8 +78,9 @@ public class MapDisplay : MonoBehaviour
             tileControl.a = t.WaterDepth / wc.WorldVerticalScale;
             mapTexture.control.SetPixel(t.X, t.Y, tileControl);
 
-            Color tileNormal = new Color(t.Normal.x, t.Normal.y, t.Normal.z);
-            mapTexture.normal.SetPixel(t.X, t.Y, tileNormal);
+            Vector3 tileNormal = new Vector3(t.Normal.x, t.Normal.y, t.Normal.z) * 0.5f + 0.5f * Vector3.one;
+            Color tileNormalColor = new Color(tileNormal.x, tileNormal.y, tileNormal.z);
+            mapTexture.normal.SetPixel(t.X, t.Y, tileNormalColor);
         }
         mapTexture.normal.Apply();
         mapTexture.control.Apply();

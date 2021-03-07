@@ -56,7 +56,11 @@ Shader "Custom/SplatLayers" {
         col += splat_control.g * tex2D (_Splat1, IN.uv_Splat1).rgb;
         col += splat_control.b * tex2D (_Splat2, IN.uv_Splat2).rgb * (1 - splat_control.a);
         o.Albedo = col;
-        o.Normal = tex2D(_BumpMap, IN.uv_BumpMap);
+ 
+        float3 normalDirection = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+        normalDirection.z = -normalDirection.z;
+
+        o.Normal = normalDirection;
      }
      ENDCG
    }
