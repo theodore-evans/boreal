@@ -6,16 +6,15 @@ using System.Linq;
 
 public class Cache<T> : IEnumerable<T> where T : AbstractNode
 {
+    private Dictionary<int, T> inner = new Dictionary<int, T>();
+    private int GenerateHashCode(int x, int y) => AbstractNode.GenerateHashCode(x, y); // TODO: is there a way to get T.GenerateHashCode in case it is overriden?
+
     public Cache() : base() { }
 
-    public Cache(Cache<T> cacheToCopy) : base()
+    public Cache(IEnumerable<T> source) : base()
     {
-        foreach (T item in cacheToCopy) Add(item);
+        foreach (T item in source) Add(item);
     }
-
-    private Dictionary<int, T> inner = new Dictionary<int, T>();
-    private int GenerateHashCode(int x, int y) => AbstractNode.GenerateHashCode(x, y);
-    // TODO: is there a way to get T.GenerateHashCode in case it is overriden?
 
     public int Count => inner.Count;
 
@@ -48,6 +47,11 @@ public class Cache<T> : IEnumerable<T> where T : AbstractNode
     public bool Contains(T item)
     {
         return inner.ContainsKey(item.GetHashCode());
+    }
+
+    public bool Contains(int x, int y)
+    {
+        return inner.ContainsKey(GenerateHashCode(x, y));
     }
 
     public void ExceptWith(ICollection<T> other)

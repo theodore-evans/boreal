@@ -41,12 +41,13 @@ Shader "Custom/SplatLayers" {
        float2 uv_Splat1 : TEXCOORD2;
        float2 uv_Splat2 : TEXCOORD3;
        float2 uv_Splat3 : TEXCOORD4;
-       float2 uv_BumpMap;
+       float2 uv_NormalMap;
+       
        float3 worldNormal;
        INTERNAL_DATA
      };
  
-     sampler2D _Control, _BumpMap;
+     sampler2D _Control, _NormalMap;
      sampler2D _Splat0,_Splat1,_Splat2,_Splat3;
  
      void surf (Input IN, inout SurfaceOutput o) {
@@ -57,8 +58,8 @@ Shader "Custom/SplatLayers" {
         col += splat_control.b * tex2D (_Splat2, IN.uv_Splat2).rgb * (1 - splat_control.a);
         o.Albedo = col;
  
-        float3 normalDirection = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
-        normalDirection.z = -normalDirection.z;
+        float3 normalDirection = UnpackNormal(tex2D(_NormalMap, IN.uv_NormalMap));
+        normalDirection.z = -normalDirection.z; // correct for other-handedness of Unity world coordinates
 
         o.Normal = normalDirection;
      }

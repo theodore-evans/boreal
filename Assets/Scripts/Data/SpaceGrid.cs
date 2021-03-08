@@ -14,12 +14,13 @@ public class SpaceGrid<T> where T : AbstractNode
     public int MaxSize { get => GridSizeX * GridSizeY; }
 
     public T[] Nodes { get; protected set; }
+    private Cache<T> nodeCache = new Cache<T>();
 
-    bool IsInBounds(int x, int y) => (x >= 0 && x < GridSizeX && y >= 0 && y < GridSizeY);
+    bool IsOutOfBounds(int x, int y) => x < 0  || x >= GridSizeX || y < 0 || y >= GridSizeY;
 
     public SpaceGrid(Vector3 origin, float width, float height, float nodeSpacing)
     {
-        if (width < 0 || height < 0 || nodeSpacing < 0) {
+        if (width < 1 || height < 1 || nodeSpacing < 0) {
             throw new NotImplementedException();
         }
 
@@ -49,7 +50,7 @@ public class SpaceGrid<T> where T : AbstractNode
                     int checkX = x + dx;
                     int checkY = y + dy;
 
-                    if (IsInBounds(checkX, checkY)) {
+                    if (!IsOutOfBounds(checkX, checkY)) {
                         neighbours.Add(GetNodeAt(checkX, checkY));
                     }
                 }
@@ -71,7 +72,7 @@ public class SpaceGrid<T> where T : AbstractNode
 
     public T GetNodeAt(int x, int y)
     {
-        if (IsInBounds(x, y)) {
+        if (!IsOutOfBounds(x, y)) {
             return Nodes[y * GridSizeX + x]; //TODO check that this works correctly
         }
         else return default;
@@ -80,6 +81,7 @@ public class SpaceGrid<T> where T : AbstractNode
     public void SetNodeAt(int x, int y, T newNode)
     {
         Nodes[y * GridSizeX + x] = newNode;
+        nodeCache.Add(newNode);
     }
 
     public Vector3 GetNodePosition(int x, int y)

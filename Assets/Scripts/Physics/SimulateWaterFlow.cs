@@ -14,6 +14,7 @@ public class SimulateWaterFlow : MonoBehaviour
     [SerializeField] [Range(0.01f, 1f)] float waterPerRaindrop = 0.1f;
     [SerializeField] [Range(0.01f, 1)] float flowRate = 0.5f;
     [SerializeField] [Range(-0.1f, 0)] float minHead = -0.01f;
+    [SerializeField] [Range(0f, 1f)] float erosionCoeff = 0.5f;
 
     public void SetWorld(SpaceGrid<Tile> world)
     {
@@ -55,7 +56,6 @@ public class SimulateWaterFlow : MonoBehaviour
             List<Tile> neighbours = _world.GetNeighbours(tile.X, tile.Y).OrderBy(o => o.WaterLevel).ToList();
 
             foreach (Tile neighbour in neighbours) {
-
                 if (neighbour.WaterLevel - tile.WaterLevel < minHead) {
                     equilibrated = false;
 
@@ -63,6 +63,7 @@ public class SimulateWaterFlow : MonoBehaviour
 
                     tile.WaterDepth -= waterFlow;
                     neighbour.WaterDepth += waterFlow;
+                    tile.Altitude -= waterFlow * erosionCoeff * (tile.Altitude - neighbour.Altitude);
                     openSet.Add(neighbour);
                 }
             }

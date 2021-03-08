@@ -35,7 +35,7 @@ namespace Extensions
     {
         public static float[] Normalize(this float[] data, float min, float max, float dataMin, float dataMax)
         {
-            if (dataMax == 1 && dataMin == 0) return data;
+            if (dataMax == max && dataMin == min) return data;
 
             float range = dataMax - dataMin;
             if (range == 0) return data;

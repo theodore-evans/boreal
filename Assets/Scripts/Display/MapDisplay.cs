@@ -66,7 +66,7 @@ public class MapDisplay : MonoBehaviour
         mapTexture = CreateMapTexture(width, height);
 
         meshRenderer.material.SetTexture("_Control", mapTexture.control);
-        meshRenderer.material.SetTexture("_BumpMap", mapTexture.normal);
+        meshRenderer.material.SetTexture("_NormalMap", mapTexture.normal);
 
         wc.RegisterWorldChangedCallback(UpdateMap);
     }

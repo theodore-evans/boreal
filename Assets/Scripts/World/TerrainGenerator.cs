@@ -49,7 +49,7 @@ public class TerrainGenerator : MonoBehaviour
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
 
-                    Tile t = _world.GetNodeAt(x,y);
+                    Tile t = _world.GetNodeAt(x, y);
                     t.Altitude = reliefMap[x, y] * VerticalScale;
 
                     for (int i = 0; i < regions.Length; i++) {
@@ -60,6 +60,7 @@ public class TerrainGenerator : MonoBehaviour
                     }
 
                     t.WaterDepth = Mathf.Max(0, waterLevel * VerticalScale - t.Altitude);
+
                 }
             }
         }
