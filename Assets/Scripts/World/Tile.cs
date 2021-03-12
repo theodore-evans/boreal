@@ -22,7 +22,6 @@ public class Tile : AbstractNode, ISurface
     public TypeId TypeId
     {
         get {
-
             if (_waterDepth > _waterThreshold) return TypeId.Water;
             else return _type;
         }

@@ -2,5 +2,8 @@
 
 public interface IWalkabilityChecker
 {
-    bool IsWalkable(Vector3 worldPoint, float radius);
+    float MaxWalkableMovementCost { get; }
+
+    float GetMovementCost(Tile tile);
+    bool IsWalkable(Tile tile);
 }

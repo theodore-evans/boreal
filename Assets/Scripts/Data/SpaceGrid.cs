@@ -8,7 +8,9 @@ public class SpaceGrid<T> where T : AbstractNode
     private readonly float nodeSpacing;
     private readonly float width;
     private readonly float height;
+    private readonly Vector2 epsilon = 0.0001f * Vector2.one;
 
+    public Vector3 Origin { get => origin; }
     public int GridSizeX { get; }
     public int GridSizeY { get; }
     public int MaxSize { get => GridSizeX * GridSizeY; }
@@ -59,6 +61,25 @@ public class SpaceGrid<T> where T : AbstractNode
         return neighbours;
     }
 
+    internal IEnumerable<T> GetNodesOnOtherGridsNode<U>(U otherNode) where U : AbstractNode
+    {
+        List<T> nodesOnNode = new List<T>();
+
+        Vector2 bottomLeft = new Vector2(otherNode.X, otherNode.Y);
+
+        T bottomLeftNode = GetNodeAt(bottomLeft + epsilon);
+        T topRightNode = GetNodeAt(bottomLeft + otherNode.Scale * Vector2.one - epsilon);
+
+        for (int x = bottomLeftNode.X; x <= topRightNode.X; x++) {
+            for (int y = bottomLeftNode.Y; y <= topRightNode.Y; y++) {
+                nodesOnNode.Add(GetNodeAt(x, y));
+            }
+        }
+
+        return nodesOnNode;
+
+    }
+
     public T GetNodeAt(Vector3 position)
     {
         float percentX = Mathf.Clamp01( (position.x - origin.x) / width );
@@ -101,7 +122,7 @@ public class SpaceGrid<T> where T : AbstractNode
         Vector3 epsilon = 0.0001f * Vector3.one;
 
         T bottomLeftNode = GetNodeAt(bounds.center - bounds.extents + epsilon);
-        T topRightNode = GetNodeAt(bounds.center + bounds.extents - epsilon);
+        T topRightNode = GetNodeAt(bounds.center + bounds.extents + epsilon);
 
         for (int x = bottomLeftNode.X; x < topRightNode.X; x++) {
             for (int y = bottomLeftNode.Y; y < topRightNode.Y; y++) {

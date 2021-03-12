@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System;
 using System.Collections;
 
-// TODO make class more dependent + encapsulated
-
 public class AStar : MonoBehaviour, IPathfinding
 {
     PathRequestManager requestManager;
     SpaceGrid<PathNode> grid;
+
+    Heap<PathNode> openSet;
+    Cache<PathNode> closedSet;
+
+    [SerializeField] private float ascendDescendPenalty = 1f;
 
     private void Start()
     {
@@ -30,8 +33,8 @@ public class AStar : MonoBehaviour, IPathfinding
         bool pathSuccess = false;
 
         if (startNode.Walkable && targetNode.Walkable) {
-            Heap<PathNode> openSet = new Heap<PathNode>(grid.MaxSize);
-            HashSet<PathNode> closedSet = new HashSet<PathNode>();
+            openSet = new Heap<PathNode>(grid.MaxSize);
+            closedSet = new Cache<PathNode>();
 
             openSet.Add(startNode);
 
@@ -49,17 +52,22 @@ public class AStar : MonoBehaviour, IPathfinding
                         continue;
                     }
 
-                    int newCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour);
+                    float distanceToNeighbour = GetDistance(currentNode, neighbour);
+                    float newCostToNeighbour = currentNode.gCost + distanceToNeighbour;
                     if (newCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour)) {
                         neighbour.gCost = newCostToNeighbour;
                         neighbour.hCost = GetDistance(neighbour, targetNode);
                         neighbour.parent = currentNode;
 
-                        if (!openSet.Contains(neighbour))
+                        if (neighbour.Walkable && !openSet.Contains(neighbour))
                             openSet.Add(neighbour);
                     }
                 }
             }
+        }
+        else {
+            openSet.Clear();
+            closedSet.Clear();
         }
 
         yield return null;
@@ -68,6 +76,24 @@ public class AStar : MonoBehaviour, IPathfinding
 
         }
         requestManager.FinishProcessingPath(waypoints, pathSuccess);
+    }
+
+    void OnDrawGizmos()
+    {
+        if (openSet != null)
+            foreach (PathNode n in openSet) {
+                Color color = Color.blue;
+                color.a = 0.5f;
+                Gizmos.color = color;
+                Gizmos.DrawCube(grid.GetNodePosition(n) + n.Radius * new Vector3(1, 1, -2), Vector3.one * n.Radius * 2 * 0.9f);
+            }
+        if (closedSet != null)
+            foreach (PathNode n in closedSet) {
+                Color color = Color.gray;
+                color.a = 0.5f;
+                Gizmos.color = color;
+                Gizmos.DrawCube(grid.GetNodePosition(n) + n.Radius * new Vector3(1, 1, -2), Vector3.one * n.Radius * 2 * 0.9f);
+            }
     }
 
     Vector3[] RetracePath(PathNode startNode, PathNode endNode)
@@ -101,17 +127,21 @@ public class AStar : MonoBehaviour, IPathfinding
         return waypoints.ToArray();
     }
 
-    int GetDistance(PathNode nodeA, PathNode nodeB)
+    float GetDistance(PathNode nodeA, PathNode nodeB)
     {
-        int dstX = Mathf.Abs(nodeA.X - nodeB.X);
-        int dstY = Mathf.Abs(nodeA.Y - nodeB.Y);
+        float dstX = Mathf.Abs(nodeA.X - nodeB.X);
+        float dstY = Mathf.Abs(nodeA.Y - nodeB.Y);
+        float ascendDescendCost = ascendDescendPenalty * Mathf.Abs(nodeA.Altitude - nodeB.Altitude);
+
+        float distance; 
 
         if (dstX > dstY) {
-            return 14 * dstY + 10 * (dstX - dstY);
+            distance = 1.4f * dstY + 1.0f * (dstX - dstY);
         }
         else {
-            return 14 * dstX + 10 * (dstY - dstX);
+            distance = 1.4f * dstX + 1.0f * (dstY - dstX);
         }
 
+        return (distance + ascendDescendCost) * (nodeA.movementCost + nodeB.movementCost);
     }
 }

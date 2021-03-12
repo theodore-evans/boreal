@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PathGridController : MonoBehaviour
@@ -6,65 +7,76 @@ public class PathGridController : MonoBehaviour
     public bool autoUpdate = true;
     [SerializeField] bool drawGridGizmos = true;
 
-    [SerializeField] GameObject worldController_go = null;
-    [SerializeField] GameObject tileGOController_go = null;
     [SerializeField] [Range (0.1f, 0.5f)] float nodeRadius = 0.25f;
 
     public SpaceGrid<PathNode> pathGrid { get; protected set; }
+    private SpaceGrid<Tile> _world;
+    Vector3 origin;
 
-    TileGOController tileGOController;
-    WorldController worldController;
+    [SerializeField] WorldController worldController;
 
     private IWalkabilityChecker walkabilityChecker;
 
     private void Awake()
     {
-        tileGOController = tileGOController_go.GetComponent<TileGOController>();
-        worldController = worldController_go.GetComponent<WorldController>();
-
         walkabilityChecker = GetComponent<IWalkabilityChecker>();
-
-        tileGOController.RegisterTileGameObjectChangedCallback(UpdateNodesForGameObject);
-
-        CreateGrid();
+        worldController.RegisterWorldCreatedCallback(Initialize);
     }
 
+    private void Initialize(SpaceGrid<Tile> world)
+    {
+        _world = world;
+        CreateGrid();
+        Debug.Log("Created pathgrid");
+        worldController.RegisterWorldChangedCallback(UpdateWalkabilityForChangedTiles);
+    }
+    
     public void CreateGrid()
     {
-        float margin = 0.5f - nodeRadius;
-        Vector3 origin = tileGOController.transform.position + new Vector3(0.5f, 0.5f, 0);
-        float width = worldController.WorldWidth - margin;
-        float height = worldController.WorldHeight - margin;
+        CreateGrid(_world);
+    }
+
+    // TODO: implement smarter data structure
+    public void CreateGrid(SpaceGrid<Tile> world)
+    {
+        Vector3 origin = world.Origin;
+        float width = world.GridSizeX;
+        float height = world.GridSizeY;
 
         pathGrid = new SpaceGrid<PathNode>(origin, width, height, nodeRadius * 2);
 
         for (int x = 0; x < pathGrid.GridSizeX; x++) {
             for (int y = 0; y < pathGrid.GridSizeY; y++) {
-                pathGrid.SetNodeAt(x, y, new PathNode(x, y, nodeRadius));
+                pathGrid.SetNodeAt(x, y, new PathNode(x, y, nodeRadius * 2));
+            }
+        }
+
+        UpdateWalkabilityForChangedTiles(world.Nodes);
+    }
+
+    public void UpdateWalkabilityForChangedTiles(IEnumerable<Tile> changedTiles)
+    {
+        foreach (Tile tile in changedTiles) {
+            foreach (PathNode node in pathGrid.GetNodesOnOtherGridsNode(tile)) {
+                node.movementCost = walkabilityChecker.GetMovementCost(tile);
+                node.Walkable = walkabilityChecker.IsWalkable(tile);
+                node.Altitude = tile.Altitude;
             }
         }
     }
 
-    public void UpdateNodesForGameObject(GameObject go)
-    {
-        Bounds bounds = go.GetComponent<Collider>().bounds;
-
-        foreach (PathNode node in pathGrid.GetNodesInsideBounds(bounds)) {
-            Vector3 worldPoint = pathGrid.GetNodePosition(node);
-            node.Walkable = walkabilityChecker.IsWalkable(worldPoint, node.Radius);
-        }
-    }
-
-    void OnDrawGizmosSelected()
+    void OnDrawGizmos()
     {
         if (pathGrid != null && drawGridGizmos) {
  
             foreach (PathNode n in pathGrid.Nodes) {
-                Color color = (n.Walkable) ? Color.white : Color.red;
-                color.a = 0.25f;
-                Gizmos.color = color;
-
-                Gizmos.DrawCube(pathGrid.GetNodePosition(n), Vector3.one * nodeRadius * 2 * 0.9f);
+                if (n.Walkable) {
+                    Color color = Color.Lerp(Color.white, Color.red, Mathf.Clamp01(n.movementCost / walkabilityChecker.MaxWalkableMovementCost));
+                    color.a = 0.25f;
+                    Gizmos.color = color;
+                    Gizmos.DrawCube(pathGrid.GetNodePosition(n) + nodeRadius * new Vector3(1, 1, -2), Vector3.one * nodeRadius * 2 * 0.9f);
+                }
+                
             }
         }
 

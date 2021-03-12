@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+//TODO: optimise, better manage contiguous water bodies?
 public class SimulateWaterFlow : MonoBehaviour
 {
     SpaceGrid<Tile> _world;

@@ -1,15 +1,17 @@
-﻿public class PathNode : AbstractNode, IHeapItem<PathNode>
+﻿using System;
+
+public class PathNode : AbstractNode, IHeapItem<PathNode>
 {
     public float Radius { get; }
     public bool Walkable { get; set; }
 
-    public int gCost, hCost;
+    public float gCost, hCost;
+    public float movementCost;
     internal PathNode parent;
 
-    public int fCost { get => gCost + hCost; }
-
+    public float fCost { get => gCost + hCost; }
     public int heapIndex { get; set; }
-    
+    public float Altitude { get; internal set; }
 
     public PathNode(int x, int y, float radius) : base(x, y, radius)
     {

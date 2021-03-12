@@ -15,7 +15,7 @@ public class DrawNormalsGizmo : MonoBehaviour
         _world = world;
     }
 
-    void OnDrawGizmos()
+    void OnDrawGizmosSelected()
     {
         if (_world != null) {
             foreach (Tile tile in _world.Nodes) {

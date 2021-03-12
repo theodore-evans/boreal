@@ -505,10 +505,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   autoUpdate: 1
-  drawGridGizmos: 1
-  worldController_go: {fileID: 954845866}
-  tileGOController_go: {fileID: 1975108013}
-  nodeRadius: 0.25
+  drawGridGizmos: 0
+  nodeRadius: 0.5
+  worldController: {fileID: 954845867}
 --- !u!4 &329359159
 Transform:
   m_ObjectHideFlags: 0
@@ -535,6 +534,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 530fc0288f00642e4863bcf23b5a6330, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ascendDescendPenalty: 0.5
 --- !u!114 &329359161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -544,12 +544,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 329359157}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c4578c723906451da56d6d06966b4cb, type: 3}
+  m_Script: {fileID: 11500000, guid: 5be0553a94d6d4710ac11153cb842e55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unwalkableMask:
-    serializedVersion: 2
-    m_Bits: 256
+  waterDepthModifier: 2
+  gradientModifier: 10
+  maxWalkableWaterDepth: 0.5
+  maxWalkableMovementCost: 5
 --- !u!114 &329359162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1156,8 +1157,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 436fe6c9511f4471aa15ed3535b35f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 256
-  height: 256
+  width: 64
+  height: 64
   currentCamera: {fileID: 519420031}
   drawDistance: 0.5
   maxInFrameUpdates: 1000
@@ -1195,7 +1196,7 @@ MonoBehaviour:
     height: 0.615
   - typeId: 2
     height: 1
-  verticalScale: 15.5
+  verticalScale: 26.5
   seed: 0
 --- !u!114 &954845870
 MonoBehaviour:
@@ -1271,7 +1272,7 @@ MonoBehaviour:
   function: 0
   xParameter: 2
   yParameter: 2
-  weight: 0.811
+  weight: 0.15
   terrainGenerator: {fileID: 0}
 --- !u!1 &968541465
 GameObject:
@@ -1847,7 +1848,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1774891197}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 36.94, y: 43.4, z: 0}
+  m_LocalPosition: {x: 99.5, y: 108.6, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1926,7 +1927,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1974246563}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2030,7 +2031,7 @@ PrefabInstance:
     - target: {fileID: 2619078141644509764, guid: 9bcc6486b543e40259dcdfeb448110b7,
         type: 3}
       propertyPath: speed
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2619078141644509764, guid: 9bcc6486b543e40259dcdfeb448110b7,
         type: 3}
@@ -2065,7 +2066,7 @@ PrefabInstance:
     - target: {fileID: 6037895535105229147, guid: 9bcc6486b543e40259dcdfeb448110b7,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 6037895535105229147, guid: 9bcc6486b543e40259dcdfeb448110b7,
         type: 3}

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 
-public class Heap<T> where T : IHeapItem<T>
+public class Heap<T> : IEnumerable<T> where T : IHeapItem<T>
 {
     T[] items;
     int currentItemCount;
@@ -89,5 +90,20 @@ public class Heap<T> where T : IHeapItem<T>
         int itemAIndex = itemA.heapIndex;
         itemA.heapIndex = itemB.heapIndex;
         itemB.heapIndex = itemAIndex;
+    }
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        return ((IEnumerable<T>)items).GetEnumerator();
+    }
+
+    internal void Clear()
+    {
+        Array.Clear(items, 0, items.Length);
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return this.GetEnumerator(); 
     }
 }
