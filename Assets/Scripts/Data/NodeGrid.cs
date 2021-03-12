@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpaceGrid<T> where T : AbstractNode
+public class NodeGrid<T> where T : AbstractNode
 {
     private readonly Vector3 origin;
     private readonly float nodeSpacing;
@@ -20,7 +20,7 @@ public class SpaceGrid<T> where T : AbstractNode
 
     bool IsOutOfBounds(int x, int y) => x < 0  || x >= GridSizeX || y < 0 || y >= GridSizeY;
 
-    public SpaceGrid(Vector3 origin, float width, float height, float nodeSpacing)
+    public NodeGrid(Vector3 origin, float width, float height, float nodeSpacing)
     {
         if (width < 1 || height < 1 || nodeSpacing < 0) {
             throw new NotImplementedException();
@@ -103,6 +103,12 @@ public class SpaceGrid<T> where T : AbstractNode
     {
         Nodes[y * GridSizeX + x] = newNode;
         nodeCache.Add(newNode);
+    }
+
+    public Vector3 GetNodeCenter(T node)
+    {
+        Vector3 bottomLeftCorner = GetNodePosition(node);
+        return bottomLeftCorner + new Vector3(0.5f, 0.5f, 0) * node.Scale;
     }
 
     public Vector3 GetNodePosition(int x, int y)

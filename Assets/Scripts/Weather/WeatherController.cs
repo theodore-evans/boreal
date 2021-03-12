@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WeatherController : MonoBehaviour
 {
-    private SpaceGrid<Tile> _world;
+    private NodeGrid<Tile> _world;
 
     public void Initialise(WorldController wc)
     {

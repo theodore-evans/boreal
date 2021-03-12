@@ -6,16 +6,17 @@ using System.Collections;
 public class AStar : MonoBehaviour, IPathfinding
 {
     PathRequestManager requestManager;
-    SpaceGrid<PathNode> grid;
+    PathGridController gridController;
 
     Heap<PathNode> openSet;
     Cache<PathNode> closedSet;
+    NodeGrid<PathNode> grid;
 
     [SerializeField] private float ascendDescendPenalty = 1f;
 
     private void Start()
     {
-        grid = GetComponent<PathGridController>().pathGrid;
+        gridController = GetComponent<PathGridController>();
         requestManager = GetComponent<PathRequestManager>();
     }
 
@@ -26,6 +27,7 @@ public class AStar : MonoBehaviour, IPathfinding
 
     IEnumerator FindPath(Vector3 startPos, Vector3 targetPos)
     {
+        grid = gridController.pathGrid;
         PathNode startNode = grid.GetNodeAt(startPos);
         PathNode targetNode = grid.GetNodeAt(targetPos);
 
@@ -87,13 +89,6 @@ public class AStar : MonoBehaviour, IPathfinding
                 Gizmos.color = color;
                 Gizmos.DrawCube(grid.GetNodePosition(n) + n.Radius * new Vector3(1, 1, -2), Vector3.one * n.Radius * 2 * 0.9f);
             }
-        if (closedSet != null)
-            foreach (PathNode n in closedSet) {
-                Color color = Color.gray;
-                color.a = 0.5f;
-                Gizmos.color = color;
-                Gizmos.DrawCube(grid.GetNodePosition(n) + n.Radius * new Vector3(1, 1, -2), Vector3.one * n.Radius * 2 * 0.9f);
-            }
     }
 
     Vector3[] RetracePath(PathNode startNode, PathNode endNode)
@@ -118,7 +113,7 @@ public class AStar : MonoBehaviour, IPathfinding
         for (int i = 1; i < path.Count; i++) {
             Vector2 directionNew = new Vector2(path[i - 1].X - path[i].X, path[i - 1].Y - path[i].Y);
             if (directionNew != directionOld) {
-                waypoints.Add(grid.GetNodePosition(path[i]));
+                waypoints.Add(grid.GetNodeCenter(path[i]));
 
             }
             directionOld = directionNew;

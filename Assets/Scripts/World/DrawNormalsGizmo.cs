@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 public class DrawNormalsGizmo : MonoBehaviour
 {
-    private SpaceGrid<Tile> _world;
+    private NodeGrid<Tile> _world;
     //FIXME: doesn't work, don't know why
     private void Awake()
     {
         GetComponent<WorldController>().RegisterWorldCreatedCallback(RetrieveWorld);
     }
 
-    private void RetrieveWorld(SpaceGrid<Tile> world)
+    private void RetrieveWorld(NodeGrid<Tile> world)
     {
         _world = world;
     }

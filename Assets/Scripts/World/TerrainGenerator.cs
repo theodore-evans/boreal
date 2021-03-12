@@ -4,7 +4,7 @@ using Extensions;
 
 public class TerrainGenerator : MonoBehaviour
 {
-    private SpaceGrid<Tile> _world;
+    private NodeGrid<Tile> _world;
     public bool autoUpdate = true;
 
     [SerializeField] [Range(0,1)] float waterLevel = 0;
@@ -26,7 +26,7 @@ public class TerrainGenerator : MonoBehaviour
         seed = Random.Range(-100000, 100000);
     }
 
-    public void Generate(SpaceGrid<Tile> world)
+    public void Generate(NodeGrid<Tile> world)
     {
         _world = world;
         Generate();

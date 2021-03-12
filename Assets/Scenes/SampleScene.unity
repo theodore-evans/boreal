@@ -506,7 +506,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoUpdate: 1
   drawGridGizmos: 0
-  nodeRadius: 0.5
+  nodeRadius: 1
   worldController: {fileID: 954845867}
 --- !u!4 &329359159
 Transform:
@@ -534,7 +534,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 530fc0288f00642e4863bcf23b5a6330, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ascendDescendPenalty: 0.5
+  ascendDescendPenalty: 1
 --- !u!114 &329359161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -547,8 +547,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5be0553a94d6d4710ac11153cb842e55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waterDepthModifier: 2
-  gradientModifier: 10
+  waterDepthModifier: 10
+  gradientModifier: 2
   maxWalkableWaterDepth: 0.5
   maxWalkableMovementCost: 5
 --- !u!114 &329359162
@@ -1157,8 +1157,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 436fe6c9511f4471aa15ed3535b35f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 64
-  height: 64
+  width: 256
+  height: 256
   currentCamera: {fileID: 519420031}
   drawDistance: 0.5
   maxInFrameUpdates: 1000

@@ -5,7 +5,7 @@ public class WaterSimController : MonoBehaviour
 {
     [SerializeField] WorldController wc = null;
 
-    internal SpaceGrid<Tile> _world;
+    internal NodeGrid<Tile> _world;
     SimulateDroplets simulateDroplets;
     SimulateWaterFlow simulateWaterFlow;
 
@@ -17,7 +17,7 @@ public class WaterSimController : MonoBehaviour
         wc.RegisterWorldCreatedCallback(RetrieveWorld);
     }
 
-    public void RetrieveWorld(SpaceGrid<Tile> world)
+    public void RetrieveWorld(NodeGrid<Tile> world)
     {
         _world = world;
     }

@@ -14,7 +14,7 @@ public class TileUIController : MonoBehaviour
 
     Tile oldTileUnderCursor = null;
 
-    SpaceGrid<Tile> _world;
+    NodeGrid<Tile> _world;
 
     private void Awake()
     {
@@ -25,7 +25,7 @@ public class TileUIController : MonoBehaviour
         UI_gos = GameObject.FindGameObjectsWithTag("TileUI");
     }
 
-    public void RetrieveWorld(SpaceGrid<Tile> world)
+    public void RetrieveWorld(NodeGrid<Tile> world)
     {
         _world = world;
     }

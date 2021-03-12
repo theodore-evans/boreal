@@ -13,7 +13,7 @@ public class PathNode : AbstractNode, IHeapItem<PathNode>
     public int heapIndex { get; set; }
     public float Altitude { get; internal set; }
 
-    public PathNode(int x, int y, float radius) : base(x, y, radius)
+    public PathNode(int x, int y, float radius) : base(x, y, radius * 2)
     {
         Radius = radius;
         Walkable = false;

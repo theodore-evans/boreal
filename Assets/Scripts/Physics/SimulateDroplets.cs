@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SimulateDroplets : MonoBehaviour
 {
-    SpaceGrid<Tile> _world;
+    NodeGrid<Tile> _world;
 
     [SerializeField] [Range(0, 10f)] float gravity = 1;
     [SerializeField] [Range(0.001f, 1f)] float friction = 0.02f;
@@ -22,7 +22,7 @@ public class SimulateDroplets : MonoBehaviour
     internal List<RollingDroplet> droplets;
     SimulateWaterFlow simulateFlow;
 
-    public void StartSimulation(SpaceGrid<Tile> world)
+    public void StartSimulation(NodeGrid<Tile> world)
     {
         _world = world;
         simulateFlow = GetComponent<SimulateWaterFlow>();

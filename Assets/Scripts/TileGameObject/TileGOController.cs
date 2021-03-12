@@ -7,7 +7,7 @@ public class TileGOController : MonoBehaviour
 {
     [SerializeField] GameObject tilePrefab = null;
 
-    private SpaceGrid<Tile> _world;
+    private NodeGrid<Tile> _world;
 
     ITileGOUpdateBehaviour[] tileUpdateBehaviours;
 

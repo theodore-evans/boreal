@@ -16,7 +16,7 @@ public class MapDisplay : MonoBehaviour
     };
 
     [SerializeField] WorldController wc = null;
-    SpaceGrid<Tile> _world;
+    NodeGrid<Tile> _world;
     float verticalScale;
 
     MeshGenerator meshGenerator;
@@ -52,7 +52,7 @@ public class MapDisplay : MonoBehaviour
         textureGenerator = GetComponent<TextureGenerator>();
     }
 
-    private void Initialize(SpaceGrid<Tile> world)
+    private void Initialize(NodeGrid<Tile> world)
     {
         _world = world;
 

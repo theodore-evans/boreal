@@ -6,7 +6,7 @@ public class NormalGenerator : MonoBehaviour
 {
 
     WorldController wc;
-    private SpaceGrid<Tile> _world;
+    private NodeGrid<Tile> _world;
 
     private void Awake()
     {
@@ -14,7 +14,7 @@ public class NormalGenerator : MonoBehaviour
         wc.RegisterWorldCreatedCallback(Initialise);
     }
 
-    public void Initialise(SpaceGrid<Tile> world)
+    public void Initialise(NodeGrid<Tile> world)
     {
         wc.RegisterWorldChangedCallback(UpdateNormals);
         _world = world;

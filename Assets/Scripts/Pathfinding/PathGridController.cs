@@ -7,11 +7,10 @@ public class PathGridController : MonoBehaviour
     public bool autoUpdate = true;
     [SerializeField] bool drawGridGizmos = true;
 
-    [SerializeField] [Range (0.1f, 0.5f)] float nodeRadius = 0.25f;
+    [SerializeField] [Range (0.1f, 1f)] float nodeRadius = 0.25f;
 
-    public SpaceGrid<PathNode> pathGrid { get; protected set; }
-    private SpaceGrid<Tile> _world;
-    Vector3 origin;
+    public NodeGrid<PathNode> pathGrid { get; protected set; }
+    private NodeGrid<Tile> _world;
 
     [SerializeField] WorldController worldController;
 
@@ -23,11 +22,10 @@ public class PathGridController : MonoBehaviour
         worldController.RegisterWorldCreatedCallback(Initialize);
     }
 
-    private void Initialize(SpaceGrid<Tile> world)
+    private void Initialize(NodeGrid<Tile> world)
     {
         _world = world;
         CreateGrid();
-        Debug.Log("Created pathgrid");
         worldController.RegisterWorldChangedCallback(UpdateWalkabilityForChangedTiles);
     }
     
@@ -37,17 +35,17 @@ public class PathGridController : MonoBehaviour
     }
 
     // TODO: implement smarter data structure
-    public void CreateGrid(SpaceGrid<Tile> world)
+    public void CreateGrid(NodeGrid<Tile> world)
     {
         Vector3 origin = world.Origin;
         float width = world.GridSizeX;
         float height = world.GridSizeY;
 
-        pathGrid = new SpaceGrid<PathNode>(origin, width, height, nodeRadius * 2);
+        pathGrid = new NodeGrid<PathNode>(origin, width, height, nodeRadius * 2);
 
         for (int x = 0; x < pathGrid.GridSizeX; x++) {
             for (int y = 0; y < pathGrid.GridSizeY; y++) {
-                pathGrid.SetNodeAt(x, y, new PathNode(x, y, nodeRadius * 2));
+                pathGrid.SetNodeAt(x, y, new PathNode(x, y, nodeRadius));
             }
         }
 

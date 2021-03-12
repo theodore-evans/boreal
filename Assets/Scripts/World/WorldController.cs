@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class WorldController : MonoBehaviour
 {
-    public SpaceGrid<Tile> world { get; protected set; }
+    public NodeGrid<Tile> world { get; protected set; }
     public int WorldWidth { get => width; private set => width = Mathf.Max(1, value); }
     public int WorldHeight { get => height; private set => height = Mathf.Max(1, value); }
     public float WorldVerticalScale { get => terrainGenerator.VerticalScale; }
@@ -20,7 +20,7 @@ public class WorldController : MonoBehaviour
     Cache<Tile> tilesToUpdate = new Cache<Tile>();
     Cache<Tile> tilesToUpdateThisLoop = new Cache<Tile>();
 
-    private Action<SpaceGrid<Tile>> cbWorldCreated;
+    private Action<NodeGrid<Tile>> cbWorldCreated;
     private Action<IEnumerable<Tile>> cbWorldChanged;
 
     TerrainGenerator terrainGenerator;
@@ -64,9 +64,9 @@ public class WorldController : MonoBehaviour
         StartCoroutine(nameof(CacheTileUpdatesCoroutine));
     }
 
-    private SpaceGrid<Tile> CreateWorldGrid()
+    private NodeGrid<Tile> CreateWorldGrid()
     {
-        world = new SpaceGrid<Tile>(Origin, width, height, nodeSpacing);
+        world = new NodeGrid<Tile>(Origin, width, height, nodeSpacing);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Tile newTile = new Tile(x, y, nodeSpacing);
@@ -110,7 +110,7 @@ public class WorldController : MonoBehaviour
         tilesToUpdate.Add(t);
     }
 
-    public void RegisterWorldCreatedCallback(Action<SpaceGrid<Tile>> callback)
+    public void RegisterWorldCreatedCallback(Action<NodeGrid<Tile>> callback)
     {
         cbWorldCreated += callback;
     }

@@ -6,7 +6,7 @@ using System.Linq;
 //TODO: optimise, better manage contiguous water bodies?
 public class SimulateWaterFlow : MonoBehaviour
 {
-    SpaceGrid<Tile> _world;
+    NodeGrid<Tile> _world;
     internal Cache<Tile> openSet = new Cache<Tile>();
 
     bool globalEquilibrium;
@@ -17,7 +17,7 @@ public class SimulateWaterFlow : MonoBehaviour
     [SerializeField] [Range(-0.1f, 0)] float minHead = -0.01f;
     [SerializeField] [Range(0f, 1f)] float erosionCoeff = 0.5f;
 
-    public void SetWorld(SpaceGrid<Tile> world)
+    public void SetWorld(NodeGrid<Tile> world)
     {
         _world = world;
     }
