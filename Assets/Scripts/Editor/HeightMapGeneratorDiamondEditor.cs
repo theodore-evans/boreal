@@ -7,7 +7,7 @@ public class HeightMapGeneratorDiamondEditor : Editor
     public override void OnInspectorGUI()
     {
         HeightMapDiamondSquare heightMapGenerator = (HeightMapDiamondSquare)target;
-        TerrainGenerator terrainGen = heightMapGenerator.terrainGenerator;
+        TerrainGenerator terrainGen = heightMapGenerator.GetComponent<TerrainGenerator>();
 
         if (DrawDefaultInspector()) {
             if (terrainGen != null && terrainGen.autoUpdate) {

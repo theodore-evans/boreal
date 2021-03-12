@@ -12,13 +12,6 @@ public class HeightMapDiamondSquare: MonoBehaviour, IHeightMapGenerator
 
     private int _seed;
 
-    public TerrainGenerator terrainGenerator; //hack for editor updates, to be reimplemented
-
-    private void Start()
-    {
-        terrainGenerator = GetComponent<TerrainGenerator>(); //hack
-    }
-
     public float[,] GenerateHeightMap(int seed, int mapWidth, int mapHeight)
     {
         _terrainPoints = mapWidth; // map must be square with side power of two

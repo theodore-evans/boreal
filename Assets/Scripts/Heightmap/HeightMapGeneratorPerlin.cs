@@ -10,13 +10,6 @@ public class HeightMapGeneratorPerlin : MonoBehaviour, IHeightMapGenerator
     [SerializeField] Vector2 offset = new Vector2(0, 0);
     [SerializeField] [Range(0,1)] float weight = 1;
 
-    public TerrainGenerator terrainGenerator;
-
-    private void Start()
-    {
-        terrainGenerator = GetComponent<TerrainGenerator>();
-    }
-
     public float[,] GenerateHeightMap(int seed, int mapWidth, int mapHeight)
     {
         float[,] noiseMap = new float[mapWidth, mapHeight];

@@ -2,7 +2,7 @@
 using UnityEditor;
 
 [CustomEditor (typeof (PathGridController))]
-public class GridControllerEditor : Editor
+public class PathGridControllerEditor : Editor
 {
     public override void OnInspectorGUI()
     {

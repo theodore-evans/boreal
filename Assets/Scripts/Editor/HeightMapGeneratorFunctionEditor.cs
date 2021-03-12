@@ -7,7 +7,7 @@ public class HeightMapGeneratorFunctionEditor : Editor
     public override void OnInspectorGUI()
     {
         HeightMapGeneratorFunction heightMapGenerator = (HeightMapGeneratorFunction)target;
-        TerrainGenerator terrainGen = heightMapGenerator.terrainGenerator;
+        TerrainGenerator terrainGen = heightMapGenerator.GetComponent<TerrainGenerator>();
 
         if (DrawDefaultInspector()) {
             if (terrainGen != null && terrainGen.autoUpdate) {

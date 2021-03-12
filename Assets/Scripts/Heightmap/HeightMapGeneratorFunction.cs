@@ -22,13 +22,6 @@ public class HeightMapGeneratorFunction : MonoBehaviour, IHeightMapGenerator
     private int width;
     private int height;
 
-    public TerrainGenerator terrainGenerator; //hack for editor updates, to be reimplemented
-
-    private void Start()
-    {
-        terrainGenerator = GetComponent<TerrainGenerator>(); //hack
-    }
-
     public float[,] GenerateHeightMap(int seed, int mapWidth, int mapHeight)
     {
         width = mapWidth;

@@ -3,20 +3,19 @@
 public class PathNode : AbstractNode, IHeapItem<PathNode>
 {
     public float Radius { get; }
-    public bool Walkable { get; set; }
 
-    public float gCost, hCost;
-    public float movementCost;
+    public float gCost, hCost, movementCost;
+    public float w;
     internal PathNode parent;
 
-    public float fCost { get => gCost + hCost; }
+    public float fCost { get => gCost + w * hCost; }
     public int heapIndex { get; set; }
     public float Altitude { get; internal set; }
 
-    public PathNode(int x, int y, float radius) : base(x, y, radius * 2)
+    public PathNode(int x, int y, float radius, float heuristicWeight = 1) : base(x, y, radius * 2)
     {
         Radius = radius;
-        Walkable = false;
+        w = heuristicWeight;
     }
 
     public int CompareTo(PathNode nodeToCompare)
