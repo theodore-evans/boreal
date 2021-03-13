@@ -2,5 +2,5 @@
 
 public interface IWalkabilityChecker
 {
-    float GetMovementCost(Tile tile);
+    float GetMovementPenalty(Tile tile);
 }

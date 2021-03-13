@@ -13,10 +13,10 @@ public class AStar : MonoBehaviour, IPathfinding
     NodeGrid<PathNode> grid;
 
     [SerializeField] private float ascendDescendPenalty = 1f;
-    [SerializeField] public float maxMovementCost = 5f;
+    [SerializeField] public float maxMovementPenalty = 5f;
 
-    public float MaxMovementCost { get => maxMovementCost; }
-    public bool IsWalkable(PathNode node) => node.movementCost < maxMovementCost;
+    public float MaxMovementCost { get => maxMovementPenalty; }
+    public bool IsWalkable(PathNode node) => node.movementPenalty < maxMovementPenalty;
 
     private void Start()
     {
@@ -58,16 +58,16 @@ public class AStar : MonoBehaviour, IPathfinding
                     if (!IsWalkable(neighbour) || closedSet.Contains(neighbour)) {
                         continue;
                     }
-
-                    float distanceToNeighbour = GetDistance(currentNode, neighbour);
-                    float newCostToNeighbour = currentNode.gCost + distanceToNeighbour + neighbour.movementCost;
+                    float newCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour) * neighbour.movementPenalty;
                     if (newCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour)) {
                         neighbour.gCost = newCostToNeighbour;
                         neighbour.hCost = GetDistance(neighbour, targetNode);
                         neighbour.parent = currentNode;
 
-                        if (IsWalkable(neighbour) && !openSet.Contains(neighbour))
+                        if (!openSet.Contains(neighbour))
                             openSet.Add(neighbour);
+                        else
+                            openSet.UpdateItem(neighbour);
                     }
                 }
             }

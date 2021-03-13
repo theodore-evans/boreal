@@ -4,11 +4,14 @@ public class PathNode : AbstractNode, IHeapItem<PathNode>
 {
     public float Radius { get; }
 
-    public float gCost, hCost, movementCost;
+    public float gCost, hCost, movementPenalty;
     public float w;
     internal PathNode parent;
 
-    public float fCost { get => gCost + w * hCost; }
+    public float fCost { get => gCost < hCost ? gCost + w * hCost : (gCost + (2 * w - 1) * hCost) / w; }
+    //https://webdocs.cs.ualberta.ca/~nathanst/papers/chen2021general.pdf
+    //via http://theory.stanford.edu/~amitp/GameProgramming/Variations.html
+
     public int heapIndex { get; set; }
     public float Altitude { get; internal set; }
 
