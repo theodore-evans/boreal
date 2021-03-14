@@ -8,8 +8,9 @@ public class HeightMapGeneratorPerlin : MonoBehaviour, IHeightMapGenerator
     [SerializeField] [Range(0, 1)] float persistence = 0.5f;
     [SerializeField] [Range(1, 5)] float lacunarity = 2.5f;
     [SerializeField] Vector2 offset = new Vector2(0, 0);
+    [SerializeField] [Range(0, 5)] private float power = 1;
     [SerializeField] [Range(0,1)] float weight = 1;
-
+    
     public float[,] GenerateHeightMap(int seed, int mapWidth, int mapHeight)
     {
         float[,] noiseMap = new float[mapWidth, mapHeight];
@@ -39,7 +40,7 @@ public class HeightMapGeneratorPerlin : MonoBehaviour, IHeightMapGenerator
                     float sampleX = (x - halfWidth) / scale * frequency  + (frequency * octaveOffsets[i].x);
                     float sampleY = (y - halfHeight) / scale * frequency + (frequency * octaveOffsets[i].y);
 
-                    float noiseValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1;
+                    float noiseValue = Mathf.PerlinNoise(sampleX, sampleY);
 
                     height += noiseValue * amplitude;
                     amplitude *= persistence;
@@ -49,7 +50,7 @@ public class HeightMapGeneratorPerlin : MonoBehaviour, IHeightMapGenerator
                 maxHeight = height > maxHeight ? height : maxHeight;
                 minHeight = height < minHeight ? height : minHeight;
 
-                noiseMap[x, y] = height;
+                noiseMap[x, y] = power != 1 ? Mathf.Pow(height, power) : height;
             }
         }
 

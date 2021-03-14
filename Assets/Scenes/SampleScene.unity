@@ -335,7 +335,7 @@ MonoBehaviour:
   raindropsPerUpdate: 18
   waterPerRaindrop: 0.359
   flowRate: 0.098
-  minHead: -0.02
+  minHead: 0
   erosionCoeff: 0.05
 --- !u!4 &149497009
 Transform:
@@ -538,7 +538,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ascendDescendPenalty: 3
-  maxMovementCost: 50
+  maxMovementPenalty: 5
 --- !u!114 &329359161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1144,6 +1144,7 @@ GameObject:
   - component: {fileID: 954845873}
   - component: {fileID: 954845870}
   - component: {fileID: 954845874}
+  - component: {fileID: 954845875}
   - component: {fileID: 954845871}
   - component: {fileID: 954845872}
   m_Layer: 0
@@ -1165,8 +1166,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 436fe6c9511f4471aa15ed3535b35f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 512
-  height: 512
+  width: 256
+  height: 256
   currentCamera: {fileID: 519420031}
   drawDistance: 0.5
   maxInFrameUpdates: 1000
@@ -1198,7 +1199,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   autoUpdate: 1
-  waterLevel: 0.508
+  seaLevel: 0.5
+  waterLevelAdjustment: 0
   regions:
   - typeId: 3
     height: 0.615
@@ -1224,6 +1226,7 @@ MonoBehaviour:
   lacunarity: 2.5
   offset: {x: 0, y: 0}
   weight: 0.859
+  power: 1
 --- !u!114 &954845871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1275,10 +1278,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff79f42cee7e34e6e8758f381ee16942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  function: 0
+  function: 2
   xParameter: 2
   yParameter: 2
   weight: 0.15
+--- !u!114 &954845875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 954845866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff79f42cee7e34e6e8758f381ee16942, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  function: 1
+  xParameter: 1
+  yParameter: 1
+  weight: 1
 --- !u!1 &968541465
 GameObject:
   m_ObjectHideFlags: 0

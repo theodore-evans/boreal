@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Collections;
 
+// TODO: Implement Block A*: file:///Users/theoevans/Downloads/4055-17651-1-PB.pdf
 public class AStar : MonoBehaviour, IPathfinding
 {
     PathRequestManager requestManager;

@@ -7,7 +7,8 @@ public class TerrainGenerator : MonoBehaviour
     private NodeGrid<Tile> _world;
     public bool autoUpdate = true;
 
-    [SerializeField] [Range(0,1)] float waterLevel = 0;
+    [SerializeField] [Range(0, 1)] float seaLevel = 0;
+    [SerializeField] [Range(0, 1)] float waterLevelAdjustment = 0;
     [SerializeField] TerrainType[] regions = null;
     [SerializeField] [Range(0, 50)] float verticalScale = 1;
     [SerializeField] int seed = 0;
@@ -44,22 +45,22 @@ public class TerrainGenerator : MonoBehaviour
                 reliefMap = reliefMap.Add(heightMapGenerator.GenerateHeightMap(seed, width, height));
             }
 
-            reliefMap = reliefMap.Normalize(0,1);
+            reliefMap = reliefMap.Normalize(-verticalScale * seaLevel, verticalScale * (1 - seaLevel));
 
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
 
                     Tile t = _world.GetNodeAt(x, y);
-                    t.Altitude = reliefMap[x, y] * VerticalScale;
+                    t.Altitude = reliefMap[x, y];
 
                     for (int i = 0; i < regions.Length; i++) {
-                        if (t.Altitude <= regions[i].height * VerticalScale) {
+                        if (t.Altitude <= regions[i].height * verticalScale) {
                             t.TypeId = regions[i].typeId;
                             break;
                         }
                     }
 
-                    t.WaterDepth = Mathf.Max(0, waterLevel * VerticalScale - t.Altitude);
+                    t.WaterDepth = Mathf.Max(0, -t.Altitude + waterLevelAdjustment * verticalScale);
 
                 }
             }

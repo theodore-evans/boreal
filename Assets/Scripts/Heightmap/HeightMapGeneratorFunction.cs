@@ -8,13 +8,15 @@ public class HeightMapGeneratorFunction : MonoBehaviour, IHeightMapGenerator
 {
     private enum HeightmapFunction
     {
-        Sine = 0,
-        Gradient = 1
+        Gradient = 0,
+        SineProduct = 1,
+        SineSum = 2
+        
     }
 
     private Func<float, float, float> generatingFunction;
 
-    [SerializeField] HeightmapFunction function = HeightmapFunction.Sine;
+    [SerializeField] HeightmapFunction function = HeightmapFunction.SineProduct;
     [SerializeField] float xParameter = 1;
     [SerializeField] float yParameter = 1;
     [SerializeField] [Range(0,1)] float weight = 1;
@@ -30,8 +32,10 @@ public class HeightMapGeneratorFunction : MonoBehaviour, IHeightMapGenerator
         float[,] heightMap = new float[mapWidth, mapHeight];
 
         switch (function) {
-            case HeightmapFunction.Sine:
-                generatingFunction = Sine; break;
+            case HeightmapFunction.SineProduct:
+                generatingFunction = SineProduct; break;
+            case HeightmapFunction.SineSum:
+                generatingFunction = SineSum; break;
             case HeightmapFunction.Gradient:
                 generatingFunction = Gradient; break;
             default:
@@ -57,9 +61,14 @@ public class HeightMapGeneratorFunction : MonoBehaviour, IHeightMapGenerator
         return heightMap.Normalize(0, weight, minHeight, maxHeight);
     }
 
-    private float Sine(float x, float y)
+    private float SineProduct(float x, float y)
     {
         return (float)(Math.Sin(Math.PI * x * xParameter / width) * Math.Sin(Math.PI * y * yParameter / height));
+    }
+
+    private float SineSum(float x, float y)
+    {
+        return (float)(Math.Sin(Math.PI * (x * xParameter + y * yParameter) / width));
     }
 
     private float Gradient(float x, float y)

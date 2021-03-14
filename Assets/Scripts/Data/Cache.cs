@@ -27,9 +27,13 @@ public class Cache<T> : IEnumerable<T> where T : AbstractNode
         }
     }
 
-    public void Add(T item)
+    public bool Add(T item)
     {
-        if (!Contains(item)) inner.Add(item.GetHashCode(), item);
+        if (!Contains(item)) {
+            inner.Add(item.GetHashCode(), item);
+            return true;
+        }
+        return false;
     }
 
     internal void Union(Cache<T> cache)
