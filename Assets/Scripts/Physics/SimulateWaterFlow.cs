@@ -16,12 +16,12 @@ public class SimulateWaterFlow : MonoBehaviour
     [SerializeField] [Range(0.01f, 1f)] float waterPerRaindrop = 0.1f;
     [SerializeField] [Range(0.01f, 1)] float flowRate = 0.5f;
     [SerializeField] [Range(0f, 0.1f)] float minHead = 0.05f;
-    [SerializeField] [Range(0f, 1f)] float erosionCoeff = 0.5f;
+    [SerializeField] [Range(0f, 2f)] float erosionCoeff = 0.5f;
 
     [SerializeField] bool showWaterFlow = true;
     [SerializeField] bool showOpenSet = false;
-    [SerializeField] [Range(0, 10)] int showFlowMin = 2;
-    [SerializeField] [Range(0, 10)] int showFlowMax = 10;
+    [SerializeField] [Range(0, 100)] int showFlowMin = 2;
+    [SerializeField] [Range(0, 100)] int showFlowMax = 10;
 
     private float seaLevel = 0f; // TODO actually find out from world, if not zero
 
@@ -41,6 +41,7 @@ public class SimulateWaterFlow : MonoBehaviour
 
     public void StartSimulation()
     {
+        visitedSet.Clear();
         StartCoroutine(nameof(SimulateWaterCoroutine));
     }
 
@@ -72,25 +73,26 @@ public class SimulateWaterFlow : MonoBehaviour
         if (tile.WaterDepth > minHead) {
 
             List<Tile> neighbours = _world.GetNeighbours(tile.X, tile.Y).OrderBy(o => normalizedWaterLevel(tile, o)).ToList();
-            
+
+            float erosionAmount = 0;
             foreach (Tile neighbour in neighbours) {
-                float erosionHeight = 0;
+                
                 if (tile.WaterDepth > minHead && tile.WaterLevel - neighbour.WaterLevel > minHead) {
                     equilibrated = false;
 
                     float waterFlow = Mathf.Clamp(Mathf.Lerp(0, tile.WaterLevel - neighbour.WaterLevel, flowRate), 0, tile.WaterDepth);
                     tile.WaterDepth -= waterFlow;
-                    erosionHeight = erosionCoeff * waterFlow;
-                    tile.Altitude -= erosionHeight;
+                    erosionAmount += erosionCoeff * waterFlow * (tile.Altitude - neighbour.Altitude);
 
                     if (neighbour.WaterLevel > seaLevel) {
                         neighbour.WaterDepth += waterFlow;
                         openSet.Add(neighbour);
                         visitedSet.Add(neighbour, waterFlow);
                     }
+                    else tile.WaterDepth = minHead + 0.01f;
                 }
-                //neighbour.Altitude -= erosionHeight * 0.25f;
             }
+            tile.Altitude -= erosionAmount;
         }
         else openSet.Remove(tile);
 

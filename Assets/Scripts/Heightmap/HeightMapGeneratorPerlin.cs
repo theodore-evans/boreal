@@ -9,7 +9,7 @@ public class HeightMapGeneratorPerlin : MonoBehaviour, IHeightMapGenerator
     [SerializeField] [Range(1, 5)] float lacunarity = 2.5f;
     [SerializeField] Vector2 offset = new Vector2(0, 0);
     [SerializeField] [Range(0, 5)] private float power = 1;
-    [SerializeField] [Range(0,1)] float weight = 1;
+    [SerializeField] [Range(0,5)] float weight = 1;
     
     public float[,] GenerateHeightMap(int seed, int mapWidth, int mapHeight)
     {

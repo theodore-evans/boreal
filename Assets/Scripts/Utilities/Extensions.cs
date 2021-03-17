@@ -87,7 +87,7 @@ namespace Extensions
 
         public static float[,] Normalize(this float[,] data, float min, float max, float dataMin, float dataMax) 
         {
-            if (dataMin == 0 && dataMax == 1) return data;
+            if (dataMin == min && dataMax == max) return data;
 
             float range = dataMax - dataMin;
             if (range == 0) return data;
@@ -123,6 +123,11 @@ namespace Extensions
         public static float[,] Add(this float[,] array, float[,] other)
         {
             return Elementwise(array, other, (a, b) => a + b);
+        }
+
+        public static float[,] Multiply(this float[,] array, float[,] other)
+        {
+            return Elementwise(array, other, (a, b) => a * b);
         }
 
         public static float[,] MultiplyByScalar(this float[,] data, float scalar)

@@ -26,8 +26,9 @@ public class WorldController : MonoBehaviour
     TerrainGenerator terrainGenerator;
     [SerializeField] Camera currentCamera = null;
     [SerializeField] [Range(0, 2)] float drawDistance = 1;
-    [SerializeField] int maxInFrameUpdates = 2000;
-    [SerializeField] int maxOutOfFrameUpdates = 10000;
+    [SerializeField] [Range(0,1)] float onScreenUpdateRate = 0.5f;
+    [SerializeField] [Range(0, 1)] float offScreenUpdateRate = 0.5f;
+    [SerializeField] [Range(0, 5000)] int minUpdatesPerFrame = 1000;
 
     System.Random rng = new System.Random();
 
@@ -100,13 +101,15 @@ public class WorldController : MonoBehaviour
     {
         for (; ; ) {
             if (tilesToUpdateThisLoop.Count > 0) {
-                cbWorldChanged?.Invoke(tilesToUpdateThisLoop.DrawRandom(maxInFrameUpdates));
+                int tilesToUpdateThisFrame = Mathf.Max(Mathf.CeilToInt(onScreenUpdateRate * tilesToUpdateThisLoop.Count), minUpdatesPerFrame);
+                cbWorldChanged?.Invoke(tilesToUpdateThisLoop.DrawRandom(tilesToUpdateThisFrame));
             }
             else if (tilesToUpdate.Count > 0) {
-                cbWorldChanged?.Invoke(tilesToUpdate.Draw(maxOutOfFrameUpdates));
+                int tilestoUpdateThisFrame = Mathf.Max(Mathf.CeilToInt(offScreenUpdateRate * tilesToUpdate.Count), minUpdatesPerFrame);
+                cbWorldChanged?.Invoke(tilesToUpdate.Draw(tilestoUpdateThisFrame));
 
             }
-            yield return new WaitForFixedUpdate();
+            yield return new WaitForEndOfFrame();
         }
     }
 

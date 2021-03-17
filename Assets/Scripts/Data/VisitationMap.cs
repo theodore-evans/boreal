@@ -44,4 +44,10 @@ public class VisitationMap<T>: Cache<T> where T : AbstractNode
         }
     }
 
+    public new void Clear()
+    {
+        base.Clear();
+        visits.Clear();
+    }
+
 }

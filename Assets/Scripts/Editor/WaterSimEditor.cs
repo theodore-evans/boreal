@@ -10,18 +10,6 @@ public class WaterSimEditor : Editor
 
         DrawDefaultInspector();
 
-        if (GUILayout.Button("Start")) {
-            waterSim.StartSimulation();
-        }
-
-        if (GUILayout.Button("Drop Water")) {
-            waterSim.DropWater();
-        }
-
-        if (GUILayout.Button("Remove all water")) {
-            waterSim.RemoveAllWater();
-        }
-
         if (GUILayout.Button("Start rain")) {
             waterSim.StartRain();
         }
@@ -30,8 +18,8 @@ public class WaterSimEditor : Editor
             waterSim.StopRain();
         }
 
-        if (GUILayout.Button("Stop")) {
-            waterSim.StopSimulation();
+        if (GUILayout.Button("Remove all water")) {
+            waterSim.RemoveAllWater();
         }
     }
 }

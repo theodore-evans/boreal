@@ -19,7 +19,7 @@ public class HeightMapGeneratorFunction : MonoBehaviour, IHeightMapGenerator
     [SerializeField] HeightmapFunction function = HeightmapFunction.SineProduct;
     [SerializeField] float xParameter = 1;
     [SerializeField] float yParameter = 1;
-    [SerializeField] [Range(0,1)] float weight = 1;
+    [SerializeField] [Range(0,5)] float weight = 1;
 
     private int width;
     private int height;
