@@ -54,19 +54,24 @@ public class WorldController : MonoBehaviour
 
     private void Start()
     {
-        world = CreateWorldGrid();
-
         terrainGenerator = GetComponent<TerrainGenerator>();
-        terrainGenerator.Generate(world);
-        cbWorldCreated?.Invoke(world);
+
+        CreateWorld();
 
         StartCoroutine(nameof(InvokeTileUpdatesCoroutine));
         StartCoroutine(nameof(CacheTileUpdatesCoroutine));
     }
 
-    private NodeGrid<Tile> CreateWorldGrid()
+    public void CreateWorld()
     {
-        world = new NodeGrid<Tile>(Origin, width, height, nodeSpacing);
+        world = CreateWorldGrid(Origin, width, height, nodeSpacing);
+        terrainGenerator.Generate(world);
+        cbWorldCreated?.Invoke(world);
+    }
+
+    private NodeGrid<Tile> CreateWorldGrid(Vector3 origin, int width, int height, float nodeSpacing)
+    {
+        world = new NodeGrid<Tile>(origin, width, height, nodeSpacing);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Tile newTile = new Tile(x, y, nodeSpacing);

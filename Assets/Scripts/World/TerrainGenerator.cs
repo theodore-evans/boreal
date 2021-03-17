@@ -7,12 +7,12 @@ public class TerrainGenerator : MonoBehaviour
     private NodeGrid<Tile> _world;
     public bool autoUpdate = true;
 
+    [SerializeField] int seed = 0;
+    [SerializeField] [Range(0, 50)] float verticalScale = 1;
     [SerializeField] [Range(0, 1)] float seaLevel = 0;
     [SerializeField] [Range(0, 1)] float waterLevelAdjustment = 0;
     [SerializeField] TerrainType[] regions = null;
-    [SerializeField] [Range(0, 50)] float verticalScale = 1;
-    [SerializeField] int seed = 0;
-
+    
     IHeightMapGenerator[] heightMapGenerators;
 
     public float VerticalScale { get => verticalScale; }

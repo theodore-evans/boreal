@@ -3,25 +3,30 @@ using System.Collections.Generic;
 
 public class VisitationMap<T>: Cache<T> where T : AbstractNode
 {
-    private Dictionary<int, int> visits = new Dictionary<int, int>();
+    private Dictionary<int, float> visits = new Dictionary<int, float>();
     private int GenerateHashCode(int x, int y) => AbstractNode.GenerateHashCode(x, y);
 
     public VisitationMap() : base() { }
 
     public new void Add(T item)
     {
+        Add(item, 1f);
+    }
+
+    public void Add(T item, float value)
+    {
         int hash = item.GetHashCode();
         bool alreadyContainsItem = base.Add(item);
 
         if (alreadyContainsItem) {
-            visits.Add(hash, 1);
+            visits.Add(hash, value);
         }
         else {
-            visits[hash]++;
+            visits[hash]+= value;
         }
     }
 
-    public new int this[int x, int y]
+    public new float this[int x, int y]
     {
         get {
             int hash = GenerateHashCode(x, y);
@@ -30,7 +35,7 @@ public class VisitationMap<T>: Cache<T> where T : AbstractNode
         }
     }
 
-    public int this[T node]
+    public float this[T node]
     {
         get {
             int hash = node.GetHashCode();
