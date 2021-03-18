@@ -337,8 +337,10 @@ MonoBehaviour:
   flowRate: 0.098
   minHead: 0
   erosionCoeff: 0.05
-  showFlowMin: 50
-  showFlowMax: 1000
+  showWaterFlow: 1
+  showOpenSet: 0
+  showFlowMin: 2
+  showFlowMax: 10
 --- !u!4 &149497009
 Transform:
   m_ObjectHideFlags: 0
@@ -974,7 +976,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5e4f2a335f654f9c803a23f0f0183f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelOfDetail: 5
+  levelOfDetail: 6
 --- !u!1 &771880239
 GameObject:
   m_ObjectHideFlags: 0
@@ -1172,8 +1174,9 @@ MonoBehaviour:
   height: 256
   currentCamera: {fileID: 519420031}
   drawDistance: 0.5
-  maxInFrameUpdates: 1000
-  maxOutOfFrameUpdates: 1000
+  onScreenUpdateRate: 0.2
+  offScreenUpdateRate: 0.5
+  minUpdatesPerFrame: 2000
 --- !u!4 &954845868
 Transform:
   m_ObjectHideFlags: 0
@@ -1227,8 +1230,8 @@ MonoBehaviour:
   persistence: 0.181
   lacunarity: 2.5
   offset: {x: 0, y: 0}
-  power: 1
-  weight: 0.859
+  power: 2.52
+  weight: 0.731
 --- !u!114 &954845871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1267,7 +1270,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roughness: 1.56
   cornerSeed: 0.59
-  weight: 0.841
+  weight: 0.004
 --- !u!114 &954845874
 MonoBehaviour:
   m_ObjectHideFlags: 0
