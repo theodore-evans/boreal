@@ -1,4 +1,4 @@
 ﻿public interface ITileUIUpdateBehaviour
 {
-    void UpdateTileUI(ICursorProvider cursor, Tile t);
+    void UpdateTileUI(ref ICursorProvider cursor, Tile t);
 }

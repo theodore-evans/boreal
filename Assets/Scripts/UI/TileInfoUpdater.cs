@@ -12,7 +12,7 @@ public class TileInfoUpdater : MonoBehaviour, ITileUIUpdateBehaviour
         tileInfo = tileInfo_go.GetComponent<TextMeshProUGUI>();
     }
 
-    public void UpdateTileUI(ICursorProvider cursor, Tile t)
+    public void UpdateTileUI(ref ICursorProvider cursor, Tile t)
     {
         tileInfo.text = $"[{t.X}, {t.Y}]"
             + $"\n{t.TypeId}"

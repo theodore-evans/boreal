@@ -2,7 +2,7 @@
 
 public class UpdateCameraZoomByScrolling : MonoBehaviour, ICameraUpdateBehaviour
 {
-    public void UpdateCamera(ConstrainedCamera camera, ICursorProvider cursor)
+    public void UpdateCamera(ref ConstrainedCamera camera, ref ICursorProvider cursor)
     {
         if (Input.GetAxis("Mouse ScrollWheel") != 0) {
 

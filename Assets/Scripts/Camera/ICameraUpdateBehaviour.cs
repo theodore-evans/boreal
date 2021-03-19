@@ -2,5 +2,5 @@
 
 public interface ICameraUpdateBehaviour
 {
-    void UpdateCamera(ConstrainedCamera constrainedCamera, ICursorProvider cursor);
+    void UpdateCamera(ref ConstrainedCamera constrainedCamera, ref ICursorProvider cursor);
 }

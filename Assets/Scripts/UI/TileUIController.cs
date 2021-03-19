@@ -37,7 +37,7 @@ public class TileUIController : MonoBehaviour
 
             if (t != null && t != oldTileUnderCursor) {
                 foreach (ITileUIUpdateBehaviour updateBehaviour in updateBehaviours) {
-                    updateBehaviour.UpdateTileUI(cursor, t);
+                    updateBehaviour.UpdateTileUI(ref cursor, t);
                 }
             }
 

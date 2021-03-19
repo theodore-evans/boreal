@@ -41,7 +41,7 @@ public class CameraController : MonoBehaviour
     {
         if (!cursor.IsPointerOutOfFrame) {
             foreach (ICameraUpdateBehaviour updateBehaviour in cameraUpdateBehaviours) {
-                updateBehaviour.UpdateCamera(constrainedCamera, cursor);
+                updateBehaviour.UpdateCamera(ref constrainedCamera, ref cursor);
             }
         }
     }

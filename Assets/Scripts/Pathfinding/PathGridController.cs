@@ -30,14 +30,9 @@ public class PathGridController : MonoBehaviour
 
     public void CreateGrid()
     {
-        CreateGrid(_world);
-    }
-
-    public void CreateGrid(NodeGrid<Tile> world)
-    {
-        Vector3 origin = world.Origin;
-        float width = world.GridSizeX;
-        float height = world.GridSizeY;
+        Vector3 origin = _world.Origin;
+        float width = _world.GridSizeX;
+        float height = _world.GridSizeY;
 
         grid = new NodeGrid<PathNode>(origin, width, height, nodeRadius * 2);
 
@@ -47,7 +42,7 @@ public class PathGridController : MonoBehaviour
             }
         }
 
-        UpdateWalkabilityForChangedTiles(world.Nodes);
+        UpdateWalkabilityForChangedTiles(_world.Nodes);
     }
 
     public void UpdateWalkabilityForChangedTiles(IEnumerable<Tile> changedTiles)

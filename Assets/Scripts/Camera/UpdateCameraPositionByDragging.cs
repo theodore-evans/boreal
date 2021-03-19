@@ -4,7 +4,7 @@ public class UpdateCameraPositionByDragging : MonoBehaviour, ICameraUpdateBehavi
 {
     Vector3 oldCursorPosition;
 
-    public void UpdateCamera(ConstrainedCamera camera, ICursorProvider cursor)
+    public void UpdateCamera(ref ConstrainedCamera camera, ref ICursorProvider cursor)
     {
         Vector3 oldCameraPosition = camera.Position;
 

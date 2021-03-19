@@ -91,7 +91,6 @@ public class SimulateWaterFlow : MonoBehaviour
 
             float erosionAmount = 0;
             foreach (Tile neighbour in neighbours) {
-
                 if (tile.WaterDepth > minHead && tile.WaterLevel - neighbour.WaterLevel > minHead) {
                     equilibrated = false;
 
@@ -104,7 +103,7 @@ public class SimulateWaterFlow : MonoBehaviour
                         openSet.Add(neighbour);
                         visitedSet.Add(neighbour, waterFlow);
                     }
-                    else tile.WaterDepth = minHead + 0.01f;
+                    else tile.WaterDepth = Mathf.Max(-tile.Altitude + 0.00001f, 0);
                 }
                 else neighbour.Altitude -= erosionAmount * neighbourErosionCoefficient;
             }
