@@ -16,8 +16,6 @@ public class MapDisplay : MonoBehaviour
     };
 
     [SerializeField] WorldController wc = null;
-    NodeGrid<Tile> _world;
-    float verticalScale;
 
     MeshGenerator meshGenerator;
     TextureGenerator textureGenerator;
@@ -26,11 +24,6 @@ public class MapDisplay : MonoBehaviour
     private int height;
     private Mesh mapMesh;
     private MapTexture mapTexture;
-
-    bool TileIsWithinMeshBounds(Tile tile, Mesh mesh)
-    {
-        return true;
-    }
 
     private struct MapTexture
     {
@@ -44,7 +37,7 @@ public class MapDisplay : MonoBehaviour
         }
     }
 
-    private void Awake() // this whole setup smells TODO refactor
+    private void Awake()
     {
         wc.RegisterWorldCreatedCallback(Initialize);
 
@@ -54,8 +47,6 @@ public class MapDisplay : MonoBehaviour
 
     private void Initialize(NodeGrid<Tile> world)
     {
-        _world = world;
-
         width = wc.WorldWidth;
         height = wc.WorldHeight;
 

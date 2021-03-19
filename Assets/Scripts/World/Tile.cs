@@ -68,17 +68,11 @@ public class Tile : AbstractNode
 
         set {
             _normal = value;
-            Gradient = Mathf.Tan(Mathf.Deg2Rad * Vector3.Angle(Vector3.back, _normal));
-            Downhill = Vector3.SqrMagnitude(Normal) * Vector3.forward - Vector3.Dot(Normal, Vector3.forward) * Normal;
+            AngleFromNormal = Mathf.Rad2Deg * Mathf.Acos(Vector3.Dot(Normal, Vector3.forward));
         }
     }
 
-    public Vector3 Downhill
-    {
-        get; protected set;
-    }
-
-    public float Gradient
+    public float AngleFromNormal
     {
         get; protected set;
     }

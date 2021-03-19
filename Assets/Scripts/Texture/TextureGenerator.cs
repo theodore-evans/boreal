@@ -23,12 +23,6 @@ public class TextureGenerator: MonoBehaviour
         };
         return texture;
 	}
-
-    public void UpdateTexture(Texture2D texture, Color32[] colourMap)
-    {
-        texture.SetPixels32(colourMap);
-        texture.Apply();
-    }
 }
 
 

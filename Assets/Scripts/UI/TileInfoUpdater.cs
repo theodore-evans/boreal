@@ -16,9 +16,9 @@ public class TileInfoUpdater : MonoBehaviour, ITileUIUpdateBehaviour
     {
         tileInfo.text = $"[{t.X}, {t.Y}]"
             + $"\n{t.TypeId}"
-            + "\nElevation: " + t.Altitude.ToString("F3")
-            + "\nNormal: " + t.Normal.ToString("F2")
-            + "\nGradient: " + t.Gradient.ToString("F2");
+            + "\nElevation: " + t.Altitude.ToString("F3") + "m"
+            + "\nNormal: " + t.Normal.ToString("F1")
+            + "\nGradient: " + t.AngleFromNormal.ToString("F2") + "\x00B0";
         if (t.TypeId == TypeId.Water) {
             tileInfo.text += "\nWater Depth: " + t.WaterDepth.ToString("F3")
                           + "\nWater Level: " + t.WaterLevel.ToString("F3");
