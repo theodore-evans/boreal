@@ -4,11 +4,11 @@ using System;
 
 public class Unit : MonoBehaviour
 {
-    [SerializeField] private Transform target = null;
-    [SerializeField] private float speed = 5f;
+	[SerializeField] private Transform target = null;
+	[SerializeField] private float speed = 5f;
 
-	Vector3[] path;
-	int targetIndex;
+	internal Vector3[] path;
+	internal int targetIndex;
 
 	void OnEnable()
 	{
@@ -40,23 +40,6 @@ public class Unit : MonoBehaviour
 			transform.position = Vector3.MoveTowards(transform.position, currentWaypoint, speed * Time.deltaTime);
 			yield return null;
 
-		}
-	}
-
-	public void OnDrawGizmos()
-	{
-		if (path != null) {
-			for (int i = targetIndex; i < path.Length; i++) {
-				Gizmos.color = Color.black;
-				Gizmos.DrawCube(path[i], Vector3.one);
-
-				if (i == targetIndex) {
-					Gizmos.DrawLine(transform.position, path[i]);
-				}
-				else {
-					Gizmos.DrawLine(path[i - 1], path[i]);
-				}
-			}
 		}
 	}
 }

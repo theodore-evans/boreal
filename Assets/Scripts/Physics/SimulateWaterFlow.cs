@@ -8,7 +8,7 @@ public class SimulateWaterFlow : MonoBehaviour
 {
     NodeGrid<Tile> _world;
     internal Cache<Tile> openSet = new Cache<Tile>();
-    private VisitationMap<Tile> visitedSet = new VisitationMap<Tile>();
+    internal VisitationMap<Tile> visitedSet = new VisitationMap<Tile>();
 
     bool globalEquilibrium;
 
@@ -19,13 +19,7 @@ public class SimulateWaterFlow : MonoBehaviour
     [SerializeField] [Range(0f, 1f)] float erosionCoefficient = 0.2f;
     [SerializeField] [Range(0f, 1f)] float neighbourErosionCoefficient = 0.1f;
 
-    [SerializeField] bool showWaterFlow = true;
-    [SerializeField] bool showOpenSet = false;
-    [SerializeField] [Range(0, 100)] int showFlowMin = 2;
-    [SerializeField] [Range(0, 100)] int showFlowMax = 10;
-
     private float seaLevel = 0f; // TODO actually find out from world, if not zero
-    
 
     private bool are4Connected(Tile a, Tile b) => (b.X - a.X) * (b.Y - a.Y) == 0;
 
@@ -97,7 +91,7 @@ public class SimulateWaterFlow : MonoBehaviour
 
             float erosionAmount = 0;
             foreach (Tile neighbour in neighbours) {
-                
+
                 if (tile.WaterDepth > minHead && tile.WaterLevel - neighbour.WaterLevel > minHead) {
                     equilibrated = false;
 
@@ -115,33 +109,10 @@ public class SimulateWaterFlow : MonoBehaviour
                 else neighbour.Altitude -= erosionAmount * neighbourErosionCoefficient;
             }
             tile.Altitude -= erosionAmount * erosionCoefficient;
-            
+
         }
         else openSet.Remove(tile);
 
         if (!equilibrated) globalEquilibrium = false;
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        if (visitedSet != null) {
-            foreach (Tile t in visitedSet) {
-                if (visitedSet[t] > showFlowMin) {
-                    Color color = Color.blue;
-                    if (showWaterFlow) {
-                        color.a = Mathf.Lerp(0, 1, Mathf.Clamp01((visitedSet[t] - showFlowMin) / showFlowMax));
-                    }
-                    Gizmos.color = color;
-                    Gizmos.DrawCube(new Vector3(t.X + t.Scale / 2f, t.Y + t.Scale / 2f, -2f), Vector3.one * 0.9f);
-                }
-            }
-        }
-
-        if (openSet != null && showOpenSet) {
-            foreach (Tile t in openSet) {
-                Gizmos.color = Color.gray;
-                Gizmos.DrawCube(new Vector3(t.X + t.Scale / 2f, t.Y + t.Scale / 2f, -2f), Vector3.one * 0.9f);
-            }
-        }
     }
 }

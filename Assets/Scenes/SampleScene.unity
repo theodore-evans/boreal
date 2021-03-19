@@ -311,8 +311,8 @@ GameObject:
   m_Component:
   - component: {fileID: 149497009}
   - component: {fileID: 149497010}
-  - component: {fileID: 149497011}
   - component: {fileID: 149497008}
+  - component: {fileID: 149497011}
   m_Layer: 0
   m_Name: WaterSimController
   m_TagString: Untagged
@@ -336,11 +336,8 @@ MonoBehaviour:
   waterPerRaindrop: 0.359
   flowRate: 0.098
   minHead: 0
-  erosionCoeff: 0.05
-  showWaterFlow: 1
-  showOpenSet: 0
-  showFlowMin: 2
-  showFlowMax: 10
+  erosionCoefficient: 0.2
+  neighbourErosionCoefficient: 0.065
 --- !u!4 &149497009
 Transform:
   m_ObjectHideFlags: 0
@@ -377,18 +374,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 149497007}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: efe7ec945e89841338e8735c4c9b8267, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f89a4c7842184259b60545b55e67230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravity: 10
-  friction: 0.19
-  numberOfParticles: 46
-  erosionStrength: 0.199
-  maxErosion: 0.19
-  depositionLimit: 0.13
-  waterPerDroplet: 0.526
-  dropletMass: 0.523
-  tracePaths: 1
+  showWaterFlow: 1
+  showOpenSet: 0
+  showFlowMin: 2
+  showFlowMax: 10
 --- !u!1 &186076950
 GameObject:
   m_ObjectHideFlags: 0
@@ -486,8 +478,10 @@ GameObject:
   m_Component:
   - component: {fileID: 329359159}
   - component: {fileID: 329359158}
+  - component: {fileID: 329359163}
   - component: {fileID: 329359161}
   - component: {fileID: 329359160}
+  - component: {fileID: 329359164}
   - component: {fileID: 329359162}
   m_Layer: 0
   m_Name: PathfindingController
@@ -510,9 +504,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoUpdate: 1
   worldController: {fileID: 954845867}
-  drawGridGizmos: 0
   nodeRadius: 1
-  heuristicWeight: 1.5
+  heuristicWeight: 1.74
 --- !u!4 &329359159
 Transform:
   m_ObjectHideFlags: 0
@@ -542,7 +535,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ascendDescendPenalty: 3
-  maxMovementPenalty: 5
+  maxMovementPenalty: 50
 --- !u!114 &329359161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -567,6 +560,31 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17399a0833bf24614a43b49d0a9b56b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &329359163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329359157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 293ea1070c88342c4b059e64c21534db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawGridGizmos: 0
+--- !u!114 &329359164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329359157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ee91cae007244e62b422a038454a865, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &434552291
@@ -1584,6 +1602,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1072052061}
   m_CullTransparentMesh: 0
+--- !u!1 &1409606697 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6037895535105229143, guid: 9bcc6486b543e40259dcdfeb448110b7,
+    type: 3}
+  m_PrefabInstance: {fileID: 6037895534556798385}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1409606702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1409606697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94b83a355d665465e9cbbc79d223b209, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1459018670
 GameObject:
   m_ObjectHideFlags: 0

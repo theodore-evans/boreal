@@ -4,14 +4,15 @@ using System;
 using System.Collections;
 
 // TODO: Implement Block A*: file:///Users/theoevans/Downloads/4055-17651-1-PB.pdf
+// and/or limited lookahead
 public class AStar : MonoBehaviour, IPathfinding
 {
     PathRequestManager requestManager;
     PathGridController gridController;
 
-    Heap<PathNode> openSet;
-    Cache<PathNode> closedSet;
-    NodeGrid<PathNode> grid;
+    internal Heap<PathNode> openSet;
+    internal Cache<PathNode> closedSet;
+    internal NodeGrid<PathNode> grid;
 
     [SerializeField] private float ascendDescendPenalty = 1f;
     [SerializeField] public float maxMovementPenalty = 5f;
@@ -84,18 +85,6 @@ public class AStar : MonoBehaviour, IPathfinding
 
         }
         requestManager.FinishProcessingPath(waypoints, pathSuccess);
-    }
-
-    void OnDrawGizmos()
-    {
-        if (openSet != null) {
-            foreach (PathNode n in openSet) {
-                Color color = Color.blue;
-                color.a = 0.5f;
-                Gizmos.color = color;
-                Gizmos.DrawCube(grid.GetNodePosition(n) + n.Radius * new Vector3(1, 1, -2), Vector3.one * n.Radius * 2 * 0.9f);
-            }
-        }
     }
 
     Vector3[] RetracePath(PathNode startNode, PathNode endNode)

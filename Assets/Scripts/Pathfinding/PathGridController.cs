@@ -6,15 +6,12 @@ public class PathGridController : MonoBehaviour
 {
     public bool autoUpdate = true;
 
-    public NodeGrid<PathNode> grid { get; protected set; }
+    internal NodeGrid<PathNode> grid;
     private NodeGrid<Tile> _world;
 
     [SerializeField] WorldController worldController;
-    [SerializeField] bool drawGridGizmos = false;
     [SerializeField] [Range(0.1f, 1f)] float nodeRadius = 0.25f;
     [SerializeField] [Range(0f, 4f)] float heuristicWeight = 2f;
-
-    private IPathfinding pathfinding;
 
     private IWalkabilityChecker walkabilityChecker;
 
@@ -22,7 +19,6 @@ public class PathGridController : MonoBehaviour
     {
         walkabilityChecker = GetComponent<IWalkabilityChecker>();
         worldController.RegisterWorldCreatedCallback(Initialize);
-        pathfinding = GetComponent<IPathfinding>();
     }
 
     private void Initialize(NodeGrid<Tile> world)
@@ -31,13 +27,12 @@ public class PathGridController : MonoBehaviour
         CreateGrid();
         worldController.RegisterWorldChangedCallback(UpdateWalkabilityForChangedTiles);
     }
-    
+
     public void CreateGrid()
     {
         CreateGrid(_world);
     }
 
-    // TODO: implement smarter data structure?
     public void CreateGrid(NodeGrid<Tile> world)
     {
         Vector3 origin = world.Origin;
@@ -64,19 +59,4 @@ public class PathGridController : MonoBehaviour
             }
         }
     }
-    private void OnDrawGizmos()
-    {
-        if (grid != null && drawGridGizmos) {
-            foreach (PathNode n in grid.Nodes) {
-                if (pathfinding.IsWalkable(n)) {
-                    Color color = Color.Lerp(Color.white, Color.red, Mathf.Clamp01(n.movementPenalty / pathfinding.MaxMovementCost));
-                    color.a = 0.25f;
-                    Gizmos.color = color;
-                    Gizmos.DrawCube(grid.GetNodePosition(n) + n.Radius * new Vector3(1, 1, -2), Vector3.one * n.Radius * 2 * 0.9f);
-                }
-
-            }
-        }
-    }
-    
 }

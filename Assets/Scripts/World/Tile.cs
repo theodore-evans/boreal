@@ -9,7 +9,7 @@ public enum TypeId
     Grass = 3
 }
 
-public class Tile : AbstractNode, ISurface
+public class Tile : AbstractNode
 {
     Action<Tile> cbTileChanged;
 

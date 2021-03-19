@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class DrawNormalsGizmo : MonoBehaviour
+public class DrawNormalsGizmos : MonoBehaviour
 {
     private NodeGrid<Tile> _world;
-    //FIXME: doesn't work, don't know why
     private void Awake()
     {
         GetComponent<WorldController>().RegisterWorldCreatedCallback(RetrieveWorld);
