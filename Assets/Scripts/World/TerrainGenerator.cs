@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Extensions;
 
-public class TerrainGenerator : MonoBehaviour
+public class TerrainGenerator : MonoBehaviour, ITerrainGenerator
 {
     private NodeGrid<Tile> _world;
     public bool autoUpdate = true;
@@ -12,7 +12,7 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] [Range(0, 1)] float seaLevel = 0;
     [SerializeField] [Range(0, 1)] float waterLevelAdjustment = 0;
     [SerializeField] TerrainType[] regions = null;
-    
+
     IHeightMapGenerator[] heightMapGenerators;
 
     public float VerticalScale { get => verticalScale; }

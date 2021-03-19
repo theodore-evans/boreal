@@ -16,7 +16,8 @@ public class SimulateWaterFlow : MonoBehaviour
     [SerializeField] [Range(0.01f, 1f)] float waterPerRaindrop = 0.1f;
     [SerializeField] [Range(0.01f, 1)] float flowRate = 0.5f;
     [SerializeField] [Range(0f, 0.1f)] float minHead = 0.05f;
-    [SerializeField] [Range(0f, 2f)] float erosionCoeff = 0.5f;
+    [SerializeField] [Range(0f, 1f)] float erosionCoefficient = 0.2f;
+    [SerializeField] [Range(0f, 1f)] float neighbourErosionCoefficient = 0.1f;
 
     [SerializeField] bool showWaterFlow = true;
     [SerializeField] bool showOpenSet = false;
@@ -24,12 +25,13 @@ public class SimulateWaterFlow : MonoBehaviour
     [SerializeField] [Range(0, 100)] int showFlowMax = 10;
 
     private float seaLevel = 0f; // TODO actually find out from world, if not zero
+    
 
-    private bool areDiagonalNeighbours(Tile a, Tile b) => (b.X - a.X) * (b.Y - a.Y) != 0;
+    private bool are4Connected(Tile a, Tile b) => (b.X - a.X) * (b.Y - a.Y) == 0;
 
     private float normalizedWaterLevel(Tile tileA, Tile tileB)
     {
-        if (areDiagonalNeighbours(tileA, tileB) == false)
+        if (are4Connected(tileA, tileB))
             return tileB.WaterLevel;
         else return Mathf.Lerp(tileA.WaterLevel, tileB.WaterLevel, 0.707f);
     }
@@ -39,19 +41,21 @@ public class SimulateWaterFlow : MonoBehaviour
         _world = world;
     }
 
-    public void StartSimulation()
+    public void StartRain()
     {
-        visitedSet.Clear();
+        StartCoroutine(nameof(RainCoroutine));
         StartCoroutine(nameof(SimulateWaterCoroutine));
     }
 
-    public void StopSimulation()
+    public void StopRain()
     {
-        StopCoroutine(nameof(SimulateWaterCoroutine));
+        StopCoroutine(nameof(RainCoroutine));
     }
 
     private IEnumerator SimulateWaterCoroutine()
     {
+        visitedSet.Clear();
+
         for (; ; ) {
             globalEquilibrium = true;
 
@@ -60,6 +64,23 @@ public class SimulateWaterFlow : MonoBehaviour
             if (globalEquilibrium) {
                 openSet.Clear();
                 yield break;
+            }
+
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    private IEnumerator RainCoroutine()
+    {
+        System.Random rng = new System.Random();
+
+        for (; ; ) {
+            for (int i = 0; i < raindropsPerUpdate; i++) {
+                Tile newWetTile = _world.Nodes[rng.Next(_world.MaxSize)];
+                if (newWetTile.WaterLevel > minHead) {
+                    newWetTile.WaterDepth += waterPerRaindrop;
+                    openSet.Add(newWetTile);
+                }
             }
 
             yield return new WaitForEndOfFrame();
@@ -82,7 +103,7 @@ public class SimulateWaterFlow : MonoBehaviour
 
                     float waterFlow = Mathf.Clamp(Mathf.Lerp(0, tile.WaterLevel - neighbour.WaterLevel, flowRate), 0, tile.WaterDepth);
                     tile.WaterDepth -= waterFlow;
-                    erosionAmount += erosionCoeff * waterFlow * (tile.Altitude - neighbour.Altitude);
+                    erosionAmount += waterFlow * (tile.Altitude - neighbour.Altitude);
 
                     if (neighbour.WaterLevel > seaLevel) {
                         neighbour.WaterDepth += waterFlow;
@@ -91,29 +112,14 @@ public class SimulateWaterFlow : MonoBehaviour
                     }
                     else tile.WaterDepth = minHead + 0.01f;
                 }
+                else neighbour.Altitude -= erosionAmount * neighbourErosionCoefficient;
             }
-            tile.Altitude -= erosionAmount;
+            tile.Altitude -= erosionAmount * erosionCoefficient;
+            
         }
         else openSet.Remove(tile);
 
         if (!equilibrated) globalEquilibrium = false;
-    }
-
-    private IEnumerator RainCoroutine()
-    {
-        System.Random rng = new System.Random();
-
-        for (; ; ) {
-            for (int i = 0; i < raindropsPerUpdate; i++) {
-                Tile newWetTile = _world.Nodes[rng.Next(_world.MaxSize)];
-                if (newWetTile.WaterLevel > minHead) {
-                    newWetTile.WaterDepth += waterPerRaindrop;
-                    openSet.Add(newWetTile);
-                }
-            }
-
-            yield return new WaitForEndOfFrame();
-        }
     }
 
     private void OnDrawGizmosSelected()
