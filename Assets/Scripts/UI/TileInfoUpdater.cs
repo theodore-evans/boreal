@@ -47,6 +47,5 @@ public class TileInfoUpdater : MonoBehaviour, ITileUIUpdateBehaviour
             tileInfo.text += "\nWater Depth: " + selectedTile.WaterDepth.ToString("F3")
                           + "\nWater Level: " + selectedTile.WaterLevel.ToString("F3");
         }
-        tileInfo_go.SetActive(true);
     }
 }

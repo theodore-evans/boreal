@@ -4,8 +4,7 @@ using System;
 public class TileUIController : MonoBehaviour
 {
     [SerializeField] WorldController wc = null;
-
-    GameObject[] UI_gos;
+    [SerializeField] GameObject[] UIElementGameObjects;
 
     ICursorProvider cursor;
 
@@ -26,8 +25,6 @@ public class TileUIController : MonoBehaviour
         foreach (ITileUIUpdateBehaviour updateBehaviour in updateBehaviours) {
             cbNewTileSelected += updateBehaviour.ActionWhenNewTileSelected;
         }
-
-        UI_gos = GameObject.FindGameObjectsWithTag("TileUI");
     }
 
     public void RetrieveWorld(NodeGrid<Tile> world)
@@ -38,6 +35,9 @@ public class TileUIController : MonoBehaviour
     void Update()
     {
         if (!cursor.IsPointerOutOfFrame) {
+
+            foreach (GameObject UIElement in UIElementGameObjects) UIElement.SetActive(true);
+
             Tile t = _world.GetNodeAt(cursor.GetPosition());
 
             if (t != null && t != oldTileUnderCursor) {
@@ -46,6 +46,6 @@ public class TileUIController : MonoBehaviour
 
             oldTileUnderCursor = t;
         }
-        else foreach (GameObject go in UI_gos) go.SetActive(false);
+        else foreach (GameObject go in UIElementGameObjects) go.SetActive(false);
     }
 }
