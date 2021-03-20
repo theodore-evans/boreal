@@ -5,6 +5,8 @@ using System.Collections;
 public class TileInfoUpdater : MonoBehaviour, ITileUIUpdateBehaviour
 {
     [SerializeField] GameObject tileInfo_go = null;
+    [SerializeField] float tileInfoUpdatePeriod = 1f;
+    [SerializeField] bool verbose = true;
 
     private TextMeshProUGUI tileInfo;
     private Tile selectedTile;
@@ -27,7 +29,7 @@ public class TileInfoUpdater : MonoBehaviour, ITileUIUpdateBehaviour
             if (selectedTile != null) {
                 DisplayTileInfo();
             }
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(tileInfoUpdatePeriod);
         }
     }
 
@@ -35,9 +37,12 @@ public class TileInfoUpdater : MonoBehaviour, ITileUIUpdateBehaviour
     {
         tileInfo.text = $"[{selectedTile.X}, {selectedTile.Y}]"
             + $"\n{selectedTile.TypeId}"
-            + "\nElevation: " + selectedTile.Altitude.ToString("F3") + "m"
-            + "\nNormal: " + selectedTile.Normal.ToString("F1")
+            + "\nElevation: " + selectedTile.Altitude.ToString("F3") + "m";
+        if (verbose) {
+            tileInfo.text +=
+                "\nNormal: " + selectedTile.Normal.ToString("F1")
             + "\nGradient: " + selectedTile.AngleFromNormal.ToString("F2") + "\x00B0";
+        }
         if (selectedTile.TypeId == TypeId.Water) {
             tileInfo.text += "\nWater Depth: " + selectedTile.WaterDepth.ToString("F3")
                           + "\nWater Level: " + selectedTile.WaterLevel.ToString("F3");
