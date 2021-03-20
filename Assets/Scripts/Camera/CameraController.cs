@@ -2,21 +2,22 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] WorldController worldController = null;
-    [SerializeField] Camera currCamera = null;
+    [SerializeField] Camera currentCamera = null;
     [SerializeField] GameObject cameraOrigin_go = null;
     [SerializeField] float minScale = 3;
     [SerializeField] float maxScale = 25;
 
     ICameraUpdateBehaviour[] cameraUpdateBehaviours;
     ICursorProvider cursor;
-
+    
     ConstrainedCamera constrainedCamera;
 
     void Awake()
     {
+        WorldController worldController = GetComponentInParent<WorldController>();
         cameraUpdateBehaviours = GetComponents<ICameraUpdateBehaviour>();
         cursor = GetComponent<ICursorProvider>();
+        cursor.SetCamera(ref currentCamera);
 
         worldController.RegisterWorldCreatedCallback(Initialize);
     }
@@ -30,10 +31,10 @@ public class CameraController : MonoBehaviour
         Vector2 cameraMinExtent = margin;
         Vector2 cameraMaxExtent = new Vector2(width, height) - margin;
 
-        constrainedCamera = new ConstrainedCamera(currCamera, cameraMinExtent, cameraMaxExtent, minScale, maxScale) {
+        constrainedCamera = new ConstrainedCamera(currentCamera, cameraMinExtent, cameraMaxExtent, minScale, maxScale) {
             Position = new Vector3(cameraOrigin_go.transform.position.x,
                                    cameraOrigin_go.transform.position.y,
-                                   currCamera.transform.position.z)
+                                   currentCamera.transform.position.z)
         };
     }
 

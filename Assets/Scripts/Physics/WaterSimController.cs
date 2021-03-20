@@ -3,18 +3,19 @@ using System.Collections;
 
 public class WaterSimController : MonoBehaviour
 {
-    [SerializeField] WorldController wc = null;
+    WorldController worldController;
 
     internal NodeGrid<Tile> _world;
     SimulateWaterFlow simulateWaterFlow;
 
     private void Awake()
     {
+        worldController = GetComponentInParent<WorldController>();
         simulateWaterFlow = GetComponent<SimulateWaterFlow>();
-        wc.RegisterWorldCreatedCallback(RetrieveWorld);
+        worldController.RegisterWorldCreatedCallback(Initialize);
     }
 
-    public void RetrieveWorld(NodeGrid<Tile> world)
+    public void Initialize(NodeGrid<Tile> world)
     {
         _world = world;
     }

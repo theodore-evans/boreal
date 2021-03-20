@@ -8,8 +8,8 @@ public class PathGridController : MonoBehaviour
 
     internal NodeGrid<PathNode> grid;
     private NodeGrid<Tile> _world;
+    private WorldController worldController;
 
-    [SerializeField] WorldController worldController;
     [SerializeField] [Range(0.1f, 1f)] float nodeRadius = 0.25f;
     [SerializeField] [Range(0f, 4f)] float heuristicWeight = 2f;
 
@@ -17,7 +17,9 @@ public class PathGridController : MonoBehaviour
 
     private void Awake()
     {
+        worldController = GetComponentInParent<WorldController>();
         walkabilityChecker = GetComponent<IWalkabilityChecker>();
+
         worldController.RegisterWorldCreatedCallback(Initialize);
     }
 

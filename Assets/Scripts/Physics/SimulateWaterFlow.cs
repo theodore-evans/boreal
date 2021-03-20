@@ -17,7 +17,7 @@ public class SimulateWaterFlow : MonoBehaviour
     [SerializeField] [Range(0.01f, 1)] float flowRate = 0.5f;
     [SerializeField] [Range(0f, 0.1f)] float minHead = 0.05f;
     [SerializeField] [Range(0f, 1f)] float erosionCoefficient = 0.2f;
-    [SerializeField] [Range(0f, 1f)] float neighbourErosionCoefficient = 0.1f;
+    [SerializeField] [Range(0f, 1f)] float channelWideningCoefficient = 0.1f;
 
     private float seaLevel = 0f; // TODO actually find out from world, if not zero
 
@@ -97,16 +97,16 @@ public class SimulateWaterFlow : MonoBehaviour
                     float waterFlow = Mathf.Clamp(Mathf.Lerp(0, tile.WaterLevel - neighbour.WaterLevel, flowRate), 0, tile.WaterDepth);
                     tile.WaterDepth -= waterFlow;
                     visitedSet.Add(neighbour, waterFlow);
-                    erosionAmount += waterFlow * (tile.Altitude - neighbour.Altitude);
+                    erosionAmount += erosionCoefficient * waterFlow * (tile.Altitude - neighbour.Altitude);
 
                     if (neighbour.WaterLevel > seaLevel) {
                         neighbour.WaterDepth += waterFlow;
                         openSet.Add(neighbour);
                     }
                 }
-                else neighbour.Altitude -= erosionAmount * neighbourErosionCoefficient;
+                else neighbour.Altitude -= erosionAmount * channelWideningCoefficient;
             }
-            tile.Altitude -= erosionAmount * erosionCoefficient;
+            tile.Altitude -= erosionAmount;
 
         }
         else openSet.Remove(tile);

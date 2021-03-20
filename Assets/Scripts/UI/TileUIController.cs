@@ -3,22 +3,24 @@ using System;
 
 public class TileUIController : MonoBehaviour
 {
-    [SerializeField] WorldController wc = null;
     [SerializeField] GameObject[] UIElementGameObjects;
+    [SerializeField] Camera currentCamera;
 
     ICursorProvider cursor;
 
     private Action<Tile> cbNewTileSelected;
-
     Tile oldTileUnderCursor = null;
 
+    WorldController worldController;
     NodeGrid<Tile> _world;
 
     private void Awake()
     {
-        wc.RegisterWorldCreatedCallback(RetrieveWorld);
+        worldController = GetComponentInParent<WorldController>();
+        worldController.RegisterWorldCreatedCallback(Initialize);
 
         cursor = GetComponent<ICursorProvider>();
+        cursor.SetCamera(ref currentCamera);
 
         ITileUIUpdateBehaviour[] updateBehaviours = GetComponents<ITileUIUpdateBehaviour>();
 
@@ -27,7 +29,7 @@ public class TileUIController : MonoBehaviour
         }
     }
 
-    public void RetrieveWorld(NodeGrid<Tile> world)
+    public void Initialize(NodeGrid<Tile> world)
     {
         _world = world;
     }

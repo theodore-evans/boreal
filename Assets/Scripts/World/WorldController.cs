@@ -5,11 +5,10 @@ using UnityEngine;
 public class WorldController : MonoBehaviour
 {
     public NodeGrid<Tile> world { get; protected set; }
-    public int WorldWidth { get => width; private set => width = Mathf.Max(1, value); }
-    public int WorldHeight { get => height; private set => height = Mathf.Max(1, value); }
+
     public float WorldVerticalScale { get => terrainGenerator.VerticalScale; }
 
-    public Vector3 Origin { get; protected set; } = new Vector3(0, 0, 0);
+    [SerializeField] private Vector3 origin = new Vector3(0, 0, 0);
     [SerializeField] private int width = 1;
     [SerializeField] private int height = 1;
     private float nodeSpacing = 1f;
@@ -24,10 +23,11 @@ public class WorldController : MonoBehaviour
         terrainGenerator = GetComponent<TerrainGenerator>();
         tileUpdater = GetComponent<TileUpdater>();
 
-        world = CreateWorldGrid(Origin, width, height, nodeSpacing);
+        world = CreateWorldGrid(origin, width, height, nodeSpacing);
+        Debug.Log($"{this} created world {width} x {height}");
 
-        terrainGenerator.Generate(world);
         cbWorldCreated?.Invoke(world);
+        terrainGenerator.Generate(world);
     }
 
     private NodeGrid<Tile> CreateWorldGrid(Vector3 origin, int width, int height, float nodeSpacing)
@@ -45,6 +45,7 @@ public class WorldController : MonoBehaviour
 
     public void RegisterWorldCreatedCallback(Action<NodeGrid<Tile>> callback)
     {
+        //TODO: extract logging to its own class
         Debug.Log($"{callback.Method.DeclaringType.Name} registered world created callback: {callback.Method.Name}");
         cbWorldCreated += callback;
     }
@@ -63,7 +64,7 @@ public class WorldController : MonoBehaviour
 
     private void OnValidate()
     {
-        WorldWidth = width;
-        WorldHeight = height;
+        width = width < 1 ? 1 : width;
+        height = height < 1 ? 1 : height;
     }
 }

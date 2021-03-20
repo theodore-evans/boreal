@@ -9,6 +9,9 @@ public class TileUpdater : MonoBehaviour, ITileUpdater
     Cache<Tile> tilesToUpdateThisLoop = new Cache<Tile>();
     private Action<IEnumerable<Tile>> cbWorldChanged;
 
+    private float oldCameraSize;
+    Rect areaToLoad;
+
     System.Random rng = new System.Random();
 
     [SerializeField] Camera currentCamera = null;
@@ -38,6 +41,15 @@ public class TileUpdater : MonoBehaviour, ITileUpdater
         tilesToUpdate.Add(t);
     }
 
+    private bool visibleAreaChanged()
+    {
+        float cameraSize = currentCamera.orthographicSize;
+        bool cameraChanged = currentCamera.transform.hasChanged || cameraSize != oldCameraSize;
+        oldCameraSize = cameraSize;
+        currentCamera.transform.hasChanged = false;
+        return cameraChanged;
+    }
+
     private Rect GetOnScreenArea(float drawDistance = 1)
     {
         float widthMargin = Screen.width * drawDistance;
@@ -51,13 +63,11 @@ public class TileUpdater : MonoBehaviour, ITileUpdater
 
     private IEnumerator CacheUpdatesCoroutine()
     {
-
         for (; ; ) {
             if (tilesToUpdate.Count > 0) {
-                Rect areaToLoad = GetOnScreenArea(drawDistance);
+                if (visibleAreaChanged()) areaToLoad = GetOnScreenArea(drawDistance);
                 tilesToUpdateThisLoop.Union(tilesToUpdate.PopAllWithinArea(areaToLoad));
             }
-
             yield return 0;
         }
     }

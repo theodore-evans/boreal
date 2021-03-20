@@ -2,7 +2,7 @@
 
 public class MouseCursorProvider : MonoBehaviour, ICursorProvider
 {
-    [SerializeField] Camera currCamera = null;
+    Camera currentCamera;
    
     public bool IsPointerOutOfFrame => (Input.mousePosition.x < 0
                                      || Input.mousePosition.x > Screen.width
@@ -11,7 +11,11 @@ public class MouseCursorProvider : MonoBehaviour, ICursorProvider
 
     public Vector3 GetPosition()
     {
-        return currCamera.ScreenToWorldPoint(Input.mousePosition);
+        return currentCamera.ScreenToWorldPoint(Input.mousePosition);
     }
 
+    public void SetCamera(ref Camera camera)
+    {
+        currentCamera = camera;
+    }
 }

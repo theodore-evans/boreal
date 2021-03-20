@@ -75,12 +75,14 @@ public class Cache<T> : IEnumerable<T> where T : AbstractNode
         return this.GetEnumerator();
     }
 
-    public Cache<T> PopAllWithinArea(int xMin, int xMax, int yMin, int yMax)
+    public Cache<T> PopWithinArea(int xMin, int xMax, int yMin, int yMax, int numberToPop)
     {
         Cache<T> items = new Cache<T>();
+        int numberPopped = 0;
 
         for (int x = xMin; x < xMax; x++) {
             for (int y = yMin; y < yMax; y++) {
+                if (numberPopped > numberToPop) break;
                 int key = GenerateHashCode(x, y);
                 if (inner.ContainsKey(key)) {
                     items.Add(inner[key]);
@@ -94,12 +96,17 @@ public class Cache<T> : IEnumerable<T> where T : AbstractNode
 
     public Cache<T> PopAllWithinArea(Rect rect)
     {
+        return PopWithinArea(rect, int.MaxValue);
+    }
+
+    public Cache<T> PopWithinArea(Rect rect, int numberToPop)
+    {
         int xMin = Mathf.FloorToInt(rect.xMin);
         int yMin = Mathf.FloorToInt(rect.yMin);
         int xMax = Mathf.CeilToInt(rect.xMax);
         int yMax = Mathf.CeilToInt(rect.yMax);
 
-        return PopAllWithinArea(xMin, xMax, yMin, yMax);
+        return PopWithinArea(xMin, xMax, yMin, yMax, numberToPop);
     }
 
     public IEnumerable<T> DrawRandom(int numberToDraw)

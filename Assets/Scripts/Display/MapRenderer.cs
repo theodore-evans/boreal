@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 
-public class MapDisplay : MonoBehaviour
+public class MapRenderer : MonoBehaviour
 {
     [SerializeField] MeshFilter meshFilter = null;
 	[SerializeField] MeshRenderer meshRenderer = null;
@@ -15,13 +15,14 @@ public class MapDisplay : MonoBehaviour
         Color.green   //Grass
     };
 
-    [SerializeField] WorldController wc = null;
+    WorldController worldController;
 
     MeshGenerator meshGenerator;
     TextureGenerator textureGenerator;
 
     private int width;
     private int height;
+    private float verticalScale;
     private Mesh mapMesh;
     private MapTexture mapTexture;
 
@@ -39,7 +40,8 @@ public class MapDisplay : MonoBehaviour
 
     private void Awake()
     {
-        wc.RegisterWorldCreatedCallback(Initialize);
+        worldController = GetComponentInParent<WorldController>();
+        worldController.RegisterWorldCreatedCallback(Initialize);
 
         meshGenerator = GetComponent<MeshGenerator>();
         textureGenerator = GetComponent<TextureGenerator>();
@@ -47,10 +49,11 @@ public class MapDisplay : MonoBehaviour
 
     private void Initialize(NodeGrid<Tile> world)
     {
-        width = wc.WorldWidth;
-        height = wc.WorldHeight;
+        width = world.GridSizeX;
+        height = world.GridSizeY;
+        verticalScale = worldController.WorldVerticalScale;
 
-        Vector2 bottomLeftCorner = wc.Origin;
+        Vector2 bottomLeftCorner = world.Origin;
 
         mapMesh = meshGenerator.CreateMesh(bottomLeftCorner, width, height);
         meshFilter.sharedMesh = mapMesh;
@@ -59,14 +62,14 @@ public class MapDisplay : MonoBehaviour
         meshRenderer.material.SetTexture("_Control", mapTexture.control);
         meshRenderer.material.SetTexture("_NormalMap", mapTexture.normal);
 
-        wc.RegisterWorldChangedCallback(UpdateMap);
+        worldController.RegisterWorldChangedCallback(RenderMap);
     }
 
-    private void UpdateMap(IEnumerable<Tile> changedTiles)
+    private void RenderMap(IEnumerable<Tile> changedTiles)
     {
         foreach (Tile t in changedTiles) {
             Color tileControl = tileColours[(int)t.TypeId];
-            tileControl.a = t.WaterDepth / wc.WorldVerticalScale;
+            tileControl.a = t.WaterDepth / verticalScale;
             mapTexture.control.SetPixel(t.X, t.Y, tileControl);
 
             Vector3 tileNormal = new Vector3(t.Normal.x, t.Normal.y, t.Normal.z) * 0.5f + 0.5f * Vector3.one;
