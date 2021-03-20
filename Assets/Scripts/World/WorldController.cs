@@ -45,17 +45,19 @@ public class WorldController : MonoBehaviour
 
     public void RegisterWorldCreatedCallback(Action<NodeGrid<Tile>> callback)
     {
+        Debug.Log($"{callback.Method.DeclaringType.Name} registered world created callback: {callback.Method.Name}");
         cbWorldCreated += callback;
     }
 
-    // TODO: seems like duplication here, better solution maybe required
     public void RegisterWorldChangedCallback(Action<IEnumerable<Tile>> callback)
     {
+        Debug.Log($"{callback.Method.DeclaringType.Name} registered world changed callback: {callback.Method.Name}");
         tileUpdater.RegisterCallback(callback);
     }
 
     public void DeregisterWorldChangedCallback(Action<IEnumerable<Tile>> callback)
     {
+        Debug.Log($"{callback.Method.DeclaringType.Name} deregistered world changed callback: {callback.Method.Name}");
         tileUpdater.DeregisterCallback(callback);
     }
 
