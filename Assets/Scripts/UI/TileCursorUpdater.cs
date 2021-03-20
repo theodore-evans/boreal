@@ -11,7 +11,7 @@ public class TileCursorUpdater : MonoBehaviour, ITileUIUpdateBehaviour
         tileCursor_go = Instantiate(tileCursor_prefab, transform);
     }
 
-    public void UpdateTileUI(ref ICursorProvider cursor, Tile t)
+    public void ActionWhenNewTileSelected(Tile t)
     {
         tileCursor_go.transform.position = new Vector3(t.X, t.Y, -10);
         tileCursor_go.SetActive(true);

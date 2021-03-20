@@ -1,16 +1,15 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
-using System.Collections.Generic;
+using System;
 
 public class TileUIController : MonoBehaviour
 {
     [SerializeField] WorldController wc = null;
-    
+
     GameObject[] UI_gos;
 
     ICursorProvider cursor;
 
-    ITileUIUpdateBehaviour[] updateBehaviours;
+    private Action<Tile> cbNewTileSelected;
 
     Tile oldTileUnderCursor = null;
 
@@ -21,7 +20,13 @@ public class TileUIController : MonoBehaviour
         wc.RegisterWorldCreatedCallback(RetrieveWorld);
 
         cursor = GetComponent<ICursorProvider>();
-        updateBehaviours = GetComponents<ITileUIUpdateBehaviour>();
+
+        ITileUIUpdateBehaviour[] updateBehaviours = GetComponents<ITileUIUpdateBehaviour>();
+
+        foreach (ITileUIUpdateBehaviour updateBehaviour in updateBehaviours) {
+            cbNewTileSelected += updateBehaviour.ActionWhenNewTileSelected;
+        }
+
         UI_gos = GameObject.FindGameObjectsWithTag("TileUI");
     }
 
@@ -36,9 +41,7 @@ public class TileUIController : MonoBehaviour
             Tile t = _world.GetNodeAt(cursor.GetPosition());
 
             if (t != null && t != oldTileUnderCursor) {
-                foreach (ITileUIUpdateBehaviour updateBehaviour in updateBehaviours) {
-                    updateBehaviour.UpdateTileUI(ref cursor, t);
-                }
+                cbNewTileSelected?.Invoke(t);
             }
 
             oldTileUnderCursor = t;

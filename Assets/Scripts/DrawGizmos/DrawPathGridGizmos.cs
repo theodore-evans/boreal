@@ -2,8 +2,8 @@
 
 public class DrawPathGridGizmos : MonoBehaviour
 {
-    private PathGridController pathGridController;
-    private IPathfinding pathfinding;
+    private PathGridController pathGridController = null;
+    private IPathfinding pathfinding = null;
 
     [SerializeField] bool drawGridGizmos = false;
 
@@ -17,15 +17,17 @@ public class DrawPathGridGizmos : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (grid != null && drawGridGizmos) {
-            foreach (PathNode n in grid.Nodes) {
-                if (pathfinding.IsWalkable(n)) {
-                    Color color = Color.Lerp(Color.white, Color.red, Mathf.Clamp01(n.movementPenalty / pathfinding.MaxMovementCost));
-                    color.a = 0.25f;
-                    Gizmos.color = color;
-                    Gizmos.DrawCube(grid.GetNodePosition(n) + n.Radius * new Vector3(1, 1, -2), Vector3.one * n.Radius * 2 * 0.9f);
-                }
+        if (pathGridController != null && pathfinding != null) {
+            if (grid != null && drawGridGizmos) {
+                foreach (PathNode n in grid.Nodes) {
+                    if (pathfinding.IsWalkable(n)) {
+                        Color color = Color.Lerp(Color.white, Color.red, Mathf.Clamp01(n.movementPenalty / pathfinding.MaxMovementCost));
+                        color.a = 0.25f;
+                        Gizmos.color = color;
+                        Gizmos.DrawCube(grid.GetNodePosition(n) + n.Radius * new Vector3(1, 1, -2), Vector3.one * n.Radius * 2 * 0.9f);
+                    }
 
+                }
             }
         }
     }

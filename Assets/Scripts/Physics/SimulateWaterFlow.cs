@@ -96,14 +96,13 @@ public class SimulateWaterFlow : MonoBehaviour
 
                     float waterFlow = Mathf.Clamp(Mathf.Lerp(0, tile.WaterLevel - neighbour.WaterLevel, flowRate), 0, tile.WaterDepth);
                     tile.WaterDepth -= waterFlow;
+                    visitedSet.Add(neighbour, waterFlow);
                     erosionAmount += waterFlow * (tile.Altitude - neighbour.Altitude);
 
                     if (neighbour.WaterLevel > seaLevel) {
                         neighbour.WaterDepth += waterFlow;
                         openSet.Add(neighbour);
-                        visitedSet.Add(neighbour, waterFlow);
                     }
-                    else tile.WaterDepth = Mathf.Max(-tile.Altitude + 0.00001f, 0);
                 }
                 else neighbour.Altitude -= erosionAmount * neighbourErosionCoefficient;
             }

@@ -2,7 +2,7 @@
 
 class DrawAStarGizmos : MonoBehaviour
 {
-    private AStar aStar;
+    private AStar aStar = null;
 
     private ref Heap<PathNode> openSet => ref aStar.openSet;
     private ref NodeGrid<PathNode> grid => ref aStar.grid;
@@ -14,12 +14,14 @@ class DrawAStarGizmos : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        if (openSet != null) {
-            foreach (PathNode n in openSet) {
-                Color color = Color.blue;
-                color.a = 0.5f;
-                Gizmos.color = color;
-                Gizmos.DrawCube(grid.GetNodePosition(n) + n.Radius * new Vector3(1, 1, -2), Vector3.one * n.Radius * 2 * 0.9f);
+        if (aStar != null) {
+            if (openSet != null) {
+                foreach (PathNode n in openSet) {
+                    Color color = Color.blue;
+                    color.a = 0.5f;
+                    Gizmos.color = color;
+                    Gizmos.DrawCube(grid.GetNodePosition(n) + n.Radius * new Vector3(1, 1, -2), Vector3.one * n.Radius * 2 * 0.9f);
+                }
             }
         }
     }
