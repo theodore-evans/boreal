@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public enum TypeId
+public enum TileTypeId
 {
     Blank = 0,
     Water = 1,
@@ -11,23 +11,29 @@ public enum TypeId
 
 public class Tile : AbstractNode
 {
-    Action<Tile> cbTileChanged;
+    ITileSubscriber _parent;
 
-    private TypeId _type = global::TypeId.Blank;
+    private TileTypeId _type = TileTypeId.Blank;
     private float _waterDepth = 0.0f;
     private float _altitude = 0.5f;
     private Vector3 _normal = Vector3.zero;
     private float _waterThreshold = 0f;
 
-    public TypeId TypeId
+    public void InvokeTileChangedCallback() => _parent.OnTileChanged(this);
+
+    public Tile(int x, int y, float scale, ITileSubscriber parent) : base(x, y, scale) {
+        _parent = parent;
+    }
+
+    public TileTypeId TypeId
     {
         get {
-            if (_waterDepth > _waterThreshold) return TypeId.Water;
+            if (_waterDepth > _waterThreshold) return TileTypeId.Water;
             else return _type;
         }
 
         set {
-            TypeId oldType = _type;
+            TileTypeId oldType = _type;
             _type = value;
 
             if (oldType != _type) InvokeTileChangedCallback();
@@ -68,29 +74,12 @@ public class Tile : AbstractNode
 
         set {
             _normal = value;
-            AngleFromNormal = Mathf.Rad2Deg * Mathf.Acos(Vector3.Dot(Normal, Vector3.forward));
+            Gradient = Mathf.Rad2Deg * Mathf.Acos(Vector3.Dot(Normal, Vector3.forward));
         }
     }
 
-    public float AngleFromNormal
+    public float Gradient
     {
         get; protected set;
-    }
-
-    public Tile(int x, int y, float scale) : base(x, y, scale) { }
-
-    public void RegisterTileChangedCallback(Action<Tile> callback)
-    {
-        cbTileChanged += callback;
-    }
-
-    public void UnregisterTileChangedCallback(Action<Tile> callback)
-    {
-        cbTileChanged -= callback;
-    }
-
-    public void InvokeTileChangedCallback()
-    {
-        cbTileChanged?.Invoke(this);
     }
 }

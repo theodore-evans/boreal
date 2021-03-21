@@ -40,7 +40,7 @@ public class PathGridController : MonoBehaviour
 
         for (int x = 0; x < grid.GridSizeX; x++) {
             for (int y = 0; y < grid.GridSizeY; y++) {
-                grid.SetNodeAt(x, y, new PathNode(x, y, nodeRadius, heuristicWeight));
+                grid.AddNode(new PathNode(x, y, nodeRadius, heuristicWeight));
             }
         }
 

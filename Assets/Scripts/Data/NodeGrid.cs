@@ -16,14 +16,13 @@ public class NodeGrid<T> where T : AbstractNode
     public int MaxSize { get => GridSizeX * GridSizeY; }
 
     public T[] Nodes { get; protected set; }
-    private Cache<T> nodeCache = new Cache<T>();
 
-    bool IsOutOfBounds(int x, int y) => x < 0  || x >= GridSizeX || y < 0 || y >= GridSizeY;
+    bool IsInBounds(int x, int y) => !(x < 0  || x >= GridSizeX || y < 0 || y >= GridSizeY);
 
     public NodeGrid(Vector3 origin, float width, float height, float nodeSpacing)
     {
         if (width < 1 || height < 1 || nodeSpacing < 0) {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Negative tile index");
         }
 
         this.origin = origin;
@@ -52,7 +51,7 @@ public class NodeGrid<T> where T : AbstractNode
                     int checkX = x + dx;
                     int checkY = y + dy;
 
-                    if (!IsOutOfBounds(checkX, checkY)) {
+                    if (IsInBounds(checkX, checkY)) {
                         neighbours.Add(GetNodeAt(checkX, checkY));
                     }
                 }
@@ -93,16 +92,21 @@ public class NodeGrid<T> where T : AbstractNode
 
     public T GetNodeAt(int x, int y)
     {
-        if (!IsOutOfBounds(x, y)) {
+        if (IsInBounds(x, y)) {
             return Nodes[y * GridSizeX + x]; //TODO check that this works correctly
         }
         else return default;
     }
 
-    public void SetNodeAt(int x, int y, T newNode)
+    public bool AddNode(T newNode)
     {
-        Nodes[y * GridSizeX + x] = newNode;
-        nodeCache.Add(newNode);
+        int x = newNode.X;
+        int y = newNode.Y;
+        if (IsInBounds(x, y)) {
+            Nodes[newNode.Y * GridSizeX + newNode.X] = newNode;
+            return true;
+        }
+        else return false;
     }
 
     public Vector3 GetNodeCenter(T node)

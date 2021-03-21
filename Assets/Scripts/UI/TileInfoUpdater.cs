@@ -37,13 +37,13 @@ public class TileInfoUpdater : MonoBehaviour, ITileUIUpdateBehaviour
     {
         tileInfo.text = $"[{selectedTile.X}, {selectedTile.Y}]"
             + $"\n{selectedTile.TypeId}"
-            + "\nElevation: " + selectedTile.Altitude.ToString("F3") + "m";
+            + "\nElevation: " + selectedTile.Altitude.ToString("F2") + " m";
         if (verbose) {
             tileInfo.text +=
                 "\nNormal: " + selectedTile.Normal.ToString("F1")
-            + "\nGradient: " + selectedTile.AngleFromNormal.ToString("F2") + "\x00B0";
+            + "\nGradient: " + selectedTile.Gradient.ToString("F2") + "\x00B0";
         }
-        if (selectedTile.TypeId == TypeId.Water) {
+        if (selectedTile.TypeId == TileTypeId.Water) {
             tileInfo.text += "\nWater Depth: " + selectedTile.WaterDepth.ToString("F3")
                           + "\nWater Level: " + selectedTile.WaterLevel.ToString("F3");
         }

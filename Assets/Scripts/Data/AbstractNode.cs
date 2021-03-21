@@ -22,7 +22,7 @@ public abstract class AbstractNode
     protected AbstractNode(int x, int y, float scale)
     {
         if (x < 0 || y < 0) {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Negative node index");
         }
         X = x;
         Y = y;

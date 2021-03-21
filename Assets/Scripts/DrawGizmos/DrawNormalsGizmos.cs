@@ -20,7 +20,7 @@ public class DrawNormalsGizmos : MonoBehaviour
             foreach (Tile tile in _world.Nodes) {
 
                 Vector3 tileCenter = new Vector3(tile.X + 0.5f * tile.Scale, tile.Y + 0.5f * tile.Scale, 0f);
-                float gradient = tile.AngleFromNormal;
+                float gradient = tile.Gradient;
 
                 Color color = Color.Lerp(Color.red, Color.black, 1 - (gradient * 5f));
 

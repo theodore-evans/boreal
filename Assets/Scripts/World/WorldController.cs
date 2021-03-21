@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WorldController : MonoBehaviour
+public class WorldController : MonoBehaviour, ITileSubscriber
 {
     public NodeGrid<Tile> world { get; protected set; }
 
@@ -35,12 +35,15 @@ public class WorldController : MonoBehaviour
         world = new NodeGrid<Tile>(origin, width, height, nodeSpacing);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                Tile newTile = new Tile(x, y, nodeSpacing);
-                newTile.RegisterTileChangedCallback(tileUpdater.AddChangedTile);
-                world.SetNodeAt(x, y, newTile);
+                world.AddNode(new Tile(x, y, nodeSpacing, this));
             }
         }
         return world;
+    }
+
+    public void OnTileChanged(Tile tile)
+    {
+        tileUpdater.AddChangedTile(tile);
     }
 
     public void RegisterWorldCreatedCallback(Action<NodeGrid<Tile>> callback)
