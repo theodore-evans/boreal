@@ -78,47 +78,6 @@ public class Cache<T> : IEnumerable<T> where T : AbstractNode
         return this.GetEnumerator();
     }
 
-    public Cache<T> PopRandomWithinArea(Rect rect, int numberToPop)
-    {
-        int xMin = Mathf.FloorToInt(rect.xMin);
-        int yMin = Mathf.FloorToInt(rect.yMin);
-        int xMax = Mathf.CeilToInt(rect.xMax);
-        int yMax = Mathf.CeilToInt(rect.yMax);
-
-
-        return PopRandomWithinArea(xMin, xMax, yMin, yMax, numberToPop);
-    }
-
-    public Cache<T> PopRandomWithinArea(int xMin, int xMax, int yMin, int yMax, int numberToPop)
-    {
-        Cache<T> items = new Cache<T>();
-
-        int xRange = xMax - xMin;
-        int yRange = yMax - yMin;
-
-        int maxNumberToPop = xRange * yRange;
-        
-        List<int> indices = Enumerable.Range(0, maxNumberToPop).OrderBy(o => rng.Next()).ToList(); ;
-
-        int x(int i) => i % (xRange + 1) + xMin;
-        int y(int i) => Mathf.FloorToInt(i / xRange + 1) + yMin;
-
-        int numberPopped = 0;
-
-        for (int i = 0; i < maxNumberToPop; i++) {
-            if (numberPopped > numberToPop) break;
-            int index = indices[i];
-            int key = GenerateHashCode(x(index), y(index));
-            if (inner.ContainsKey(key)) {
-                items.Add(inner[key]);
-                inner.Remove(key);
-                numberPopped++;
-            }
-        }
-
-        return items;
-    }
-
     public Cache<T> PopAllWithinArea(Rect rect)
     {
         return PopWithinArea(rect, int.MaxValue);
@@ -196,14 +155,5 @@ public class Cache<T> : IEnumerable<T> where T : AbstractNode
     public void Clear()
     {
         inner.Clear();
-    }
-
-    public void CopyTo(T[] array, int arrayIndex)
-    {
-        int i = 0;
-        foreach (T value in inner.Values) {
-            array[arrayIndex + i] = value;
-            i++;
-        }
     }
 }
