@@ -3,13 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChunkLoader : MonoBehaviour, IChunkLoader
+public class ChunkLoader : MonoBehaviour, ITileSubscriber, IChunkLoader
 {
     Cache<Tile> tilesToUpdate = new Cache<Tile>();
-    Cache<Tile> tilesToUpdateThisLoop = new Cache<Tile>();
+    Cache<Tile> tilesToUpdateEarly = new Cache<Tile>();
     private Action<IEnumerable<Tile>> cbWorldChanged;
 
-    private float oldCameraSize;
     Rect areaToLoad;
 
     System.Random rng = new System.Random();
@@ -18,6 +17,8 @@ public class ChunkLoader : MonoBehaviour, IChunkLoader
     [SerializeField] [Range(0, 2)] float drawDistance = 1;
     [SerializeField] [Range(0, 1)] float onScreenUpdateRate = 0.1f;
     [SerializeField] [Range(0, 5000)] int minUpdatesPerFrame = 2500;
+
+    private int numberToUpdate(int total) => Mathf.Max(minUpdatesPerFrame, Mathf.CeilToInt(total * onScreenUpdateRate));
 
     private void Start()
     {
@@ -34,7 +35,7 @@ public class ChunkLoader : MonoBehaviour, IChunkLoader
         cbWorldChanged -= callback;
     }
 
-    public void AddChangedTile(Tile t)
+    public void OnTileChanged(Tile t)
     {
         tilesToUpdate.Add(t);
     }
@@ -52,18 +53,24 @@ public class ChunkLoader : MonoBehaviour, IChunkLoader
     private IEnumerator InvokeUpdatesCoroutine()
     {
         for (; ; ) {
-            if (tilesToUpdateThisLoop.Count > 0) {
-                int numberToUpdate = Mathf.Max(minUpdatesPerFrame, Mathf.CeilToInt(tilesToUpdateThisLoop.Count * onScreenUpdateRate));
-                cbWorldChanged?.Invoke(tilesToUpdateThisLoop.DrawRandom(numberToUpdate));
-                yield return new WaitForEndOfFrame();
+
+            if (tilesToUpdateEarly.Count > 0) {
+                int updatesThisIteration = numberToUpdate(tilesToUpdateEarly.Count);
+                cbWorldChanged?.Invoke(tilesToUpdateEarly.DrawRandom(updatesThisIteration));
+                yield return 0;
             }
 
             if (tilesToUpdate.Count > 0) {
                 Rect areaToLoad = GetOnScreenArea(drawDistance);
-                tilesToUpdateThisLoop.Union(tilesToUpdate.PopAllWithinArea(areaToLoad));
-                cbWorldChanged?.Invoke(tilesToUpdate.Draw(minUpdatesPerFrame));
+                tilesToUpdateEarly.Union(tilesToUpdate.PopAllWithinArea(areaToLoad));
+
+                if (tilesToUpdateEarly.Count == 0) {
+                    int updatesThisIteration = numberToUpdate(tilesToUpdate.Count);
+                    cbWorldChanged?.Invoke(tilesToUpdate.Draw(minUpdatesPerFrame));
+                }
             }
-            yield return new WaitForEndOfFrame();
+
+            yield return 0;
         }
     }
 }

@@ -1,28 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WaterSimController : MonoBehaviour
+public class WaterSimController : Controller
 {
-    WorldController worldController;
-
-    internal NodeGrid<Tile> _world;
     SimulateWaterFlow simulateWaterFlow;
 
     private void Awake()
     {
-        worldController = GetComponentInParent<WorldController>();
         simulateWaterFlow = GetComponent<SimulateWaterFlow>();
-        worldController.RegisterWorldCreatedCallback(Initialize);
-    }
-
-    public void Initialize(NodeGrid<Tile> world)
-    {
-        _world = world;
     }
 
     public void StartRain() // extract to new class
     {
-        simulateWaterFlow.SetWorld(_world);
+        simulateWaterFlow.SetWorld(world);
         simulateWaterFlow.StartRain();
     }
 
@@ -33,9 +23,9 @@ public class WaterSimController : MonoBehaviour
 
     public void RemoveAllWater()
     {
-        for (int x = 0; x < _world.GridSizeX; x++) {
-            for (int y = 0; y < _world.GridSizeY; y++) {
-                Tile t = _world.GetNodeAt(x, y);
+        for (int x = 0; x < world.GridSizeX; x++) {
+            for (int y = 0; y < world.GridSizeY; y++) {
+                Tile t = world.GetNodeAt(x, y);
                 if (t.WaterLevel > 0) t.WaterDepth = 0;
             }
 

@@ -11,30 +11,31 @@ public enum TileTypeId
 
 public class Tile : AbstractNode
 {
-    ITileSubscriber _parent;
+    ITileSubscriber _subscriber;
 
     private TileTypeId _type = TileTypeId.Blank;
     private float _waterDepth = 0.0f;
     private float _altitude = 0.5f;
     private Vector3 _normal = Vector3.zero;
-    private float _waterThreshold = 0f;
+    private bool _water = false;
 
-    private Comparator comparator = new Comparator(threshold: 0.001f);
-    private bool ValueHasChanged(ref float a, ref float b) => !comparator.ApproximatelyEqual(ref a, ref b);
+    private void UpdateField(ref float field, float newValue, float invokeThreshold)
+    {
+        float oldValue = field;
+        field = newValue;
 
-    public void InvokeTileChangedCallback() => _parent.OnTileChanged(this);
+        if (Compare.ApproximatelyEqual(oldValue, newValue, invokeThreshold) == false) InvokeTileChangedCallback();
+    }
 
-    public Tile(int x, int y, float scale, ITileSubscriber parent) : base(x, y, scale) {
-        _parent = parent;
+    public void InvokeTileChangedCallback() => _subscriber.OnTileChanged(this);
+
+    public Tile(int x, int y, float scale, ITileSubscriber subscriber) : base(x, y, scale) {
+        _subscriber = subscriber;
     }
 
     public TileTypeId TypeId
     {
-        get {
-            if (_waterDepth > _waterThreshold) return TileTypeId.Water;
-            else return _type;
-        }
-
+        get => _type;
         set {
             TileTypeId oldType = _type;
             _type = value;
@@ -46,12 +47,7 @@ public class Tile : AbstractNode
     public float WaterDepth
     {
         get => _waterDepth;
-        set {
-            float oldDepth = _waterDepth;
-            _waterDepth = value;
-
-            if (ValueHasChanged(ref oldDepth, ref _waterDepth)) InvokeTileChangedCallback();
-        }
+        set => UpdateField(ref _waterDepth, value, 0.001f);
     }
 
     public float WaterLevel
@@ -59,16 +55,16 @@ public class Tile : AbstractNode
         get => _altitude + _waterDepth;
     }
 
+    public bool Water
+    {
+        get => _water;
+        set => _water = value;
+    }
+
     public float Altitude
     {
         get => _altitude;
-
-        set {
-            float oldAltitude = _altitude;
-            _altitude = value;
-
-            if (ValueHasChanged(ref oldAltitude, ref _altitude)) InvokeTileChangedCallback();
-        }
+        set => UpdateField(ref _altitude, value, 0.001f);
     }
 
     public Vector3 Normal

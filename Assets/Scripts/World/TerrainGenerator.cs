@@ -6,11 +6,11 @@ public class TerrainGenerator : MonoBehaviour, ITerrainGenerator
 {
     private NodeGrid<Tile> _world;
     public bool autoUpdate = true;
+    public bool IsGenerating { get; private set; }
 
     [SerializeField] int seed = 0;
     [SerializeField] [Range(0, 50)] float verticalScale = 1;
-    [SerializeField] [Range(0, 1)] float seaLevel = 0;
-    [SerializeField] [Range(0, 1)] float waterLevelAdjustment = 0;
+    [SerializeField] [Range(0, 1)] float seaLevel;
     [SerializeField] TerrainType[] regions = null;
 
     IHeightMapGenerator[] heightMapGenerators;
@@ -35,6 +35,8 @@ public class TerrainGenerator : MonoBehaviour, ITerrainGenerator
 
     public void Generate()
     {
+        IsGenerating = true;
+
         if (_world != null) {
             int width = _world.GridSizeX;
             int height = _world.GridSizeY;
@@ -60,11 +62,11 @@ public class TerrainGenerator : MonoBehaviour, ITerrainGenerator
                         }
                     }
 
-                    t.WaterDepth = Mathf.Max(0, -t.Altitude + waterLevelAdjustment * verticalScale);
-
+                    t.WaterDepth = Mathf.Max(0, -t.Altitude);
                 }
             }
         }
+        IsGenerating = false;
     }
 }
 

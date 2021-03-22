@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 
-public class MapRenderer : MonoBehaviour
+public class MapRenderController : MonoBehaviour
 {
     [SerializeField] MeshFilter meshFilter = null;
 	[SerializeField] MeshRenderer meshRenderer = null;
@@ -68,7 +68,10 @@ public class MapRenderer : MonoBehaviour
     private void RenderMap(IEnumerable<Tile> changedTiles)
     {
         foreach (Tile t in changedTiles) {
-            Color tileControl = tileColours[(int)t.TypeId];
+            //TODO implement better water rendering
+            TileTypeId colorId = t.Water ? TileTypeId.Water : t.TypeId;
+            Color tileControl = tileColours[(int)colorId];
+            
             tileControl.a = t.WaterDepth / verticalScale;
             mapTexture.control.SetPixel(t.X, t.Y, tileControl);
 

@@ -330,10 +330,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98e9d1a50be48459bac044cc15e865f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  raindropsPerUpdate: 18
-  waterPerRaindrop: 0.359
-  flowRate: 0.098
-  minHead: 0
+  raindropsPerUpdate: 50
+  waterPerRaindrop: 0.05
+  flowRate: 0.2
   erosionCoefficient: 0.2
   channelWideningCoefficient: 0.5
 --- !u!4 &149497009
@@ -378,6 +377,50 @@ MonoBehaviour:
   showOpenSet: 0
   showFlowMin: 2
   showFlowMax: 10
+--- !u!1 &150702450
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 150702451}
+  - component: {fileID: 150702452}
+  m_Layer: 0
+  m_Name: WaterController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &150702451
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 150702450}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 954845868}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &150702452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 150702450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60ae490d5a0014ef980433ee7258e1a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waterThreshold: 0.01
 --- !u!1 &186076950
 GameObject:
   m_ObjectHideFlags: 0
@@ -813,7 +856,7 @@ GameObject:
   - component: {fileID: 766066294}
   - component: {fileID: 766066293}
   m_Layer: 0
-  m_Name: MapRenderer
+  m_Name: MapRenderController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -828,14 +871,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 766066290}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1c4bdfea0e4847578ca2daa575cbeec, type: 3}
+  m_Script: {fileID: 11500000, guid: c9f229e1053324de19ab65a6a9f7d2ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   meshFilter: {fileID: 1974246565}
   meshRenderer: {fileID: 1974246564}
   tileColours:
   - serializedVersion: 2
-    rgba: 4294967295
+    rgba: 1073741823
   - serializedVersion: 2
     rgba: 4294901760
   - serializedVersion: 2
@@ -1080,7 +1123,7 @@ MonoBehaviour:
   origin: {x: 0, y: 0, z: 0}
   width: 256
   height: 256
-  verbose: 1
+  verbose: 0
 --- !u!4 &954845868
 Transform:
   m_ObjectHideFlags: 0
@@ -1098,6 +1141,7 @@ Transform:
   - {fileID: 2012098395}
   - {fileID: 149497009}
   - {fileID: 766066292}
+  - {fileID: 150702451}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1114,10 +1158,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   autoUpdate: 1
-  seed: 0
+  seed: 34327
   verticalScale: 26.5
   seaLevel: 0.5
-  waterLevelAdjustment: 0
   regions:
   - typeId: 3
     height: 0.095
@@ -1135,13 +1178,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e4355f607b464f8c99243ea7a8b5dc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scale: 59.5
+  scale: 78.8
   octaves: 4
   persistence: 0.181
   lacunarity: 2.5
   offset: {x: 0, y: 0}
-  power: 2.52
-  weight: 0.731
+  power: 1.52
+  weight: 1.91
 --- !u!114 &954845871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1166,7 +1209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af9a5b3a99b9e4a48a40abe1b07d1dcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roughness: 1.56
+  roughness: 0.72
   cornerSeed: 0.59
   weight: 2.56
 --- !u!114 &954845874
@@ -1214,9 +1257,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentCamera: {fileID: 519420031}
-  drawDistance: 0.1
-  onScreenUpdateRate: 0.25
-  minUpdatesPerFrame: 2500
+  drawDistance: 0.75
+  onScreenUpdateRate: 0.5
+  minUpdatesPerFrame: 3000
 --- !u!1 &1030719981
 GameObject:
   m_ObjectHideFlags: 0

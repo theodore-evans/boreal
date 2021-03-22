@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PathGridController : MonoBehaviour
+public class PathGridController : Controller
 {
     public bool autoUpdate = true;
 
     internal NodeGrid<PathNode> grid;
-    private NodeGrid<Tile> _world;
-    private WorldController worldController;
 
     [SerializeField] [Range(0.1f, 1f)] float nodeRadius = 0.25f;
     [SerializeField] [Range(0f, 4f)] float heuristicWeight = 2f;
@@ -17,24 +15,19 @@ public class PathGridController : MonoBehaviour
 
     private void Awake()
     {
-        worldController = GetComponentInParent<WorldController>();
         walkabilityChecker = GetComponent<IWalkabilityChecker>();
-
-        worldController.RegisterWorldCreatedCallback(Initialize);
     }
 
-    private void Initialize(NodeGrid<Tile> world)
+    internal override void OnInitialize()
     {
-        _world = world;
         CreateGrid();
-        worldController.RegisterWorldChangedCallback(UpdateWalkabilityForChangedTiles);
     }
 
     public void CreateGrid()
     {
-        Vector3 origin = _world.Origin;
-        float width = _world.GridSizeX;
-        float height = _world.GridSizeY;
+        Vector3 origin = world.Origin;
+        float width = world.GridSizeX;
+        float height = world.GridSizeY;
 
         grid = new NodeGrid<PathNode>(origin, width, height, nodeRadius * 2);
 
@@ -44,10 +37,10 @@ public class PathGridController : MonoBehaviour
             }
         }
 
-        UpdateWalkabilityForChangedTiles(_world.Nodes);
+        UpdateTiles(world.Nodes);
     }
 
-    public void UpdateWalkabilityForChangedTiles(IEnumerable<Tile> changedTiles)
+    public override void UpdateTiles(IEnumerable<Tile> changedTiles)
     {
         foreach (Tile tile in changedTiles) {
             foreach (PathNode node in grid.GetNodesOnOtherGridsNode(tile)) {

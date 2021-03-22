@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+public class CameraController : Controller
 {
     [SerializeField] Camera currentCamera = null;
     [SerializeField] GameObject cameraOrigin_go = null;
@@ -14,15 +14,12 @@ public class CameraController : MonoBehaviour
 
     void Awake()
     {
-        WorldController worldController = GetComponentInParent<WorldController>();
         cameraUpdateBehaviours = GetComponents<ICameraUpdateBehaviour>();
         cursor = GetComponent<ICursorProvider>();
         cursor.SetCamera(ref currentCamera);
-
-        worldController.RegisterWorldCreatedCallback(Initialize);
     }
 
-    void Initialize(NodeGrid<Tile> world)
+    internal override void OnInitialize()
     {
         int width = world.GridSizeX;
         int height = world.GridSizeY;

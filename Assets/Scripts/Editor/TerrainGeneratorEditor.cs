@@ -10,7 +10,7 @@ public class TerrainGeneratorEditor : Editor
 
         if (DrawDefaultInspector()) {
             if (terrainGen.autoUpdate) {
-                terrainGen.Generate();
+                if (!terrainGen.IsGenerating) terrainGen.Generate();
             }
         }
 

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WorldController : MonoBehaviour, ITileSubscriber
+public class WorldController : MonoBehaviour
 {
     public NodeGrid<Tile> world { get; protected set; }
 
@@ -26,7 +26,7 @@ public class WorldController : MonoBehaviour, ITileSubscriber
         chunkLoader = GetComponent<ChunkLoader>();
 
         world = CreateWorldGrid(origin, width, height, nodeSpacing);
-        Debug.Log($"{this} created world {width} x {height}");
+        if (verbose) Debug.Log($"{this} created world {width} x {height}");
 
         cbWorldCreated?.Invoke(world);
         terrainGenerator.Generate(world);
@@ -37,20 +37,14 @@ public class WorldController : MonoBehaviour, ITileSubscriber
         world = new NodeGrid<Tile>(origin, width, height, nodeSpacing);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                world.AddNode(new Tile(x, y, nodeSpacing, this));
+                world.AddNode(new Tile(x, y, nodeSpacing, chunkLoader));
             }
         }
         return world;
     }
 
-    public void OnTileChanged(Tile tile)
-    {
-        chunkLoader.AddChangedTile(tile);
-    }
-
     public void RegisterWorldCreatedCallback(Action<NodeGrid<Tile>> callback)
     {
-        //TODO: extract logging to its own class
         if (verbose) Debug.Log($"{callback.Method.DeclaringType.Name} registered world created callback: {callback.Method.Name}");
         cbWorldCreated += callback;
     }
