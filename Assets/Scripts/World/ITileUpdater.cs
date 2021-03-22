@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public interface ITileUpdater
+public interface IChunkLoader
 {
     void AddChangedTile(Tile t);
     void DeregisterCallback(Action<IEnumerable<Tile>> callback);

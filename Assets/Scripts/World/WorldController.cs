@@ -16,12 +16,14 @@ public class WorldController : MonoBehaviour, ITileSubscriber
     private Action<NodeGrid<Tile>> cbWorldCreated;
 
     ITerrainGenerator terrainGenerator;
-    ITileUpdater tileUpdater;
+    IChunkLoader chunkLoader;
+
+    [SerializeField] bool verbose = true;
 
     private void Start()
     {
         terrainGenerator = GetComponent<TerrainGenerator>();
-        tileUpdater = GetComponent<TileUpdater>();
+        chunkLoader = GetComponent<ChunkLoader>();
 
         world = CreateWorldGrid(origin, width, height, nodeSpacing);
         Debug.Log($"{this} created world {width} x {height}");
@@ -43,26 +45,26 @@ public class WorldController : MonoBehaviour, ITileSubscriber
 
     public void OnTileChanged(Tile tile)
     {
-        tileUpdater.AddChangedTile(tile);
+        chunkLoader.AddChangedTile(tile);
     }
 
     public void RegisterWorldCreatedCallback(Action<NodeGrid<Tile>> callback)
     {
         //TODO: extract logging to its own class
-        Debug.Log($"{callback.Method.DeclaringType.Name} registered world created callback: {callback.Method.Name}");
+        if (verbose) Debug.Log($"{callback.Method.DeclaringType.Name} registered world created callback: {callback.Method.Name}");
         cbWorldCreated += callback;
     }
 
     public void RegisterWorldChangedCallback(Action<IEnumerable<Tile>> callback)
     {
-        Debug.Log($"{callback.Method.DeclaringType.Name} registered world changed callback: {callback.Method.Name}");
-        tileUpdater.RegisterCallback(callback);
+        if (verbose) Debug.Log($"{callback.Method.DeclaringType.Name} registered world changed callback: {callback.Method.Name}");
+        chunkLoader.RegisterCallback(callback);
     }
 
     public void DeregisterWorldChangedCallback(Action<IEnumerable<Tile>> callback)
     {
-        Debug.Log($"{callback.Method.DeclaringType.Name} deregistered world changed callback: {callback.Method.Name}");
-        tileUpdater.DeregisterCallback(callback);
+        if (verbose) Debug.Log($"{callback.Method.DeclaringType.Name} deregistered world changed callback: {callback.Method.Name}");
+        chunkLoader.DeregisterCallback(callback);
     }
 
     private void OnValidate()

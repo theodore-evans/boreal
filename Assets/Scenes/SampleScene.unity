@@ -1080,6 +1080,7 @@ MonoBehaviour:
   origin: {x: 0, y: 0, z: 0}
   width: 256
   height: 256
+  verbose: 1
 --- !u!4 &954845868
 Transform:
   m_ObjectHideFlags: 0
@@ -1209,14 +1210,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 954845866}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f63bc5cae90c4806a6fc3ac3b61952b, type: 3}
+  m_Script: {fileID: 11500000, guid: 8df15b43161244de39f97848b56bca33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   currentCamera: {fileID: 519420031}
-  drawDistance: 1
-  onScreenUpdateRate: 0.2
-  offScreenUpdateRate: 0.5
-  minUpdatesPerFrame: 2000
+  drawDistance: 0.1
+  onScreenUpdateRate: 0.25
+  minUpdatesPerFrame: 2500
 --- !u!1 &1030719981
 GameObject:
   m_ObjectHideFlags: 0

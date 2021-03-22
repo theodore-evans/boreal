@@ -19,6 +19,9 @@ public class Tile : AbstractNode
     private Vector3 _normal = Vector3.zero;
     private float _waterThreshold = 0f;
 
+    private Comparator comparator = new Comparator(threshold: 0.001f);
+    private bool ValueHasChanged(ref float a, ref float b) => !comparator.ApproximatelyEqual(ref a, ref b);
+
     public void InvokeTileChangedCallback() => _parent.OnTileChanged(this);
 
     public Tile(int x, int y, float scale, ITileSubscriber parent) : base(x, y, scale) {
@@ -47,7 +50,7 @@ public class Tile : AbstractNode
             float oldDepth = _waterDepth;
             _waterDepth = value;
 
-            if (oldDepth !=_waterDepth) InvokeTileChangedCallback();
+            if (ValueHasChanged(ref oldDepth, ref _waterDepth)) InvokeTileChangedCallback();
         }
     }
 
@@ -64,7 +67,7 @@ public class Tile : AbstractNode
             float oldAltitude = _altitude;
             _altitude = value;
 
-            if (oldAltitude != _altitude) InvokeTileChangedCallback();
+            if (ValueHasChanged(ref oldAltitude, ref _altitude)) InvokeTileChangedCallback();
         }
     }
 

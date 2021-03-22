@@ -3,10 +3,12 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using Extensions;
 
 public class Cache<T> : IEnumerable<T> where T : AbstractNode
 {
-    private Dictionary<int, T> inner = new Dictionary<int, T>();
+    private System.Random rng = new System.Random();
+    protected Dictionary<int, T> inner = new Dictionary<int, T>();
     private int GenerateHashCode(int x, int y) => AbstractNode.GenerateHashCode(x, y); // TODO: is there a way to get T.GenerateHashCode in case it is overriden?
 
     public Cache() : base() { }
@@ -17,6 +19,7 @@ public class Cache<T> : IEnumerable<T> where T : AbstractNode
     }
 
     public int Count => inner.Count;
+    public bool IsReadOnly => false;
 
     public T this[int x, int y]
     {
@@ -36,7 +39,7 @@ public class Cache<T> : IEnumerable<T> where T : AbstractNode
         return false;
     }
 
-    internal void Union(Cache<T> cache)
+    internal void Union(IEnumerable<T> cache)
     {
         foreach (T item in cache) {
             Add(item);
@@ -75,19 +78,41 @@ public class Cache<T> : IEnumerable<T> where T : AbstractNode
         return this.GetEnumerator();
     }
 
-    public Cache<T> PopWithinArea(int xMin, int xMax, int yMin, int yMax, int numberToPop)
+    public Cache<T> PopRandomWithinArea(Rect rect, int numberToPop)
+    {
+        int xMin = Mathf.FloorToInt(rect.xMin);
+        int yMin = Mathf.FloorToInt(rect.yMin);
+        int xMax = Mathf.CeilToInt(rect.xMax);
+        int yMax = Mathf.CeilToInt(rect.yMax);
+
+
+        return PopRandomWithinArea(xMin, xMax, yMin, yMax, numberToPop);
+    }
+
+    public Cache<T> PopRandomWithinArea(int xMin, int xMax, int yMin, int yMax, int numberToPop)
     {
         Cache<T> items = new Cache<T>();
+
+        int xRange = xMax - xMin;
+        int yRange = yMax - yMin;
+
+        int maxNumberToPop = xRange * yRange;
+        
+        List<int> indices = Enumerable.Range(0, maxNumberToPop).OrderBy(o => rng.Next()).ToList(); ;
+
+        int x(int i) => i % (xRange + 1) + xMin;
+        int y(int i) => Mathf.FloorToInt(i / xRange + 1) + yMin;
+
         int numberPopped = 0;
 
-        for (int x = xMin; x < xMax; x++) {
-            for (int y = yMin; y < yMax; y++) {
-                if (numberPopped > numberToPop) break;
-                int key = GenerateHashCode(x, y);
-                if (inner.ContainsKey(key)) {
-                    items.Add(inner[key]);
-                    inner.Remove(key);
-                }
+        for (int i = 0; i < maxNumberToPop; i++) {
+            if (numberPopped > numberToPop) break;
+            int index = indices[i];
+            int key = GenerateHashCode(x(index), y(index));
+            if (inner.ContainsKey(key)) {
+                items.Add(inner[key]);
+                inner.Remove(key);
+                numberPopped++;
             }
         }
 
@@ -107,6 +132,26 @@ public class Cache<T> : IEnumerable<T> where T : AbstractNode
         int yMax = Mathf.CeilToInt(rect.yMax);
 
         return PopWithinArea(xMin, xMax, yMin, yMax, numberToPop);
+    }
+
+    public Cache<T> PopWithinArea(int xMin, int xMax, int yMin, int yMax, int numberToPop)
+    {
+        Cache<T> items = new Cache<T>();
+        int numberPopped = 0;
+
+        for (int x = xMin; x < xMax; x++) {
+            for (int y = yMin; y < yMax; y++) {
+                if (numberPopped > numberToPop) break;
+                int key = GenerateHashCode(x, y);
+                if (inner.ContainsKey(key)) {
+                    items.Add(inner[key]);
+                    inner.Remove(key);
+                    numberPopped++;
+                }
+            }
+        }
+
+        return items;
     }
 
     public IEnumerable<T> DrawRandom(int numberToDraw)
@@ -148,8 +193,17 @@ public class Cache<T> : IEnumerable<T> where T : AbstractNode
         return selectedItems;
     }
 
-    internal void Clear()
+    public void Clear()
     {
         inner.Clear();
+    }
+
+    public void CopyTo(T[] array, int arrayIndex)
+    {
+        int i = 0;
+        foreach (T value in inner.Values) {
+            array[arrayIndex + i] = value;
+            i++;
+        }
     }
 }

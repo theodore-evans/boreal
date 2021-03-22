@@ -85,19 +85,21 @@ public class SimulateWaterFlow : MonoBehaviour
     {
         bool equilibrated = true;
 
-        if (tile.WaterDepth > minHead) {
+        if (tile.WaterDepth > 0) {
 
             List<Tile> neighbours = _world.GetNeighbours(tile.X, tile.Y).OrderBy(o => normalizedWaterLevel(tile, o)).ToList();
 
             float erosionAmount = 0;
+
             foreach (Tile neighbour in neighbours) {
-                if (tile.WaterDepth > minHead && tile.WaterLevel - neighbour.WaterLevel > minHead) {
+                if (tile.WaterLevel - neighbour.WaterLevel > 0) {
                     equilibrated = false;
 
-                    float waterFlow = Mathf.Clamp(Mathf.Lerp(0, tile.WaterLevel - neighbour.WaterLevel, flowRate), 0, tile.WaterDepth);
+                    float waterFlow = Mathf.Clamp(Mathf.Lerp(0, tile.WaterLevel - neighbour.WaterLevel, flowRate), minHead, tile.WaterDepth);
+                    erosionAmount += erosionCoefficient * waterFlow * (tile.Altitude - neighbour.Altitude);
+
                     tile.WaterDepth -= waterFlow;
                     visitedSet.Add(neighbour, waterFlow);
-                    erosionAmount += erosionCoefficient * waterFlow * (tile.Altitude - neighbour.Altitude);
 
                     if (neighbour.WaterLevel > seaLevel) {
                         neighbour.WaterDepth += waterFlow;
