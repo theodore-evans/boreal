@@ -11,6 +11,8 @@ public class TileInfoUpdater : MonoBehaviour, ITileUIUpdateBehaviour
     private TextMeshProUGUI tileInfo;
     private Tile selectedTile;
 
+    System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
     void Start()
     {
         tileInfo = tileInfo_go.GetComponent<TextMeshProUGUI>();
@@ -35,17 +37,28 @@ public class TileInfoUpdater : MonoBehaviour, ITileUIUpdateBehaviour
 
     private void DisplayTileInfo()
     {
-        tileInfo.text = $"[{selectedTile.X}, {selectedTile.Y}]"
-            + $"\n{(selectedTile.Water ? TileTypeId.Water : selectedTile.TypeId)}"
-            + "\nElevation: " + selectedTile.Altitude.ToString("F2") + " m";
+        sb.Clear();
+        sb.Append(selectedTile.X.ToString("F0")).Append(", ").Append(selectedTile.Y.ToString("F0"));
+        sb.AppendLine();
+        sb.Append("Elevation: ").Append(selectedTile.Altitude.ToString("F2")).Append(" m");
+        sb.AppendLine();
+
         if (verbose) {
-            tileInfo.text +=
-                "\nNormal: " + selectedTile.Normal.ToString("F1")
-            + "\nGradient: " + selectedTile.Gradient.ToString("F2") + "\x00B0";
+            sb.Append("Normal: ").Append(selectedTile.Normal.ToString("F1"));
+            sb.AppendLine();
+            sb.Append("Gradient: ").Append(selectedTile.Gradient.ToString("F2")).Append("\x00B0");
+            sb.AppendLine();
         }
-        if (true) {//(selectedTile.Water) {
-            tileInfo.text += "\nWater Depth: " + selectedTile.WaterDepth.ToString("F3")
-                          + "\nWater Level: " + selectedTile.WaterLevel.ToString("F3");
+
+        if (selectedTile.Water.Deep) {
+            sb.Append("Water");
+            sb.AppendLine();
+            sb.Append(" Depth: ").Append(selectedTile.Water.Depth.ToString("F3"));
+            sb.AppendLine();
+            sb.Append(" Level: ").Append(selectedTile.Water.Level.ToString("F3"));
         }
+        else sb.Append(selectedTile.TypeId);
+
+        tileInfo.text = sb.ToString();
     }
 }

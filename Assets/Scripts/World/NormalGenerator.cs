@@ -70,6 +70,6 @@ public class NormalGenerator : MonoBehaviour
 
     private float GetTileAltiude(Tile t)
     {
-        return t.WaterLevel;
+        return t.Water.Level;
     }
 }

@@ -14,11 +14,6 @@ public abstract class AbstractNode
         return _hashCode;
     }
 
-    public override bool Equals(object obj)
-    {
-        return false;
-    }
-
     protected AbstractNode(int x, int y, float scale)
     {
         if (x < 0 || y < 0) {

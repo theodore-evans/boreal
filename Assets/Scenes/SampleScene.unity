@@ -335,6 +335,7 @@ MonoBehaviour:
   flowRate: 0.2
   erosionCoefficient: 0.2
   channelWideningCoefficient: 0.5
+  simulationSpeed: 1
 --- !u!4 &149497009
 Transform:
   m_ObjectHideFlags: 0

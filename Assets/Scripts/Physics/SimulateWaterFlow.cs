@@ -19,17 +19,25 @@ public class SimulateWaterFlow : MonoBehaviour
     [SerializeField] [Range(0f, 1f)] float channelWideningCoefficient = 0.1f;
     [SerializeField] [Range(0f, 1f)] float simulationSpeed = 0.75f;
 
-    private WaitForSeconds waitBetweenIterations => new WaitForSeconds(Mathf.Lerp(0.1f, 0f, simulationSpeed));
+    private Coroutine simulateWaterCoroutine;
+    private Coroutine rainCoroutine;
+
+    private WaitForSeconds waitBetweenIterations;
 
     private float seaLevel = 0f; // TODO actually find out from world, if not zero
 
     private bool are4Connected(Tile a, Tile b) => (b.X - a.X) * (b.Y - a.Y) == 0;
 
+    private void Start()
+    {
+        waitBetweenIterations = new WaitForSeconds(Mathf.Lerp(0.1f, 0f, simulationSpeed));
+    }
+
     private float normalizedWaterLevel(Tile tileA, Tile tileB)
     {
         if (are4Connected(tileA, tileB))
-            return tileB.WaterLevel;
-        else return Mathf.Lerp(tileA.WaterLevel, tileB.WaterLevel, 0.707f);
+            return tileB.Water.Level;
+        else return Mathf.Lerp(tileA.Water.Level, tileB.Water.Level, 0.707f);
     }
 
     public void SetWorld(NodeGrid<Tile> world)
@@ -39,14 +47,24 @@ public class SimulateWaterFlow : MonoBehaviour
 
     public void StartRain()
     {
-        StopCoroutine(nameof(RainCoroutine));
-        StartCoroutine(nameof(RainCoroutine));
-        StartCoroutine(nameof(SimulateWaterCoroutine));
+        if (simulateWaterCoroutine != null) {
+            StopCoroutine(simulateWaterCoroutine);
+            simulateWaterCoroutine = null;
+        }
+
+        if (rainCoroutine == null) {
+            rainCoroutine = StartCoroutine(nameof(RainCoroutine));
+        }
+
+        simulateWaterCoroutine = StartCoroutine(nameof(SimulateWaterCoroutine));
     }
 
     public void StopRain()
     {
-        StopCoroutine(nameof(RainCoroutine));
+        if (rainCoroutine != null) {
+            StopCoroutine(rainCoroutine);
+            rainCoroutine = null;
+        }
     }
 
     private IEnumerator SimulateWaterCoroutine()
@@ -74,8 +92,8 @@ public class SimulateWaterFlow : MonoBehaviour
         for (; ; ) {
             for (int i = 0; i < raindropsPerUpdate; i++) {
                 Tile newWetTile = _world.Nodes[rng.Next(_world.MaxSize)];
-                if (newWetTile.WaterLevel > 0) {
-                    newWetTile.WaterDepth += waterPerRaindrop;
+                if (newWetTile.Water.Level > 0) {
+                    newWetTile.Water.Depth += waterPerRaindrop;
                     openSet.Add(newWetTile);
                 }
             }
@@ -88,26 +106,25 @@ public class SimulateWaterFlow : MonoBehaviour
     {
         bool equilibrated = true;
 
-        if (tile.WaterDepth > 0 && tile.WaterLevel > seaLevel) {
-
-            List<Tile> neighbours = _world.GetNeighbours(tile.X, tile.Y).OrderBy(o => normalizedWaterLevel(tile, o)).ToList();
+        if (tile.Water.Depth > 0 && tile.Water.Level > seaLevel) {
+            IEnumerable<Tile> neighbours = _world.GetNeighbours(tile.X, tile.Y).OrderBy(o => normalizedWaterLevel(tile, o));
 
             float erosionAmount = 0;
 
             foreach (Tile neighbour in neighbours) {
-                if (tile.WaterLevel - neighbour.WaterLevel > 0) {
+                if (tile.Water.Level - neighbour.Water.Level > 0) {
                     equilibrated = false;
 
-                    float head = tile.WaterLevel - neighbour.WaterLevel;
-                    float waterFlow = Mathf.Clamp(Mathf.Lerp(0, head / 2, flowRate), 0, tile.WaterDepth);
+                    float head = tile.Water.Level - neighbour.Water.Level;
+                    float waterFlow = Mathf.Clamp(Mathf.Lerp(0, head / 2, flowRate), 0, tile.Water.Depth);
 
                     erosionAmount += erosionCoefficient * waterFlow * (tile.Altitude - neighbour.Altitude);
 
-                    tile.WaterDepth -= waterFlow;
+                    tile.Water.Depth -= waterFlow;
                     visitedSet.Add(neighbour, waterFlow);
 
-                    if (neighbour.WaterLevel > seaLevel) {
-                        neighbour.WaterDepth += waterFlow;
+                    if (neighbour.Water.Level > seaLevel) {
+                        neighbour.Water.Depth += waterFlow;
                         openSet.Add(neighbour);
                     }
                 }

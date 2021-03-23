@@ -9,8 +9,8 @@ public class WaterController : Controller
     {
         foreach (Tile tile in tilesToUpdate) {
 
-            if (tile.WaterDepth > waterThreshold) tile.Water = true;
-            else tile.Water = false;
+            if (tile.Water.Depth > waterThreshold) tile.Water.Deep = true;
+            else tile.Water.Deep = false;
         }
     }
 }

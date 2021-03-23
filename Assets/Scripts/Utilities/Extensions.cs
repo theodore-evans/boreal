@@ -100,7 +100,7 @@ namespace Extensions
             return data.Normalize(min, max, dataMin, dataMax);
         }
 
-        public static float[,] Normalize(this float[,] data, float min, float max, float dataMin, float dataMax) 
+        public static float[,] Normalize(this float[,] data, float min, float max, float dataMin, float dataMax)
         {
             if (dataMin == min && dataMax == max) return data;
 
@@ -124,7 +124,7 @@ namespace Extensions
                 }
             }
 
-            float[,] result = new float[a.GetUpperBound(0)+1, a.GetUpperBound(1)+1];
+            float[,] result = new float[a.GetUpperBound(0) + 1, a.GetUpperBound(1) + 1];
 
             for (int x = 0; x <= result.GetUpperBound(0); x++) {
                 for (int y = 0; y <= result.GetUpperBound(1); y++) {
@@ -151,7 +151,7 @@ namespace Extensions
 
             for (int x = 0; x <= data.GetUpperBound(0); x++) {
                 for (int y = 0; y <= data.GetUpperBound(1); y++) {
-                    result[x, y] = data[x,y] * scalar;
+                    result[x, y] = data[x, y] * scalar;
                 }
             }
 
@@ -164,7 +164,7 @@ namespace Extensions
 
             for (int x = 0; x < newXSize; x++) {
                 for (int y = 0; y < newYSize; y++) {
-                    result[x,y] = data[x, y];
+                    result[x, y] = data[x, y];
                 }
             }
 
@@ -186,4 +186,14 @@ namespace Extensions
             return result;
         }
     }
+
+    public static class FloatExtensions
+    {
+        public static bool Similar(this float a, float b, float threshold)
+        {
+            if (threshold == 0) return a == b;
+            return Mathf.Abs(a - b) < threshold;
+        }
+    }
+    
 }

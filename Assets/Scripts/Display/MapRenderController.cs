@@ -69,10 +69,10 @@ public class MapRenderController : MonoBehaviour
     {
         foreach (Tile t in changedTiles) {
             //TODO implement better water rendering
-            TileTypeId colorId = t.Water ? TileTypeId.Water : t.TypeId;
+            TileTypeId colorId = t.Water.Deep ? TileTypeId.Water : t.TypeId;
             Color tileControl = tileColours[(int)colorId];
             
-            tileControl.a = t.WaterDepth / verticalScale;
+            tileControl.a = t.Water.Depth / verticalScale;
             mapTexture.control.SetPixel(t.X, t.Y, tileControl);
 
             Vector3 tileNormal = new Vector3(t.Normal.x, t.Normal.y, t.Normal.z) * 0.5f + 0.5f * Vector3.one;

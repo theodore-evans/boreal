@@ -9,8 +9,6 @@ public class ChunkLoader : MonoBehaviour, ITileSubscriber, IChunkLoader
     Cache<Tile> tilesToUpdateEarly = new Cache<Tile>();
     private Action<IEnumerable<Tile>> cbWorldChanged;
 
-    Rect areaToLoad;
-
     System.Random rng = new System.Random();
 
     [SerializeField] Camera currentCamera = null;
@@ -40,37 +38,30 @@ public class ChunkLoader : MonoBehaviour, ITileSubscriber, IChunkLoader
         tilesToUpdate.Add(t);
     }
 
-    private Rect GetOnScreenArea(float drawDistance = 1)
+    private Rect GetOnScreenArea()
     {
         float widthMargin = Screen.width * drawDistance;
         float heightMargin = Screen.height * drawDistance;
 
         Vector2 bottomLeft = currentCamera.ScreenToWorldPoint(new Vector2(-widthMargin, -heightMargin));
         Vector2 topRight = currentCamera.ScreenToWorldPoint(new Vector2(Screen.width + widthMargin, Screen.height + heightMargin));
+
         return Rect.MinMaxRect(bottomLeft.x, bottomLeft.y, topRight.x, topRight.y);
     }
 
     private IEnumerator InvokeUpdatesCoroutine()
     {
         for (; ; ) {
+            if (tilesToUpdateEarly.Count == 0 && tilesToUpdate.Count > 0) {
+                tilesToUpdateEarly.Union(tilesToUpdate.PopAllWithinArea(GetOnScreenArea()));
+                cbWorldChanged?.Invoke(tilesToUpdate.Draw(numberToUpdate(tilesToUpdate.Count)));
+            }
 
             if (tilesToUpdateEarly.Count > 0) {
-                int updatesThisIteration = numberToUpdate(tilesToUpdateEarly.Count);
-                cbWorldChanged?.Invoke(tilesToUpdateEarly.DrawRandom(updatesThisIteration));
-                yield return 0;
+                cbWorldChanged?.Invoke(tilesToUpdateEarly.DrawRandom(numberToUpdate(tilesToUpdateEarly.Count)));
             }
 
-            if (tilesToUpdate.Count > 0) {
-                Rect areaToLoad = GetOnScreenArea(drawDistance);
-                tilesToUpdateEarly.Union(tilesToUpdate.PopAllWithinArea(areaToLoad));
-
-                if (tilesToUpdateEarly.Count == 0) {
-                    int updatesThisIteration = numberToUpdate(tilesToUpdate.Count);
-                    cbWorldChanged?.Invoke(tilesToUpdate.Draw(minUpdatesPerFrame));
-                }
-            }
-
-            yield return 0;
+            yield return null;
         }
     }
 }

@@ -26,7 +26,7 @@ public class WaterSimController : Controller
         for (int x = 0; x < world.GridSizeX; x++) {
             for (int y = 0; y < world.GridSizeY; y++) {
                 Tile t = world.GetNodeAt(x, y);
-                if (t.WaterLevel > 0) t.WaterDepth = 0;
+                if (t.Water.Level > 0) t.Water.Depth = 0;
             }
 
         }
