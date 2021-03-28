@@ -68,15 +68,22 @@ public class MapRenderController : MonoBehaviour
     private void RenderMap(IEnumerable<Tile> changedTiles)
     {
         foreach (Tile t in changedTiles) {
+            float grassCover = t.Cover.Grass;
+            float waterDepth = t.Water.Depth;
+
+            Color tileControl = new Color(1 - grassCover, grassCover, 0);
+
             //TODO implement better water rendering
-            TileTypeId colorId = t.Water.Deep ? TileTypeId.Water : t.TypeId;
-            Color tileControl = tileColours[(int)colorId];
-            
-            tileControl.a = t.Water.Depth / verticalScale;
+            if (t.Water.Surface) {
+                tileControl = Color.blue;
+                tileControl.a = waterDepth / verticalScale;
+            }
+
             mapTexture.control.SetPixel(t.X, t.Y, tileControl);
 
-            Vector3 tileNormal = new Vector3(t.Normal.x, t.Normal.y, t.Normal.z) * 0.5f + 0.5f * Vector3.one;
+            Vector3 tileNormal = new Vector3(t.Relief.Normal.x, t.Relief.Normal.y, t.Relief.Normal.z) * 0.5f + 0.5f * Vector3.one;
             Color tileNormalColor = new Color(tileNormal.x, tileNormal.y, tileNormal.z);
+
             mapTexture.normal.SetPixel(t.X, t.Y, tileNormalColor);
         }
         mapTexture.normal.Apply();

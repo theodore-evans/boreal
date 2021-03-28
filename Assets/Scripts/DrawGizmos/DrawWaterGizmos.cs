@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 
-public class DrawWaterSimGizmos : MonoBehaviour
+public class DrawWaterGizmos : MonoBehaviour
 {
     [SerializeField] bool showWaterFlow = true;
     [SerializeField] bool showOpenSet = false;
-    [SerializeField] [Range(0, 100)] int showFlowMin = 2;
-    [SerializeField] [Range(0, 100)] int showFlowMax = 10;
+    [SerializeField] [Range(0, 1)] float showFlowMin = 0.2f;
+    [SerializeField] [Range(0, 1)] float showFlowMax = 1f;
 
-    private ref VisitationMap<Tile> visitedSet => ref simulateWaterFlow.visitedSet;
+    private ref VisitationMap<Tile> moistureMap => ref simulateWaterFlow.moistureMap;
     private ref Cache<Tile> openSet => ref simulateWaterFlow.openSet;
 
     private SimulateWaterFlow simulateWaterFlow = null;
@@ -20,12 +20,12 @@ public class DrawWaterSimGizmos : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         if (simulateWaterFlow != null) {
-            if (visitedSet != null) {
-                foreach (Tile t in visitedSet) {
-                    if (visitedSet[t] > showFlowMin) {
+            if (moistureMap != null) {
+                foreach (Tile t in moistureMap) {
+                    if (moistureMap[t] > showFlowMin && moistureMap[t] <= showFlowMax) {
                         Color color = Color.blue;
                         if (showWaterFlow) {
-                            color.a = Mathf.Lerp(0, 1, Mathf.Clamp01((visitedSet[t] - showFlowMin) / showFlowMax));
+                            color.a = Mathf.Lerp(0, 1, Mathf.Clamp01((moistureMap[t] - showFlowMin) / showFlowMax));
                         }
                         Gizmos.color = color;
                         Gizmos.DrawCube(new Vector3(t.X + t.Scale / 2f, t.Y + t.Scale / 2f, -2f), Vector3.one * 0.9f);

@@ -19,6 +19,6 @@ public abstract class Controller : MonoBehaviour
         worldController.RegisterWorldChangedCallback(UpdateTiles);
     }
 
-    public virtual void UpdateTiles(IEnumerable<Tile> tile) { }
+    public virtual void UpdateTiles(IEnumerable<Tile> updatedTiles) { }
     internal virtual void OnInitialize() { }
 }

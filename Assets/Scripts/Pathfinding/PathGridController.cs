@@ -45,7 +45,7 @@ public class PathGridController : Controller
         foreach (Tile tile in changedTiles) {
             foreach (PathNode node in grid.GetNodesOnOtherGridsNode(tile)) {
                 node.movementPenalty = walkabilityChecker.GetMovementPenalty(tile);
-                node.Altitude = tile.Altitude;
+                node.Altitude = tile.Relief.Elevation;
             }
         }
     }

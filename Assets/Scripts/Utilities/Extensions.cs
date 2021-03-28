@@ -140,11 +140,20 @@ namespace Extensions
             return Elementwise(array, other, (a, b) => a + b);
         }
 
+        public static float[,] Add(this float[,] array, float[,] other, float weight)
+        {
+            return Elementwise(array, other, (a, b) => a + weight * b);
+        }
+
         public static float[,] Multiply(this float[,] array, float[,] other)
         {
             return Elementwise(array, other, (a, b) => a * b);
         }
 
+        public static float[,] Multiply(this float[,] array, float [,] other, float weight)
+        {
+            return Elementwise(array, other, (a, b) => a * (1 - weight + weight * b));
+        }
         public static float[,] MultiplyByScalar(this float[,] data, float scalar)
         {
             float[,] result = new float[data.GetUpperBound(0) + 1, data.GetUpperBound(1) + 1];
@@ -184,6 +193,16 @@ namespace Extensions
             }
 
             return result;
+        }
+
+        public static T[,] Fill<T>(this T[,] originalArray, T with)
+        {
+            for (int x = 0; x <= originalArray.GetUpperBound(0); x++) {
+                for (int y = 0; y <= originalArray.GetUpperBound(1); y++) {
+                    originalArray[x,y] = with;
+                }
+            }
+            return originalArray;
         }
     }
 

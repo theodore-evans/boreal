@@ -9,8 +9,8 @@ public class CheckTileWalkability : MonoBehaviour, IWalkabilityChecker
 
     public float GetMovementPenalty(Tile tile)
     {
-        float movementPenalty = 1f + gradientModifier * tile.Gradient;
-        if (tile.Water.Deep) movementPenalty += WaterDepthModifier * tile.Water.Depth;
+        float movementPenalty = 1f + gradientModifier * tile.Relief.Gradient;
+        if (tile.Water.Surface) movementPenalty += WaterDepthModifier * tile.Water.Depth;
         return movementPenalty;
     }
 

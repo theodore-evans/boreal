@@ -40,24 +40,28 @@ public class TileInfoUpdater : MonoBehaviour, ITileUIUpdateBehaviour
         sb.Clear();
         sb.Append(selectedTile.X.ToString("F0")).Append(", ").Append(selectedTile.Y.ToString("F0"));
         sb.AppendLine();
-        sb.Append("Elevation: ").Append(selectedTile.Altitude.ToString("F2")).Append(" m");
+        sb.Append("Elevation: ").Append(selectedTile.Relief.Elevation.ToString("F2")).Append(" m");
         sb.AppendLine();
 
         if (verbose) {
-            sb.Append("Normal: ").Append(selectedTile.Normal.ToString("F1"));
+            sb.Append("Normal: ").Append(selectedTile.Relief.Normal.ToString("F1"));
             sb.AppendLine();
-            sb.Append("Gradient: ").Append(selectedTile.Gradient.ToString("F2")).Append("\x00B0");
+            sb.Append("Gradient: ").Append(selectedTile.Relief.Gradient.ToString("F2")).Append("\x00B0");
             sb.AppendLine();
         }
 
-        if (selectedTile.Water.Deep) {
+        if (selectedTile.Water.Surface) {
             sb.Append("Water");
             sb.AppendLine();
-            sb.Append(" Depth: ").Append(selectedTile.Water.Depth.ToString("F3"));
+            sb.Append("     Depth: ").Append(selectedTile.Water.Depth.ToString("F3"));
             sb.AppendLine();
-            sb.Append(" Level: ").Append(selectedTile.Water.Level.ToString("F3"));
+            sb.Append("     Level: ").Append(selectedTile.Water.Level.ToString("F3"));
+            sb.AppendLine();
         }
-        else sb.Append(selectedTile.TypeId);
+
+        sb.Append("Ground saturation: ").Append(selectedTile.Water.Saturation.ToString("F3"));
+        sb.AppendLine();
+        sb.Append("Grass cover: ").Append(selectedTile.Cover.Grass.ToString("P"));
 
         tileInfo.text = sb.ToString();
     }

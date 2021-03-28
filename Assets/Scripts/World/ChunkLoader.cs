@@ -3,10 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChunkLoader : MonoBehaviour, ITileSubscriber, IChunkLoader
+public class ChunkLoader : MonoBehaviour, ITileObserver, IChunkLoader
 {
     Cache<Tile> tilesToUpdate = new Cache<Tile>();
     Cache<Tile> tilesToUpdateEarly = new Cache<Tile>();
+
+    private void UpdateTiles(IEnumerable<Tile> tilesToUpdate)
+    {
+        cbWorldChanged?.Invoke(tilesToUpdate);
+    }
+
     private Action<IEnumerable<Tile>> cbWorldChanged;
 
     System.Random rng = new System.Random();
@@ -54,11 +60,11 @@ public class ChunkLoader : MonoBehaviour, ITileSubscriber, IChunkLoader
         for (; ; ) {
             if (tilesToUpdateEarly.Count == 0 && tilesToUpdate.Count > 0) {
                 tilesToUpdateEarly.Union(tilesToUpdate.PopAllWithinArea(GetOnScreenArea()));
-                cbWorldChanged?.Invoke(tilesToUpdate.Draw(numberToUpdate(tilesToUpdate.Count)));
+                UpdateTiles(tilesToUpdate.Draw(numberToUpdate(tilesToUpdate.Count)));
             }
 
             if (tilesToUpdateEarly.Count > 0) {
-                cbWorldChanged?.Invoke(tilesToUpdateEarly.DrawRandom(numberToUpdate(tilesToUpdateEarly.Count)));
+                UpdateTiles(tilesToUpdateEarly.DrawRandom(numberToUpdate(tilesToUpdateEarly.Count)));
             }
 
             yield return null;

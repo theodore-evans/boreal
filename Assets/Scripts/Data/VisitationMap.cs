@@ -3,8 +3,10 @@ using System.Collections.Generic;
 
 public class VisitationMap<T>: Cache<T> where T : AbstractNode
 {
+    private float maxValue = 0;
     private Dictionary<int, float> visits = new Dictionary<int, float>();
     private int GenerateHashCode(int x, int y) => AbstractNode.GenerateHashCode(x, y);
+    public float MaxValue { get => maxValue; }
 
     public VisitationMap() : base() { }
 
@@ -13,24 +15,29 @@ public class VisitationMap<T>: Cache<T> where T : AbstractNode
         Add(item, 1f);
     }
 
-    public void Add(T item, float value)
+    public float Add(T item, float value)
     {
         int hash = item.GetHashCode();
-        bool alreadyContainsItem = base.Add(item);
+        bool isNewItem = base.Add(item);
 
-        if (alreadyContainsItem) {
+        if (isNewItem) {
             visits.Add(hash, value);
         }
         else {
-            visits[hash]+= value;
+            visits[hash] += value;
         }
+
+        float newValue = visits[hash];
+        maxValue = (newValue > maxValue) ? newValue : maxValue;
+
+        return newValue / maxValue;
     }
 
     public new float this[int x, int y]
     {
         get {
             int hash = GenerateHashCode(x, y);
-            if (visits.ContainsKey(hash)) return visits[hash];
+            if (visits.ContainsKey(hash)) return visits[hash] / maxValue;
             else return 0;
         }
     }
@@ -39,7 +46,7 @@ public class VisitationMap<T>: Cache<T> where T : AbstractNode
     {
         get {
             int hash = node.GetHashCode();
-            if (visits.ContainsKey(hash)) return visits[hash];
+            if (visits.ContainsKey(hash)) return visits[hash] / maxValue;
             else return 0;
         }
     }

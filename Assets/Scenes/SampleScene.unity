@@ -308,11 +308,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 149497009}
-  - component: {fileID: 149497010}
+  - component: {fileID: 149497012}
+  - component: {fileID: 149497014}
   - component: {fileID: 149497008}
+  - component: {fileID: 149497010}
   - component: {fileID: 149497011}
+  - component: {fileID: 149497013}
   m_Layer: 0
-  m_Name: WaterSimController
+  m_Name: EnvironmentController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -327,15 +330,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 149497007}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98e9d1a50be48459bac044cc15e865f2, type: 3}
+  m_Script: {fileID: 11500000, guid: 3207428c5fd2f4778938c2b4cc741e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  raindropsPerUpdate: 50
-  waterPerRaindrop: 0.05
-  flowRate: 0.2
-  erosionCoefficient: 0.2
-  channelWideningCoefficient: 0.5
-  simulationSpeed: 1
+  parameters:
+    raindropsPerUpdate: 30
+    waterPerRaindrop: 0.1
+    flowRate: 0.08
+    erosionCoefficient: 0.071
+    channelWideningCoefficient: 0.505
+  simulationSpeed: 0.8
+  totalRainVolume: 0
 --- !u!4 &149497009
 Transform:
   m_ObjectHideFlags: 0
@@ -359,9 +364,100 @@ MonoBehaviour:
   m_GameObject: {fileID: 149497007}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 429672aa1159e49ec9bfcc0da781a8ce, type: 3}
+  m_Script: {fileID: 11500000, guid: 8136813eba87144709d153a752e10fcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  simulationSpeed: 0.505
+  parameters:
+    numberOfStartingSeeds: 10
+    growthRate: 0.089
+    minSaturation: 0.1
+    maxSaturation: 0.9
+    maxGradient: 45
+    growthRateOverGradient:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: -0.006234987
+        value: 0.96875
+        inSlope: -1.1574277
+        outSlope: -1.1574277
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.10901073
+      - serializedVersion: 3
+        time: 0.55322075
+        value: 0.23380327
+        inSlope: -2.2734053
+        outSlope: -2.2734053
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.9956199
+        value: -0.9860749
+        inSlope: -1.2507093
+        outSlope: -1.2507093
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.11247165
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    growthRateOverSaturation:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: -0.0020256042
+        value: -0.5310974
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.060342506
+        value: 0.7004117
+        inSlope: 11.589345
+        outSlope: 11.589345
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.13861468
+        value: 1.0049033
+        inSlope: 0.09939734
+        outSlope: 0.09939734
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.9234256
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.5097672
+        value: 0.095047235
+        inSlope: -0.40990958
+        outSlope: -0.40990958
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.9990102
+        value: 0.006876141
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
 --- !u!114 &149497011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -371,57 +467,51 @@ MonoBehaviour:
   m_GameObject: {fileID: 149497007}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f89a4c7842184259b60545b55e67230, type: 3}
+  m_Script: {fileID: 11500000, guid: 921909678a6a8423a8e49ccdeb802a89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   showWaterFlow: 1
   showOpenSet: 0
-  showFlowMin: 2
-  showFlowMax: 10
---- !u!1 &150702450
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 150702451}
-  - component: {fileID: 150702452}
-  m_Layer: 0
-  m_Name: WaterController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &150702451
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 150702450}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 954845868}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &150702452
+  showFlowMin: 0
+  showFlowMax: 1
+--- !u!114 &149497012
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 150702450}
+  m_GameObject: {fileID: 149497007}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60ae490d5a0014ef980433ee7258e1a4, type: 3}
+  m_Script: {fileID: 11500000, guid: 3465a432f94b54aa6947c4e029b239d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waterThreshold: 0.01
+--- !u!114 &149497013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 149497007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d250a42b48d5c448c8cdf6a2e41bed24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showOpenSet: 0
+--- !u!114 &149497014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 149497007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b41747d64d342449087575185de5db30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soilCarryingCapacity: 0.5
 --- !u!1 &186076950
 GameObject:
   m_ObjectHideFlags: 0
@@ -579,7 +669,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ascendDescendPenalty: 3
-  maxMovementPenalty: 50
+  maxMovementPenalty: 75
 --- !u!114 &329359161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -592,7 +682,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5be0553a94d6d4710ac11153cb842e55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waterDepthModifier: 100
+  WaterDepthModifier: 200
   gradientModifier: 1.25
 --- !u!114 &329359162
 MonoBehaviour:
@@ -1099,8 +1189,8 @@ GameObject:
   - component: {fileID: 954845869}
   - component: {fileID: 954845873}
   - component: {fileID: 954845870}
-  - component: {fileID: 954845874}
   - component: {fileID: 954845875}
+  - component: {fileID: 954845872}
   - component: {fileID: 954845871}
   m_Layer: 0
   m_Name: WorldController
@@ -1142,7 +1232,6 @@ Transform:
   - {fileID: 2012098395}
   - {fileID: 149497009}
   - {fileID: 766066292}
-  - {fileID: 150702451}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1161,12 +1250,7 @@ MonoBehaviour:
   autoUpdate: 1
   seed: 34327
   verticalScale: 26.5
-  seaLevel: 0.5
-  regions:
-  - typeId: 3
-    height: 0.095
-  - typeId: 2
-    height: 1
+  seaLevel: 0.273
 --- !u!114 &954845870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1179,13 +1263,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e4355f607b464f8c99243ea7a8b5dc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scale: 78.8
-  octaves: 4
-  persistence: 0.181
-  lacunarity: 2.5
-  offset: {x: 0, y: 0}
-  power: 1.52
-  weight: 1.91
+  parameters:
+    scale: 57
+    octaves: 4
+    persistence: 0.181
+    lacunarity: 2.5
+    power: 1.61
+    offset: {x: 0, y: 0}
+  weight: 0.89
+  type: 0
 --- !u!114 &954845871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1198,38 +1284,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c315b96ed4934bbd917523ac403f04b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &954845873
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 954845866}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af9a5b3a99b9e4a48a40abe1b07d1dcb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  roughness: 0.72
-  cornerSeed: 0.59
-  weight: 2.56
---- !u!114 &954845874
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 954845866}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff79f42cee7e34e6e8758f381ee16942, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  function: 2
-  xParameter: 2
-  yParameter: 2
-  weight: 0.15
---- !u!114 &954845875
+--- !u!114 &954845872
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1244,7 +1299,46 @@ MonoBehaviour:
   function: 1
   xParameter: 1
   yParameter: 1
-  weight: 1
+  weight: 0.24
+  type: 1
+--- !u!114 &954845873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 954845866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af9a5b3a99b9e4a48a40abe1b07d1dcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+    roughness: 1
+    cornerSeed:
+      bottomLeft: 0
+      bottomRight: 0
+      topLeft: 0
+      topRight: 0
+  weight: 0.908
+  type: 0
+--- !u!114 &954845875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 954845866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff79f42cee7e34e6e8758f381ee16942, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  function: 2
+  xParameter: 2
+  yParameter: 1
+  weight: -0.34
+  type: 1
 --- !u!114 &954845876
 MonoBehaviour:
   m_ObjectHideFlags: 0

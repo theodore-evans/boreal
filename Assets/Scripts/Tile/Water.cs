@@ -1,25 +1,17 @@
 ﻿using System;
+using UnityEngine;
 
-public class Water
+public class Water : AbstractTileObservable
 {
-    Tile _tile;
+    bool _surface = false;
+    float _depth = 0f;
+    float _saturation = 0f;
 
-    void SetPropertyWithNotification<T>(ref T originalValue, T newValue) =>
-        _tile.SetObservableProperty(ref originalValue, newValue);
+    internal Water(Tile parent) : base(parent) { }
 
-    bool _deep;
-    float _depth;
+    public bool Surface { get => _surface; set => _surface = value; }
+    public float Level => parent.Relief.Elevation + _depth;
+    public float Saturation { get => _saturation; set => _saturation = Mathf.Clamp01(value); }
 
-    public Water(Tile tile)
-    {
-        _tile = tile;
-        _deep = false;
-        _depth = 0f;
-    }
-
-    public bool Deep { get => _deep; set => _deep = value; }
-    public float Level => _tile.Altitude + _depth;
-
-    public float Depth { get => _depth; set => SetPropertyWithNotification(ref _depth, value); }
-
+    public float Depth { get => _depth; set => SetObservableProperty(ref _depth, value); }
 }

@@ -9,7 +9,6 @@ public class TerrainGenerator : MonoBehaviour, ITerrainGenerator
     [SerializeField] int seed = 0;
     [SerializeField] [Range(0, 50)] float verticalScale = 1;
     [SerializeField] [Range(0, 1)] float seaLevel;
-    [SerializeField] TerrainType[] regions = null;
 
     private NodeGrid<Tile> _world;
     private int width;
@@ -42,11 +41,16 @@ public class TerrainGenerator : MonoBehaviour, ITerrainGenerator
     public void Generate()
     {
         if (_world != null) {
-            
+
             heightMap = new float[width, height];
 
-            foreach (IHeightMapGenerator heightMapGenerator in heightMapGenerators) {
-                heightMap = heightMap.Add(heightMapGenerator.GenerateHeightMap(seed, width, height));
+            foreach (IHeightMapGenerator generator in heightMapGenerators) {
+                if (generator.Type == HeightMapType.Add) {
+                    heightMap = heightMap.Add(generator.GenerateHeightMap(seed, width, height), generator.Weight);
+                }
+                else if (generator.Type == HeightMapType.Multiply) {
+                    heightMap = heightMap.Multiply(generator.GenerateHeightMap(seed, width, height), generator.Weight);
+                }
             }
 
             heightMap = heightMap.Normalize(-verticalScale * seaLevel, verticalScale * (1 - seaLevel));
@@ -55,16 +59,10 @@ public class TerrainGenerator : MonoBehaviour, ITerrainGenerator
                 for (int y = 0; y < height; y++) {
 
                     Tile t = _world.GetNodeAt(x, y);
-                    t.Altitude = heightMap[x, y];
+                    t.Relief.Elevation = heightMap[x, y];
 
-                    for (int i = 0; i < regions.Length; i++) {
-                        if (t.Altitude <= regions[i].height * verticalScale) {
-                            t.TypeId = regions[i].typeId;
-                            break;
-                        }
-                    }
-
-                    t.Water.Depth = Mathf.Max(0, -t.Altitude);
+                    t.Water.Depth = Mathf.Max(0, -t.Relief.Elevation);
+                    t.Water.Saturation = t.Relief.Elevation < 0 ? 1 : 0;
                 }
             }
         }

@@ -11,7 +11,7 @@ public class HeightMapGeneratorFunction : MonoBehaviour, IHeightMapGenerator
         Gradient = 0,
         SineProduct = 1,
         SineSum = 2
-        
+
     }
 
     private Func<float, float, float> generatingFunction;
@@ -19,7 +19,11 @@ public class HeightMapGeneratorFunction : MonoBehaviour, IHeightMapGenerator
     [SerializeField] HeightmapFunction function = HeightmapFunction.SineProduct;
     [SerializeField] float xParameter = 1;
     [SerializeField] float yParameter = 1;
-    [SerializeField] [Range(0,5)] float weight = 1;
+    [SerializeField] [Range(-1, 1f)] float weight;
+    [SerializeField] HeightMapType type = HeightMapType.Add;
+
+    public float Weight { get => weight; }
+    public HeightMapType Type { get => type; }
 
     private int width;
     private int height;
@@ -31,7 +35,7 @@ public class HeightMapGeneratorFunction : MonoBehaviour, IHeightMapGenerator
 
         float[,] heightMap = new float[mapWidth, mapHeight];
 
-        switch (function) {
+        switch (function) { //TODO implement this with inheritance
             case HeightmapFunction.SineProduct:
                 generatingFunction = SineProduct; break;
             case HeightmapFunction.SineSum:
@@ -58,7 +62,7 @@ public class HeightMapGeneratorFunction : MonoBehaviour, IHeightMapGenerator
 
         }
 
-        return heightMap.Normalize(0, weight, minHeight, maxHeight);
+        return heightMap.Normalize(0, 1, minHeight, maxHeight);
     }
 
     private float SineProduct(float x, float y)

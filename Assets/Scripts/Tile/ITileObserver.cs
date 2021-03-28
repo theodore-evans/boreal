@@ -1,4 +1,4 @@
-﻿public interface ITileSubscriber
+﻿public interface ITileObserver
 {
     void OnTileChanged(Tile changedTile);
 }

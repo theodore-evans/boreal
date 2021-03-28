@@ -25,10 +25,10 @@ public class NormalGenerator : MonoBehaviour
         HashSet<Tile> changedTilesHS = new HashSet<Tile>(changedTiles);
 
         foreach (Tile tile in changedTilesHS) {
-            tile.Normal = CalculateNormal(tile);
+            tile.Relief.Normal = CalculateNormal(tile);
             foreach (Tile neighbour in _world.GetNeighbours(tile.X, tile.Y)) {
                 if (!changedTilesHS.Contains(neighbour)) {
-                    neighbour.Normal = CalculateNormal(neighbour);
+                    neighbour.Relief.Normal = CalculateNormal(neighbour);
                 }
             }
         }
@@ -57,14 +57,16 @@ public class NormalGenerator : MonoBehaviour
         }
 
         else {
+            int count = 0;
             float sum = 0f;
-            List<Tile> neighbours = _world.GetNeighbours(x, y);
+            IEnumerable<Tile> neighbours = _world.GetNeighbours(x, y);
 
             foreach (Tile neighbour in neighbours) {
                 sum += GetTileAltiude(neighbour);
+                count++;
             }
 
-            return sum / neighbours.Count;
+            return sum / count;
         }
     }
 

@@ -36,7 +36,12 @@ public class NodeGrid<T> where T : AbstractNode
         Nodes = new T[GridSizeX * GridSizeY];
     }
 
-    public List<T> GetNeighbours(int x, int y)
+    public IEnumerable<T> GetNeighbours(T node)
+    {
+        return GetNeighbours(node.X, node.Y);
+    }
+
+    public IEnumerable<T> GetNeighbours(int x, int y)
     {
         return GetNeighbours(x, y, (maskX, maskY) => (maskX == 0 && maskY == 0));
     }
