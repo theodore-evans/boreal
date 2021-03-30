@@ -8,13 +8,12 @@ public class GrassGrowthParameters
 {
     [Range(0, 100)] public int numberOfStartingSeeds = 10;
     [Range(0f, 1f)] public float growthRate = 0.01f;
-    [Range(0,1)] public float minSaturation = 0.1f;
+    [Range(0, 1)] public float minSaturation = 0.1f;
     [Range(0, 1)] public float maxSaturation = 0.9f;
     [Range(0, 90)] public float maxGradient = 45f;
     public AnimationCurve growthRateOverGradient;
     public AnimationCurve growthRateOverSaturation;
 }
-
 
 public class GrowGrass : MonoBehaviour
 {
@@ -22,6 +21,8 @@ public class GrowGrass : MonoBehaviour
     [SerializeField] GrassGrowthParameters parameters;
 
     internal Cache<Tile> openSet = new Cache<Tile>();
+    private Cache<Tile> closedSet = new Cache<Tile>();
+
     private Coroutine sowGrassCoroutine;
     private Coroutine growGrassCoroutine;
     private WaitForSeconds waitBetweenIterations;
@@ -35,6 +36,9 @@ public class GrowGrass : MonoBehaviour
         || availableWater >= parameters.maxSaturation
         || tile.Relief.Gradient >= parameters.maxGradient
         || tile.Relief.Elevation <= 0;
+
+    private float AvailableWater(Tile tile) =>
+        tile.Water.Saturation - 0.1f * tile.Cover.Grass;
 
     public void Setup(NodeGrid<Tile> world)
     {
@@ -61,7 +65,7 @@ public class GrowGrass : MonoBehaviour
         while (i < parameters.numberOfStartingSeeds) {
             Tile newGrassTile = _world.Nodes[rng.Next(_world.MaxSize)];
             if (CanNotGrow(newGrassTile, newGrassTile.Water.Saturation)) continue;
-            else { 
+            else {
                 newGrassTile.Cover.Grass += parameters.growthRate;
                 openSet.Add(newGrassTile);
                 i++;
@@ -85,28 +89,24 @@ public class GrowGrass : MonoBehaviour
         IEnumerable neighbours = _world.GetNeighbours(tile);
 
         if (tile.Relief.Elevation > 0) {
-            float availableWater = 0;
-            foreach (Tile neighbour in neighbours) {
-                availableWater += neighbour.Water.Saturation - neighbour.Cover.Grass;
-
-                if (CanNotGrow(neighbour, neighbour.Water.Saturation) == false) {
-                    openSet.Add(neighbour);
-                }
-            }
-            availableWater += tile.Water.Saturation - tile.Cover.Grass;
-            availableWater = Mathf.Clamp01(availableWater / 9);
-
             float newGrowth = parameters.growthRate;
             newGrowth *= parameters.growthRateOverGradient.Evaluate(tile.Relief.Gradient / 90f) *
-                parameters.growthRateOverSaturation.Evaluate(availableWater);
+                parameters.growthRateOverSaturation.Evaluate(AvailableWater(tile));
 
-            foreach (Tile neighbour in neighbours) {
-                neighbour.Cover.Grass += newGrowth / 2f;
-            }
             tile.Cover.Grass += newGrowth;
         }
 
-        if (tile.Cover.Grass <= 0) openSet.Remove(tile);
+        if (tile.Cover.Grass == 1) {
+            openSet.Remove(tile);
+            closedSet.Add(tile);
+        }
+        else {
+            foreach (Tile neighbour in neighbours) {
+                if (!closedSet.Contains(neighbour) && CanNotGrow(neighbour, neighbour.Water.Saturation) == false) {
+                    openSet.Add(neighbour);
+                }
+            }
+        }
     }
-
 }
+

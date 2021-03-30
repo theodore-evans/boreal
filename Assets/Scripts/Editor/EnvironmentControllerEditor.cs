@@ -10,18 +10,6 @@ public class EnvironmentControllerEditor : Editor
 
         DrawDefaultInspector();
 
-        if (GUILayout.Button("Grow grass")) {
-            environmentController.StartGrowingGrass();
-        }
-
-        if (GUILayout.Button("Stop growing grass")) {
-            environmentController.StopGrowingGrass();
-        }
-
-        if (GUILayout.Button("Remove all grass")) {
-            environmentController.RemoveAllGrass();
-        }
-
         if (GUILayout.Button("Start rain")) {
             environmentController.StartRain();
         }
@@ -32,6 +20,18 @@ public class EnvironmentControllerEditor : Editor
 
         if (GUILayout.Button("Remove all water")) {
             environmentController.RemoveAllWater();
+        }
+
+        if (GUILayout.Button("Grow grass")) {
+            environmentController.StartGrowingGrass();
+        }
+
+        if (GUILayout.Button("Stop growing grass")) {
+            environmentController.StopGrowingGrass();
+        }
+
+        if (GUILayout.Button("Remove all grass")) {
+            environmentController.RemoveAllGrass();
         }
     }
 }

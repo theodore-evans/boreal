@@ -1,4 +1,5 @@
 ﻿
+
 public class EnvironmentController : Controller
 {
     GrowGrass growGrass;
@@ -10,7 +11,6 @@ public class EnvironmentController : Controller
     {
         growGrass = GetComponent<GrowGrass>();
         simulateWaterFlow = GetComponent<SimulateWaterFlow>();
-        
     }
 
     internal override void OnInitialize()
@@ -19,7 +19,7 @@ public class EnvironmentController : Controller
         simulateWaterFlow.Setup(world);
     }
 
-    public void StartGrowingGrass() // extract to new class
+    public void StartGrowingGrass() 
     {
         growGrass.StartGrowingGrass();
     }
@@ -40,7 +40,7 @@ public class EnvironmentController : Controller
         growGrass.openSet.Clear();
     }
 
-    public void StartRain() // extract to new class
+    public void StartRain() 
     {
         simulateWaterFlow.StartRain();
     }

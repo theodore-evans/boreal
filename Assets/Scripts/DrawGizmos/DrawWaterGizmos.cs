@@ -22,10 +22,11 @@ public class DrawWaterGizmos : MonoBehaviour
         if (simulateWaterFlow != null) {
             if (moistureMap != null) {
                 foreach (Tile t in moistureMap) {
-                    if (moistureMap[t] > showFlowMin && moistureMap[t] <= showFlowMax) {
+                    float moisture = moistureMap[t];
+                    if (moisture > showFlowMin) {
                         Color color = Color.blue;
                         if (showWaterFlow) {
-                            color.a = Mathf.Lerp(0, 1, Mathf.Clamp01((moistureMap[t] - showFlowMin) / showFlowMax));
+                            color.a = Mathf.Lerp(0, 1, moisture / showFlowMax);
                         }
                         Gizmos.color = color;
                         Gizmos.DrawCube(new Vector3(t.X + t.Scale / 2f, t.Y + t.Scale / 2f, -2f), Vector3.one * 0.9f);

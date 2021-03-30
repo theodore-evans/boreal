@@ -337,8 +337,8 @@ MonoBehaviour:
     raindropsPerUpdate: 30
     waterPerRaindrop: 0.1
     flowRate: 0.08
-    erosionCoefficient: 0.071
-    channelWideningCoefficient: 0.505
+    erosionCoefficient: 0.12
+    channelWideningCoefficient: 0.664
   simulationSpeed: 0.8
   totalRainVolume: 0
 --- !u!4 &149497009

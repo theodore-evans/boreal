@@ -75,7 +75,7 @@ public class MapRenderController : MonoBehaviour
 
             //TODO implement better water rendering
             if (t.Water.Surface) {
-                tileControl = Color.blue;
+                tileControl = Color.Lerp(tileControl, Color.blue, Mathf.Clamp01(waterDepth));
                 tileControl.a = waterDepth / verticalScale;
             }
 
