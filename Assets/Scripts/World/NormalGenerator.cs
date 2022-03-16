@@ -22,12 +22,12 @@ public class NormalGenerator : MonoBehaviour
 
     public void UpdateNormals(IEnumerable<Tile> changedTiles)
     {
-        HashSet<Tile> changedTilesHS = new HashSet<Tile>(changedTiles);
+        HashSet<Tile> changedTilesHashSet = new HashSet<Tile>(changedTiles);
 
-        foreach (Tile tile in changedTilesHS) {
+        foreach (Tile tile in changedTilesHashSet) {
             tile.Relief.Normal = CalculateNormal(tile);
-            foreach (Tile neighbour in _world.GetNeighbours(tile.X, tile.Y)) {
-                if (!changedTilesHS.Contains(neighbour)) {
+            foreach (Tile neighbour in tile.Neighbours) {
+                if (!changedTilesHashSet.Contains(neighbour)) {
                     neighbour.Relief.Normal = CalculateNormal(neighbour);
                 }
             }

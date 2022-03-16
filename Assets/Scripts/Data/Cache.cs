@@ -5,11 +5,11 @@ using System.Collections;
 using System.Linq;
 using Extensions;
 
-public class Cache<T> : IEnumerable<T> where T : AbstractNode
+public class Cache<T> : IEnumerable<T> where T : AbstractGridNode
 {
     private System.Random rng = new System.Random();
     protected Dictionary<int, T> inner = new Dictionary<int, T>();
-    private int GenerateHashCode(int x, int y) => AbstractNode.GenerateHashCode(x, y); // TODO: is there a way to get T.GenerateHashCode in case it is overriden?
+    private int GenerateHashCode(int x, int y) => AbstractGridNode.GenerateHashCode(x, y); // TODO: is there a way to get T.GenerateHashCode in case it is overriden?
 
     public Cache() : base() { }
 

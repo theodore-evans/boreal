@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NodeGrid<T> where T : AbstractNode
+public class NodeGrid<T> where T : AbstractGridNode
 {
     private readonly Vector3 origin;
     private readonly float nodeSpacing;
@@ -17,7 +17,9 @@ public class NodeGrid<T> where T : AbstractNode
 
     public T[] Nodes { get; protected set; }
 
-    bool IsInBounds(int x, int y) => !(x < 0  || x >= GridSizeX || y < 0 || y >= GridSizeY);
+    bool IsInBounds(int x, int y) => !(x < 0 || x >= GridSizeX || y < 0 || y >= GridSizeY);
+    int GetIndex(int x, int y) => y * GridSizeX + x;
+    Func<int, int, bool> MooreNeighbourhoodMask => (maskX, maskY) => maskX == 0 && maskY == 0;
 
     public NodeGrid(Vector3 origin, float width, float height, float nodeSpacing)
     {
@@ -36,28 +38,18 @@ public class NodeGrid<T> where T : AbstractNode
         Nodes = new T[GridSizeX * GridSizeY];
     }
 
-    public IEnumerable<T> GetNeighbours(T node)
+    private List<int> CalculateNeighbourIndices(int x, int y, Func<int, int, bool> Mask)
     {
-        return GetNeighbours(node.X, node.Y);
-    }
-
-    public IEnumerable<T> GetNeighbours(int x, int y)
-    {
-        return GetNeighbours(x, y, (maskX, maskY) => (maskX == 0 && maskY == 0));
-    }
-
-    public List<T> GetNeighbours(int x, int y, Func<int, int, bool> NeighboursToExclude)
-    {
-        List<T> neighbours = new List<T>();
+        List<int> neighbours = new List<int>();
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
 
-                if (NeighboursToExclude(dx, dy) == false) {
+                if (Mask(dx, dy) == false) {
                     int checkX = x + dx;
                     int checkY = y + dy;
 
                     if (IsInBounds(checkX, checkY)) {
-                        neighbours.Add(GetNodeAt(checkX, checkY));
+                        neighbours.Add(GetIndex(checkX, checkY));
                     }
                 }
             }
@@ -65,7 +57,16 @@ public class NodeGrid<T> where T : AbstractNode
         return neighbours;
     }
 
-    internal IEnumerable<T> GetNodesOnOtherGridsNode<U>(U otherNode) where U : AbstractNode
+    public IEnumerable<T> GetNeighbours(int x, int y)
+    {
+        List<T> neighbours = new List<T>();
+        foreach (int neighbourIndex in CalculateNeighbourIndices(x, y, MooreNeighbourhoodMask)) {
+                neighbours.Add(Nodes[neighbourIndex]);
+            }
+        return neighbours;
+    }
+
+    internal IEnumerable<T> GetNodesOnOtherGridsNode<U>(U otherNode) where U : AbstractGridNode
     {
         List<T> nodesOnNode = new List<T>();
 
@@ -86,8 +87,8 @@ public class NodeGrid<T> where T : AbstractNode
 
     public T GetNodeAt(Vector3 position)
     {
-        float percentX = Mathf.Clamp01( (position.x - origin.x) / width );
-        float percentY = Mathf.Clamp01( (position.y - origin.y) / height );
+        float percentX = Mathf.Clamp01((position.x - origin.x) / width);
+        float percentY = Mathf.Clamp01((position.y - origin.y) / height);
 
         int x = Mathf.FloorToInt(percentX * GridSizeX);
         int y = Mathf.FloorToInt(percentY * GridSizeY);
@@ -98,17 +99,17 @@ public class NodeGrid<T> where T : AbstractNode
     public T GetNodeAt(int x, int y)
     {
         if (IsInBounds(x, y)) {
-            return Nodes[y * GridSizeX + x]; //TODO check that this works correctly
+            return Nodes[y * GridSizeX + x];
         }
         else return default;
     }
 
-    public bool AddNode(T newNode)
+    public bool InstantiateNode(T newNode)
     {
         int x = newNode.X;
         int y = newNode.Y;
         if (IsInBounds(x, y)) {
-            Nodes[newNode.Y * GridSizeX + newNode.X] = newNode;
+            Nodes[GetIndex(x, y)] = newNode;
             return true;
         }
         else return false;
@@ -131,7 +132,7 @@ public class NodeGrid<T> where T : AbstractNode
     }
 
     public List<T> GetNodesInsideBounds(Bounds bounds)
-    { 
+    {
         List<T> nodesInsideRect = new List<T>();
 
         Vector3 epsilon = 0.0001f * Vector3.one;
@@ -141,7 +142,7 @@ public class NodeGrid<T> where T : AbstractNode
 
         for (int x = bottomLeftNode.X; x < topRightNode.X; x++) {
             for (int y = bottomLeftNode.Y; y < topRightNode.Y; y++) {
-                nodesInsideRect.Add(GetNodeAt(x,y));
+                nodesInsideRect.Add(GetNodeAt(x, y));
             }
         }
 

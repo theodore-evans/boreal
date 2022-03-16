@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-public class TileUIController : Controller
+public class TileUIController : WorldSubscriber
 {
     [SerializeField] GameObject[] UIElementGameObjects;
     [SerializeField] Camera currentCamera;

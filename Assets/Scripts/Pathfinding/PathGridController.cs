@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PathGridController : Controller
+public class PathGridController : WorldSubscriber
 {
     public bool autoUpdate = true;
 
@@ -33,7 +33,7 @@ public class PathGridController : Controller
 
         for (int x = 0; x < grid.GridSizeX; x++) {
             for (int y = 0; y < grid.GridSizeY; y++) {
-                grid.AddNode(new PathNode(x, y, nodeRadius, heuristicWeight));
+                grid.InstantiateNode(new PathNode(x, y, nodeRadius, grid.GetNeighbours(x, y), heuristicWeight));
             }
         }
 

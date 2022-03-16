@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CameraController : Controller
+public class CameraController : WorldSubscriber
 {
     [SerializeField] Camera currentCamera = null;
     [SerializeField] GameObject cameraOrigin_go = null;

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class VisitationMap<T>: Cache<T> where T : AbstractNode
+public class VisitationMap<T>: Cache<T> where T : AbstractGridNode
 {
     private float maxValue = 0;
     private Dictionary<int, float> visits = new Dictionary<int, float>();
-    private int GenerateHashCode(int x, int y) => AbstractNode.GenerateHashCode(x, y);
+    private int GenerateHashCode(int x, int y) => AbstractGridNode.GenerateHashCode(x, y);
     public float MaxValue { get => maxValue; }
 
     public VisitationMap() : base() { }

@@ -56,7 +56,7 @@ public class AStar : MonoBehaviour, IPathfinding
                     break;
                 }
 
-                foreach (PathNode neighbour in grid.GetNeighbours(currentNode.X, currentNode.Y)) {
+                foreach (PathNode neighbour in currentNode.Neighbours) {
                     if (!IsWalkable(neighbour) || closedSet.Contains(neighbour)) {
                         continue;
                     }

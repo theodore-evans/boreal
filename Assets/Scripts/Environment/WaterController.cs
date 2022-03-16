@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class WaterController : Controller
+public class WaterController : WorldSubscriber
 {
     [SerializeField] float soilCarryingCapacity = 0.05f;
 

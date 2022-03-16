@@ -213,6 +213,108 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
+--- !u!1 &98921623
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 98921624}
+  - component: {fileID: 98921625}
+  m_Layer: 0
+  m_Name: GrassController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &98921624
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 98921623}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 954845868}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &98921625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 98921623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c6eeca1d8a9842ef831caf5af4c787f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+    baseGrass: 1
+    growthOverGradient:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    growthOverSaturation:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.76672584
+        value: 0.9138611
+        inSlope: 0.34455562
+        outSlope: 0.34455562
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
 --- !u!1 &106829199
 GameObject:
   m_ObjectHideFlags: 0
@@ -311,11 +413,9 @@ GameObject:
   - component: {fileID: 149497012}
   - component: {fileID: 149497014}
   - component: {fileID: 149497008}
-  - component: {fileID: 149497010}
   - component: {fileID: 149497011}
-  - component: {fileID: 149497013}
   m_Layer: 0
-  m_Name: EnvironmentController
+  m_Name: WaterFlowController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -355,109 +455,6 @@ Transform:
   m_Father: {fileID: 954845868}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &149497010
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 149497007}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8136813eba87144709d153a752e10fcb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  simulationSpeed: 0.505
-  parameters:
-    numberOfStartingSeeds: 10
-    growthRate: 0.089
-    minSaturation: 0.1
-    maxSaturation: 0.9
-    maxGradient: 45
-    growthRateOverGradient:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: -0.006234987
-        value: 0.96875
-        inSlope: -1.1574277
-        outSlope: -1.1574277
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.10901073
-      - serializedVersion: 3
-        time: 0.55322075
-        value: 0.23380327
-        inSlope: -2.2734053
-        outSlope: -2.2734053
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.9956199
-        value: -0.9860749
-        inSlope: -1.2507093
-        outSlope: -1.2507093
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.11247165
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    growthRateOverSaturation:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: -0.0020256042
-        value: -0.5310974
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.060342506
-        value: 0.7004117
-        inSlope: 11.589345
-        outSlope: 11.589345
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.13861468
-        value: 1.0049033
-        inSlope: 0.09939734
-        outSlope: 0.09939734
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.9234256
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.5097672
-        value: 0.095047235
-        inSlope: -0.40990958
-        outSlope: -0.40990958
-        tangentMode: 136
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.9990102
-        value: 0.006876141
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
 --- !u!114 &149497011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -472,7 +469,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showWaterFlow: 1
   showOpenSet: 0
-  showFlowMin: 0
+  showFlowMin: 0.1
   showFlowMax: 1
 --- !u!114 &149497012
 MonoBehaviour:
@@ -483,22 +480,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 149497007}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3465a432f94b54aa6947c4e029b239d1, type: 3}
+  m_Script: {fileID: 11500000, guid: ae2b81b7c577842b8a3730b7637832a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &149497013
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 149497007}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d250a42b48d5c448c8cdf6a2e41bed24, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  showOpenSet: 0
 --- !u!114 &149497014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1232,6 +1216,7 @@ Transform:
   - {fileID: 2012098395}
   - {fileID: 149497009}
   - {fileID: 766066292}
+  - {fileID: 98921624}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1264,7 +1249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parameters:
-    scale: 57
+    scale: 80
     octaves: 4
     persistence: 0.181
     lacunarity: 2.5

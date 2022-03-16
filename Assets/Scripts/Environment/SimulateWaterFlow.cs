@@ -71,7 +71,7 @@ public class SimulateWaterFlow : MonoBehaviour
         bool equilibrated = true;
 
         if (tile.Water.Depth > 0 && tile.Water.Level > seaLevel) {
-            IEnumerable<Tile> neighbours = _world.GetNeighbours(tile.X, tile.Y).OrderBy(o => normalizedWaterLevel(tile, o));
+            IEnumerable<Tile> neighbours = tile.Neighbours.OrderBy(o => normalizedWaterLevel(tile, o));
 
             float erosionAmount = 0;
 

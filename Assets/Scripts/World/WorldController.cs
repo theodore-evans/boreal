@@ -37,7 +37,7 @@ public class WorldController : MonoBehaviour
         world = new NodeGrid<Tile>(origin, width, height, nodeSpacing);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                world.AddNode(new Tile(x, y, nodeSpacing, chunkLoader.OnTileChanged));
+                world.InstantiateNode(new Tile(x, y, nodeSpacing, world.GetNeighbours(x,y), chunkLoader.OnTileChanged));
             }
         }
         return world;
